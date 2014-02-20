@@ -3,15 +3,16 @@ package game;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
-public class Enemy extends Object implements FriendlyInterface{
+public class Enemy extends Object implements EnemyInterface{
 
 	
 	public Enemy(int x,int y, Game game){
 		super(x,y,game);
-		image = ss.grabImage(10, 1, 32, 32);
-		ssRow=10;
-		ssCol=1;
-		this.game=super.game;
+		//image = ss.grabImage(10, 1, 32, 32);
+		ssX=10;
+		ssY=1;
+		ss=SpriteData.char2;
+		image = ss.grabImage(ssX, ssY, size, size);
 		moveDown();
 	}
 	public void tick(){
@@ -19,6 +20,7 @@ public class Enemy extends Object implements FriendlyInterface{
 		this.curX=super.curX;
 		this.curY=super.curY;
 		if(Physics.hitByAttack(this, game.fireList)){
+			game.enemyCount--;
 			game.c.removeEntity(this);
 		}
 		/*
