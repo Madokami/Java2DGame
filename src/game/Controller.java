@@ -7,15 +7,13 @@ import java.util.Random;
 public class Controller {
 	private LinkedList<FriendlyInterface> f= new LinkedList<FriendlyInterface>();
 	private LinkedList<EnemyInterface> e= new LinkedList<EnemyInterface>();
-	private LinkedList<WallInterface> w = new LinkedList<WallInterface>();
-	
-	WallInterface wInt;
+	private LinkedList<PowerUps> p = new LinkedList<PowerUps>();
 	FriendlyInterface fInt;
 	EnemyInterface eInt;
 	Random r = new Random();
 	Game game;
-	public Controller(Game game){
-		this.game = game;
+	public Controller(){
+		
 	}
 	public void tick(){
 		for(int i=0;i<f.size();i++){
@@ -26,12 +24,14 @@ public class Controller {
 			eInt=e.get(i);
 			eInt.tick();
 		}
-		for(int i=0;i<w.size();i++){
-			wInt=w.get(i);
-			wInt.tick();
+		for(int i=0;i<p.size();i++){
+			p.get(i).tick();
 		}
 	}
 	public void render(Graphics g){
+		for(int i=0;i<p.size();i++){
+			p.get(i).render(g);
+		}
 		for(int i=0;i<f.size();i++){
 			fInt=f.get(i);
 			fInt.render(g);
@@ -40,17 +40,17 @@ public class Controller {
 			eInt=e.get(i);
 			eInt.render(g);
 		}
-		for(int i=0;i<w.size();i++){
-			wInt=w.get(i);
-			wInt.render(g);
-		}
+	}
+	public void addEntity(PowerUps o){
+		p.add(o);
+	}
+	public void removeEntity(PowerUps o){
+		p.remove(o);
 	}
 	public void addEntity(FriendlyInterface o){
 		f.add(o);
 	}
-	public void addEntity(WallInterface o){
-		w.add(o);
-	}
+	
 	public void removeEntity(FriendlyInterface o){
 		f.remove(o);
 	}
@@ -60,16 +60,13 @@ public class Controller {
 	public void removeEntity(EnemyInterface o){
 		e.remove(o);
 	}
-	public void removeEntity(WallInterface o){
-		w.remove(o);
-	}
 	public LinkedList<FriendlyInterface> getFList(){
 		return f;
 	}
-	public LinkedList<WallInterface> getWList(){
-		return w;
-	}
 	public LinkedList<EnemyInterface> getEList(){
 		return e;
+	}
+	public LinkedList<PowerUps> getPList(){
+		return p;
 	}
 }

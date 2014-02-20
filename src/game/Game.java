@@ -1,255 +1,187 @@
 package game;
 
-import java.awt.BorderLayout;
-import java.awt.Canvas;
-import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.KeyEvent;
-import java.awt.image.BufferStrategy;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.LinkedList;
 
-import javax.swing.JFrame;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 
-public class Game extends Canvas implements Runnable{
-	
-	
-	
-	public static final int SIZE = 32;
-	private static final long serialVersionUID = 1L;
-	public static final int WIDTH=320;
-	public static final int HEIGHT=WIDTH/12*9;
-	public static final int SCALE=2;
-	public static final int GRIDW=WIDTH*SCALE/SIZE;
-	public static final int GRIDH=HEIGHT*SCALE/SIZE;
-	public static final String TITLE="Homuhomu booooom";
-	private JFrame frame;
-	private boolean running= false;
-	private Thread thread;
-	private BufferedImage image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB);
-	
-	public SpriteSheet ss1;
-	public SpriteSheet ss2;
-	public SpriteSheet ss3;
-	
-	public Music bgmPlayer;
-	
+public class Game {
 	public Player p;
 	public boolean playerIsAlive = true;
-	private Menu menu;
-	
 	public LinkedList<FriendlyInterface> fi;
 	public LinkedList<EnemyInterface> ei;
 	public LinkedList<WallInterface> wi;
 	public LinkedList<Fire> fireList;
-	
-	private enum STATE{
-		MENU,
-		GAME
-	};
-	
-	private STATE state = STATE.GAME;
-	
+	public LinkedList<PowerUps> powerUpList;
 	public Controller c; 
 	public Explode e;
-	private BufferedImage gameOver;
-	private BufferedImage background;
+	public int curLevel;
+	public LevelLoader loader;
+	public BufferedImage background;
+	public boolean playing;
+	public Music musicPlayer;
+	public int enemyCount;
+	public int lastStage=2;
+	public boolean musicOn;
+	public int duration = 4000;
 	
 	
-	public void init(){
-		menu = new Menu();
-		BufferedImage spriteSheetImage=null;
-		BufferedImage spriteSheetImage2=null;
-		BufferedImage brickImages = null;
-		this.requestFocus();
-		BufferedImageLoader loader = new BufferedImageLoader();
-		//bgmPlayer=new Music();
-		bgmPlayer=new Music();
-		try{
-			spriteSheetImage = loader.loadImage("/PuellaSet2.png");
-			spriteSheetImage2 = loader.loadImage("/bomb.png");
-			brickImages = loader.loadImage("/bricks.png");
-			background = loader.loadImage("/background.png");
-			gameOver = loader.loadImage("/gameOver.png");
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		this.addKeyListener(new Input(this));
-		ss1 = new SpriteSheet(spriteSheetImage);
-		ss2 = new SpriteSheet(spriteSheetImage2);
-		ss3 = new SpriteSheet(brickImages);
-		c= new Controller(this);
-		e= new Explode(this);
-		
-		c.addEntity(new Player(4,5,this));
-		p = (Player) c.getFList().getLast();
-		fi=c.getFList();
-		ei=c.getEList();
-		wi=c.getWList();
-		fireList = e.f;
-		//adding enemies
-		for(int i=0;i<GRIDW;i=i+3){
-			c.addEntity(new Enemy(i,0,this));
-			//c.addEntity(new Enemy(0,i,this));
-		}
-		//adding bricks
-		for(int i=4;i<GRIDW-4;i++){
-			c.addEntity(new Brick(i,3,this));
-			c.addEntity(new Brick(i,GRIDH-2,this));
-		}
-		
+	//handles ticking problems with respect to bomb explosion sound.
+	//"time stop" ability + mass bombing leads to serious lag
+	public int timePastSinceLastExplode=0;
+	public boolean explosionPlayed;
+	
+	
+	public long renderStageStart;
+	
+	private boolean timeStop;
+	private boolean stopTick;
+	
+	public TimedEvent event1; 
+	public TimedEvent event2;
+	
+	GameSystem sys;
+	BufferedImage cutIn;
+	
+	
+	public BufferedImageLoader l;
+	
+	public static enum GameState{
+		PLAY,
+		WAIT,
+		LOAD,
+	};
+	public static GameState gState = GameState.WAIT;
+	
+	public Game(GameSystem sys){
+		this.sys = sys;
+		musicPlayer = new Music();
+		playing = false;
+		loader = new LevelLoader(this);
+		c = new Controller();
+		e = new Explode(this);
+		curLevel=1;
+		musicOn=false;
+		event1 = new TimedEvent(this);
+		event2= new TimedEvent(this);
+		l = new BufferedImageLoader();
+		//car = l.loadImage("/car.gif");
+		cutIn = l.loadImage("/homuraCutIn.png");
 	}
-	
-	public static void main(String[] args){
-		Game g = new Game();
-		g.init();
-		g.start();
+
+	public void loadLevel(){
+		loader.load(this);
 	}
-	
-	
-	public Game(){
-		setMinimumSize(new Dimension(WIDTH*SCALE,HEIGHT*SCALE));
-		setMaximumSize(new Dimension(WIDTH*SCALE,HEIGHT*SCALE));
-		setPreferredSize(new Dimension(WIDTH*SCALE,HEIGHT*SCALE));
-		
-		frame=new JFrame(TITLE);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLayout(new BorderLayout());
-		
-		frame.add(this,BorderLayout.CENTER);
-		frame.pack();
-		frame.setResizable(false);
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
-	}
-	public void run() {
-		long lastTime = System.nanoTime();
-		final double amountOfTicks = 60.0;
-		double ns = 1000000000/amountOfTicks;
-		double delta = 0;
-		int updates = 0;
-		int frames = 0;
-		long timer = System.currentTimeMillis();
-		while(running){
-			long now = System.nanoTime();
-			delta = delta + (now - lastTime)/ns;
-			lastTime = now;
-			if(delta>1){
-				tick();
-				updates++;
-				delta--;
+	public void tick(){
+		if(isWaiting()){
+			loadLevel();
+			renderStageTitle(duration);
+			playing=true;
+		}
+		if(!isWaiting()){
+			if(!playerIsAlive){
+				musicPlayer.stop();
+				musicOn=false;
+				setWait();
+				GameSystem.state=GameSystem.STATE.MENU;
+				return;
 			}
-			render();
-			frames++;
-			if(System.currentTimeMillis()-timer > 1000){
-				timer += 1000;
-				System.out.println(updates + "ticks, frame" + frames);
-				System.out.println(p.curX+" "+p.curY);
-				updates=0;
-				frames=0;
+			if(enemyCount==0){
+				curLevel++;
+				setWait();
+			}
+			if(curLevel>lastStage){
+				musicPlayer.stop();
+				musicOn=false;
+				setWait();
+				curLevel=1;
+				GameSystem.state=GameSystem.STATE.MENU;
+				return;
 			}
 		}
-		stop();
-		
-	}
-	
-	private void tick(){
-		if(state==STATE.GAME){
+		if(Game.gState==Game.GameState.PLAY){
+			event1.tick();
+			event2.tick();
+			if(timeStop){
+				if(stopTick){
+					return;
+				}
+				p.tick();
+				return;
+			}
 			c.tick();
 			e.tick();
 		}
+		if(!musicOn){
+			musicPlayer.playBattleMusic();
+			musicOn=true;
+		}
+		if(explosionPlayed){
+			if(timePastSinceLastExplode<10){
+				timePastSinceLastExplode++;
+				
+			}
+			else{
+				musicPlayer.reloadExplosion();
+				explosionPlayed=false;
+				timePastSinceLastExplode=0;
+			}
+		}
+
 		
 	}
-	
-	private void render(){
-		BufferStrategy bs = this.getBufferStrategy();
-		if(bs==null){
-			createBufferStrategy(3);
-			return;
+	public void renderStageTitle(int duration){
+		loader.renderStart(duration);
+		gState=GameState.LOAD;
+	}
+	public void updatePlaying(){
+		if(!playerIsAlive){
+			playing=false;
 		}
-		Graphics g = bs.getDrawGraphics();
-		///////////////////////////
-		g.drawImage(image,0,0,getWidth(),getHeight(),this);
-		
-		if(state==STATE.GAME){
-			//g.drawImage(background, 100, 0, null);
+	}
+	public boolean isWaiting(){
+		if(gState==GameState.WAIT){
+			return true;
+		}
+		return false;
+	}
+	public void setWait(){
+		gState=GameState.WAIT;
+	}
+	public void render(Graphics g){
+	
+			if(Game.gState==Game.GameState.LOAD){
+				loader.render(g);
+			}
+			else if(Game.gState==Game.GameState.PLAY){
+			g.drawImage(background, 0, 0, null);
 			c.render(g);
 			e.render(g);
-			if(!playerIsAlive){
-				g.drawImage(gameOver,16,16,null);
-			}
-		}
-		else if(state==STATE.MENU){
-			Menu.render(g);
-		}
-		///////////////////////////
-		g.dispose();
-		bs.show();
-	}
-	
-	private synchronized void start(){
-		if(running)
-			return;
-		running = true;
-		thread = new Thread(this);
-		thread.start();
-	}
-	private synchronized void stop(){
-		if(!running)
-			return;
-		running = false;
-		try {
-			thread.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.exit(1);
-	}
-	public void keyPressed(KeyEvent e){
-		int key = e.getKeyCode();
-	
-			
-			if(key==KeyEvent.VK_RIGHT){
-				p.moveRight();
-			}
-			else if(key==KeyEvent.VK_LEFT){
-				p.moveLeft();
-			}
-			else if(key==KeyEvent.VK_UP){
-				p.moveUp();
-
-			}
-			else if(key==KeyEvent.VK_DOWN){
-				p.moveDown();	
+			event1.render(g);
+			event2.render(g);
 			}
 		
-			else if(key==KeyEvent.VK_SPACE){
-				c.addEntity(new Bomb(p.xGrid,p.yGrid,this));
-			}
-	
 	}
-	
-	public void keyReleased(KeyEvent e){
-		
-		int key = e.getKeyCode();
-		if(state==STATE.GAME){
-			if(key==KeyEvent.VK_RIGHT){
-				p.moveStop();
-			}
-			else if(key==KeyEvent.VK_LEFT){
-				p.moveStop();
-			}
-			else if(key==KeyEvent.VK_UP){
-				p.moveStop();
-			}
-			else if(key==KeyEvent.VK_DOWN){
-				p.moveStop();
-			}
-		}
+	public void timeStop(){
+		timeStop = true;
 	}
-	
-
-
+	public void stopTick(){
+		stopTick = true;
+	}
+	public void pauseMusic(){
+		musicPlayer.stop();
+	}
+	public void resumeMusic(){
+		musicPlayer.resume();
+	}
+	public void removeTimedEvents(){
+		resumeMusic();
+		stopTick = false;
+		timeStop = false;
+	}
 }

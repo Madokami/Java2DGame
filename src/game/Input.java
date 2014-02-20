@@ -4,18 +4,18 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class Input extends KeyAdapter{
-	Game game;
+	GameSystem sys;
 	
-	public Input(Game game){
-		this.game = game;
+	public Input(GameSystem sys){
+		this.sys = sys;
 	}
 	
 	public void keyPressed(KeyEvent e){
-		game.keyPressed(e);
+		sys.keyPressed(e);
 	}
 	
 	public void keyReleased(KeyEvent e){
-		game.keyReleased(e);
+		sys.keyReleased(e);
 	}
 	
 }

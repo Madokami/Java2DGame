@@ -4,12 +4,14 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
-public class Player extends Object implements FriendlyInterface{
-	
+public abstract class Player extends Object implements FriendlyInterface{
+	protected int ultCount;
 	public int bombStrength;
+	public int bombLength;
 	public Player(int x, int y, Game game) {
 		super(x, y, game);
 		bombStrength = 1;
+		super.speed=3;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -20,14 +22,23 @@ public class Player extends Object implements FriendlyInterface{
 		this.curY=super.curY;
 		
 		if(Physics.hitByAttack(this, game.fireList)){
+			playDeathSound();
 			game.c.removeEntity(this);
 			game.playerIsAlive=false;
 		}
 	
 		//changes the player's "playerImage" depending on movement orientation
 		Animate.animate(this);
-		
+	}
 	
+	public void useUltimate(){
+		
+	}
+	public boolean hasUltimate(){
+		if(ultCount>0){
+			return true;
+		}
+		return false;
 	}
 
 

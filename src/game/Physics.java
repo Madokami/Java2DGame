@@ -27,15 +27,21 @@ public class Physics {
 	}
 	public static boolean hitWall(Object f,LinkedList<WallInterface> wi){
 		for(int i=0;i<wi.size();i++){
-			if(f.getBounds(32, 32).intersects(wi.get(i).getBounds(32, 32)))
+			if(f.getBounds(31, 31).intersects(wi.get(i).getBounds(31, 31)))
 				return true;
 		}
 		return false;
 	}
 	public static boolean hitByAttack(Object f, LinkedList<Fire> fi){
 		for(int i=0;i<fi.size();i++){
-			if(f.getBounds(Game.SIZE, Game.SIZE).intersects(fi.get(i).getBounds(Game.SIZE, Game.SIZE)))
+			if(f.getBounds(GameSystem.SIZE-5, GameSystem.SIZE-5).intersects(fi.get(i).getBounds(GameSystem.SIZE-5, GameSystem.SIZE-5)))
 				return true;
+		}
+		return false;
+	}
+	public static boolean collide(Object x,Object y){
+		if(x.getBounds(GameSystem.SIZE-2, GameSystem.SIZE-2).intersects(y.getBounds(GameSystem.SIZE-2,GameSystem.SIZE-2))){
+			return true;
 		}
 		return false;
 	}

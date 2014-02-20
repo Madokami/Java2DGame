@@ -1,0 +1,7 @@
+this is a sample storyline.
+I know this currently looks bad. But it shows
+that you can press enter to read from a file
+so you can just type the plot into a .txt file.
+Also,
+press "space" to place bombs.
+press "p" to pause.

@@ -1,23 +1,36 @@
 package game;
 
-public class Fire extends Object{
+import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+
+public class Fire{
 int strength;
 long start;
+SpriteSheet ss;
+double x;
+double y;
+
+Game game;
+BufferedImage image;
 	public Fire(int x, int y, Game game,int Strength) {
-		super(x, y, game);
-		super.ss=super.game.ss3;
-		super.image=super.ss.grabImage(5, 15, 32, 32);
+		this.game = game;
+		this.x=(x-1)*GameSystem.SIZE;
+		this.y=(y-1)*GameSystem.SIZE;
+		ss=SpriteData.bricks;
+		image=ss.grabImage(5, 15, 32, 32);
 		this.strength = strength;
 		start = System.currentTimeMillis();
 	}
 	public void tick(){
-		super.tick();
-		if(System.currentTimeMillis()-start>1000){
-			super.game.e.removeFire(this);
+		if(System.currentTimeMillis()-start>500){
+			game.e.removeFire(this);
 		}
 	}
-	
-	
-	
-
+	public void render(Graphics g){
+		g.drawImage(image, (int)x,(int)y,null);
+	}
+	public Rectangle getBounds(int width, int height){
+		return new Rectangle((int)x,(int)y,width,height);
+	}
 }
