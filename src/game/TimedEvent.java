@@ -42,8 +42,8 @@ public class TimedEvent {
 		cutInLarge= loader.loadImage("/homuraCutInLarge.png");
 		gif = loader.loadGif("/image/particle.gif");
 		pinkStripes=loader.loadImage("/image/pinkStripesTransparent.png");
-		madokaCutIn=loader.loadImage("/image/madokaCutIn.png");
-		madokaCutInLarge=loader.loadImage("/image/madokaCutInLarge.png");
+		madokaCutIn=loader.loadImage("/image/madokaCutIn1.png");
+		madokaCutInLarge=loader.loadImage("/image/madokaCutInLarge1.png");
 		translate=1;
 		imageTranslate=0;
 		translateRight=true;
@@ -65,7 +65,7 @@ public class TimedEvent {
 		else if(eventName.equals("timeStopCutIn")){
 			game.stopTick();
 			translateImage(background);
-			translate = translate*1.13;
+			translate = translate*1.23;
 			if(translate>=100){
 				translate=100;
 			}
@@ -74,7 +74,7 @@ public class TimedEvent {
 		else if(eventName.equals("madokaCutIn")){
 			game.stopTick();
 			translateImage(background);
-			translate = translate*1.13;
+			translate = translate*1.23;
 			if(translate>=100){
 				translate=100;
 			}
@@ -95,19 +95,19 @@ public class TimedEvent {
 			//g.setColor(Color.WHITE);
 			//g.fillRect(0, 0, 700, 700);
 			//g.drawImage(homuraCutIn,(int) (100-translate),0,null);
-			g.drawImage(cutInLarge, (int) (-400+translate), -200, null);
+			g.drawImage(cutInLarge, (int) (-1*GameSystem.ABSWIDTH/2+translate), -1*GameSystem.ABSHEIGHT/3, null);
 			g.drawImage(background, (int) (-1*imageTranslate-20),0,null);
 			g.setColor(Color.BLACK);
 			g.setFont(new Font("arial",Font.ITALIC,32));
-			g.drawImage(homuraCutIn,(int) (100-translate),0,null);
+			g.drawImage(homuraCutIn,(int) (GameSystem.ABSWIDTH/3-translate),0,null);
 			g.drawString("TIME STOP", 50, 400);
 		}
 		else if(eventName.equals("madokaCutIn")){
-			g.drawImage(madokaCutInLarge, (int) (-400+translate), -200, null);
+			g.drawImage(madokaCutInLarge, (int) (-1*GameSystem.ABSWIDTH/2+translate+100), -1*GameSystem.ABSHEIGHT/3, null);
 			g.drawImage(pinkStripes, (int) (-1*imageTranslate-20),0,null);
 			g.setColor(Color.BLACK);
 			g.setFont(new Font("arial",Font.ITALIC,32));
-			g.drawImage(madokaCutIn,(int) (100-translate),0,null);
+			g.drawImage(madokaCutIn,(int) (GameSystem.ABSWIDTH/3-translate+100),0,null);
 			g.drawString("", 50, 400);
 		}
 	}
@@ -123,8 +123,8 @@ public class TimedEvent {
 		int width = image.getWidth();
 		int height = image.getHeight();
 		if(translateRight){
-			imageTranslate=imageTranslate+80;
-			if(width-imageTranslate>800){
+			imageTranslate=imageTranslate+80*2;
+			if(width-imageTranslate>1000){
 				return;
 			}
 			else{
@@ -132,7 +132,7 @@ public class TimedEvent {
 			}
 		}
 		else{
-			imageTranslate=imageTranslate-80;
+			imageTranslate=imageTranslate-80*2;
 			if(width-imageTranslate<width-100){
 				return;
 			}

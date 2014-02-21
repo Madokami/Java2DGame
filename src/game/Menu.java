@@ -24,6 +24,11 @@ public class Menu {
 	BufferedImage start;
 	BufferedImage menu;
 	BufferedImage help;
+	
+	private BufferedImage mdSelectOn,mdSelectOff,hoSelectOn,hoSelectOff,saSelectOn,saSelectOff,kySelectOn,kySelectOff,maSelectOn,maSelectOff;
+	private int cSelectIndex;
+	private int cSelectHeight,cSelectWidth;
+	
 	Game game;
 	MouseInput in;
 	Image gif;
@@ -65,6 +70,21 @@ public class Menu {
 		start = loader.loadImage("/homu.png");
 		menu = loader.loadImage("/menu.png");
 		help = loader.loadImage("/help.png");
+		
+		mdSelectOn = loader.loadImage("/image/mdSelectOn.png");
+		mdSelectOff = loader.loadImage("/image/mdSelectOff.png");
+		hoSelectOn = loader.loadImage("/image/hoSelectOn.png");
+		hoSelectOff = loader.loadImage("/image/hoSelectOff.png");
+		maSelectOn = loader.loadImage("/image/maSelectOn.png");
+		maSelectOff = loader.loadImage("/image/maSelectOff.png");
+		saSelectOn = loader.loadImage("/image/saSelectOn.png");
+		saSelectOff = loader.loadImage("/image/saSelectOff.png");
+		kySelectOn = loader.loadImage("/image/kySelectOn.png");
+		kySelectOff = loader.loadImage("/image/kySelectOff.png");
+		cSelectIndex=(GameSystem.ABSWIDTH-5*mdSelectOn.getWidth())/6;
+		cSelectWidth=mdSelectOn.getWidth();
+		cSelectHeight = mdSelectOn.getHeight();
+		
 		//example .gif loading
 		gif = loader.loadGif("/homura.gif");
 		musicPlayer = new Music();
@@ -117,14 +137,10 @@ public class Menu {
 		}
 		if(mState==MENUSTATE.CHOOSECHAR){
 			if(cSelected == CHARACTER.MADOKA){
-				g.setFont(new Font("arial",Font.ITALIC,25));
-				g.setColor(Color.RED);
-				g.drawString("Madoka", 150, 200);
+				g.drawImage(mdSelectOn,cSelectIndex+8,(GameSystem.ABSHEIGHT-cSelectHeight)/2,null);
 			}
 			else if(cSelected == CHARACTER.HOMURA){
-				g.setFont(new Font("arial",Font.ITALIC,25));
-				g.setColor(Color.RED);
-				g.drawString("Homura", 150, 250);
+				g.drawImage(hoSelectOn,2*cSelectIndex+cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)/2,null);
 			}
 		}
 	}
@@ -134,10 +150,14 @@ public class Menu {
 			return;
 		}
 		else if(mState == MENUSTATE.CHOOSECHAR){
-			g.setFont(new Font("arial",Font.ITALIC,25));
+			//draws a black background for now. Change it to something nicer :D
 			g.setColor(Color.BLACK);
-			g.drawString("Madoka", 150, 200);
-			g.drawString("Homura", 150, 250);
+			g.fillRect(0, 0, GameSystem.ABSWIDTH+8, GameSystem.ABSHEIGHT+10);
+			g.drawImage(mdSelectOff,cSelectIndex+8,(GameSystem.ABSHEIGHT-cSelectHeight)/2,null);
+			g.drawImage(hoSelectOff,2*cSelectIndex+cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)/2,null);
+			g.drawImage(saSelectOff,3*cSelectIndex+2*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)/2,null);
+			g.drawImage(maSelectOff,4*cSelectIndex+3*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)/2,null);
+			g.drawImage(kySelectOff,5*cSelectIndex+4*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)/2,null);
 		}
 	}
 	
@@ -157,10 +177,18 @@ public class Menu {
 					musicPlayer.playVoice("/sound/soundEffect1.wav");
 				}
 			}
-			//in choose character mode
-			else if(mState==MENUSTATE.CHOOSECHAR){
+		}
+		else if(key==KeyEvent.VK_RIGHT){
+			if(mState==MENUSTATE.CHOOSECHAR){
 				if(cSelected == CHARACTER.MADOKA){
 					cSelected=CHARACTER.HOMURA;
+				}
+			}
+		}
+		else if(key==KeyEvent.VK_LEFT){
+			if(mState==MENUSTATE.CHOOSECHAR){
+				if(cSelected == CHARACTER.HOMURA){
+					cSelected=CHARACTER.MADOKA;
 				}
 			}
 		}
@@ -169,11 +197,6 @@ public class Menu {
 				if(Menu.selected==Menu.SELECTED.ARCADE){
 					Menu.selected=Menu.SELECTED.STORY;
 					musicPlayer.playVoice("/sound/soundEffect1.wav");
-				}
-			}
-			else if(mState==MENUSTATE.CHOOSECHAR){
-				if(cSelected == CHARACTER.HOMURA){
-					cSelected=CHARACTER.MADOKA;
 				}
 			}
 		}

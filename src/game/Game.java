@@ -93,10 +93,8 @@ public class Game {
 		}
 		if(!isWaiting()){
 			if(!playerIsAlive){
-				musicPlayer.stopMusic();
-				musicOn=false;
 				setWait();
-				GameSystem.state=GameSystem.STATE.MENU;
+				goToMenu();
 				return;
 			}
 			if(enemyCount==0){
@@ -104,11 +102,9 @@ public class Game {
 				setWait();
 			}
 			if(curLevel>lastStage){
-				musicPlayer.stopMusic();
-				musicOn=false;
 				setWait();
 				curLevel=1;
-				GameSystem.state=GameSystem.STATE.MENU;
+				goToMenu();
 				return;
 			}
 		}
@@ -126,8 +122,7 @@ public class Game {
 			e.tick();
 		}
 		if(!musicOn){
-			musicPlayer.playBattleMusic();
-			musicOn=true;
+			playMusic();
 		}
 		if(explosionPlayed){
 			if(timePastSinceLastExplode<10){
@@ -167,7 +162,7 @@ public class Game {
 				loader.render(g);
 			}
 			else if(Game.gState==Game.GameState.PLAY){
-			g.drawImage(background, 0, 0, null);
+			g.drawImage(background, 0, 0,GameSystem.ABSWIDTH,GameSystem.ABSHEIGHT, null);
 			c.render(g);
 			e.render(g);
 			event1.render(g);
@@ -250,5 +245,18 @@ public class Game {
 			}
 		}
 		
+	}
+	public void goToMenu(){
+		stopMusic();
+		Menu.mState=Menu.MENUSTATE.MAIN;
+		GameSystem.state=GameSystem.STATE.MENU;
+	}
+	public void playMusic(){
+		musicPlayer.playBattleMusic();
+		musicOn=true;
+	}
+	public void stopMusic(){
+		musicPlayer.stopMusic();
+		musicOn=false;
 	}
 }

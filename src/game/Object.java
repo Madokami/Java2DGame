@@ -16,7 +16,7 @@ public class Object {
 		public int yGridNearest;
 		public int lastX,lastY,nextX,nextY; //used to implement moving into grids only
 		public double xTemp,yTemp;
-		public double speed=1;
+		public double speed=2;
 		public int hp=1;
 		public int damage;
 		public SpriteSheet ss;
@@ -41,7 +41,7 @@ public class Object {
 		Random rand;
 		
 		// MS is how fast the sprite changes pose
-		public final double MS = 0.1;
+		public final double MS = 0.2;
 		public double velX = 0;
 		public double velY = 0;
 		public Game game;

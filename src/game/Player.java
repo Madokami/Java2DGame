@@ -15,7 +15,7 @@ public abstract class Player extends Object implements FriendlyInterface{
 	public Player(int x, int y, Game game) {
 		super(x, y, game);
 		bombStrength = 1;
-		super.speed=3;
+		super.speed=6;
 		// TODO Auto-generated constructor stub
 	}
 

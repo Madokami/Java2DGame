@@ -22,7 +22,7 @@ public class GameSystem extends Canvas implements Runnable{
 	
 	public static final int SIZE = 32;
 	private static final long serialVersionUID = 1L;
-	public static final int WIDTH=320;
+	public static final int WIDTH=384;
 	public static final int HEIGHT=WIDTH*9/12;
 	public static final int SCALE=2;
 	public static final int ABSWIDTH=WIDTH*SCALE;
@@ -94,7 +94,7 @@ public class GameSystem extends Canvas implements Runnable{
 	}
 	public void run() {
 		long lastTime = System.nanoTime();
-		final double amountOfTicks = 60.0;
+		final double amountOfTicks = 30.0;
 		double ns = 1000000000/amountOfTicks;
 		double delta = 0;
 		int updates = 0;
