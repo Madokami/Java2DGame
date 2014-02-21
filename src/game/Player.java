@@ -1,5 +1,8 @@
 package game;
 
+
+import game.Object.ORIENTATION;
+
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -8,6 +11,7 @@ public abstract class Player extends Object implements FriendlyInterface{
 	protected int ultCount;
 	public int bombStrength;
 	public int bombLength;
+
 	public Player(int x, int y, Game game) {
 		super(x, y, game);
 		bombStrength = 1;
@@ -40,6 +44,7 @@ public abstract class Player extends Object implements FriendlyInterface{
 		}
 		return false;
 	}
+
 
 
 	

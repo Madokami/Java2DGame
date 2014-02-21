@@ -1,8 +1,11 @@
 package game;
 
+import game.GameSystem.STATE;
+
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 
@@ -85,7 +88,7 @@ public class Game {
 		}
 		if(!isWaiting()){
 			if(!playerIsAlive){
-				musicPlayer.stop();
+				musicPlayer.stopMusic();
 				musicOn=false;
 				setWait();
 				GameSystem.state=GameSystem.STATE.MENU;
@@ -96,7 +99,7 @@ public class Game {
 				setWait();
 			}
 			if(curLevel>lastStage){
-				musicPlayer.stop();
+				musicPlayer.stopMusic();
 				musicOn=false;
 				setWait();
 				curLevel=1;
@@ -174,14 +177,73 @@ public class Game {
 		stopTick = true;
 	}
 	public void pauseMusic(){
-		musicPlayer.stop();
+		musicPlayer.stopMusic();
 	}
 	public void resumeMusic(){
-		musicPlayer.resume();
+		musicPlayer.resumeMusic();
 	}
 	public void removeTimedEvents(){
 		resumeMusic();
 		stopTick = false;
 		timeStop = false;
+	}
+
+	public void keyPressed(int key) {
+		if(key==KeyEvent.VK_P){
+			GameSystem.state=STATE.PAUSE;
+		}
+		if(gState==GameState.PLAY){
+			if(key==KeyEvent.VK_C){
+				if(p.hasUltimate()){
+					p.useUltimate();
+				}
+			}
+			else if(key==KeyEvent.VK_Z){
+				c.addEntity(new Bomb(p.xGridNearest,p.yGridNearest,this));
+				
+			}
+		}
+		if(!p.finishingMove){
+			if(key==KeyEvent.VK_RIGHT){
+				p.moveRight();
+			}
+			else if(key==KeyEvent.VK_LEFT){
+				p.moveLeft();
+			}
+			else if(key==KeyEvent.VK_UP){
+				p.moveUp();
+			}
+			else if(key==KeyEvent.VK_DOWN){
+				p.moveDown();	
+			}
+			
+		}
+		
+	}
+
+	public void keyReleased(int key) {
+		if(!p.finishingMove){
+			if(key==KeyEvent.VK_RIGHT){				
+				p.moveStop();
+				//game.p.movable=false;
+				p.moveToNext(p.nextX,p.nextY);
+			}
+			else if(key==KeyEvent.VK_LEFT){
+				p.moveStop();
+				//game.p.movable=false;
+				p.moveToNext(p.nextX,p.nextY);
+			}
+			else if(key==KeyEvent.VK_UP){
+				p.moveStop();
+				//game.p.movable=false;
+				p.moveToNext(p.nextX,p.nextY);
+			}
+			else if(key==KeyEvent.VK_DOWN){
+				p.moveStop();
+				//game.p.movable=false;
+				p.moveToNext(p.nextX,p.nextY);
+			}
+		}
+		
 	}
 }

@@ -19,9 +19,10 @@ public class LevelLoader {
 	public LevelLoader(Game game){
 		this.game = game;
 		loader = new BufferedImageLoader();
-		path = getClass().getResource("/witch1.gif").getFile();
-		path = URLDecoder.decode(path);
-		gif = Toolkit.getDefaultToolkit().createImage(path);
+		//path = getClass().getResource("/witch1.gif").getFile();
+		//path = URLDecoder.decode(path);
+		//gif = Toolkit.getDefaultToolkit().createImage(path);
+		gif=loader.loadGif("/witch1.gif");
 	}
 	public synchronized void load(Game game){
 		int stage = game.curLevel;

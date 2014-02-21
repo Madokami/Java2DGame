@@ -43,21 +43,18 @@ public class Object {
 		public double velX = 0;
 		public double velY = 0;
 		public Game game;
-		
 		public String direction;
 		public double i=0;
-		public Music musicPlayer;
-		
 		public boolean blocked;
 		
-		public static enum ORIENTATION{
+		public enum ORIENTATION{
 			DOWN,
 			UP,
 			LEFT,
 			RIGHT,
 			STAND
 		};
-		public static ORIENTATION orientation = ORIENTATION.DOWN;
+		public ORIENTATION orientation = ORIENTATION.DOWN;
 		
 		
 		public Object(int x, int y,Game game){
@@ -74,15 +71,35 @@ public class Object {
 			curY=this.y;
 			xTemp=this.x;
 			yTemp=this.y;
-			musicPlayer = new Music();
-			this.direction = "stand";
+			direction = "stand";
 			rand = new Random();
 		}
-		public synchronized void tick(){
+		public void tick(){
 			//updates position of char
-			
-			
 			//maps the position to the closest "grid"
+			checkIfBlocked();
+			if(blocked){
+				return;
+			}
+			else{
+				if(finishingMove){
+					if(atEdge){
+						finishingMove=false;
+					}
+					else{
+						finishMove();
+					}
+				}
+					x+=velX;
+					y+=velY;
+					updatePosition();
+				
+			}
+			//creates an artificial border around the edge of the screen to prevent moving outside.
+			checkIfAtEdge();
+		}
+		
+		private void checkIfBlocked() {
 			if(orientation==ORIENTATION.DOWN){
 				nextX=lastX;
 				nextY=lastY+1;
@@ -114,26 +131,9 @@ public class Object {
 				
 			
 			}
-			if(blocked){
-				return;
-				/*
-				x=curX;
-				y=curY;
-				nextX=lastX;
-				nextY=lastY;
-				*/
-			}
-			else{
-				if(finishingMove){
-					finishMove();
-				}
-					x+=velX;
-					y+=velY;
-					updatePosition();
-				
-			}
-			//updatePosition();
-			//creates an artificial border around the edge of the screen to prevent moving outside.
+			
+		}
+		private void checkIfAtEdge() {
 			if(x<=0){
 				x=1;
 				atEdge=true;
@@ -153,8 +153,8 @@ public class Object {
 			else{
 				atEdge=false;
 			}
+			
 		}
-		
 		public double getX(){
 			return x;
 		}

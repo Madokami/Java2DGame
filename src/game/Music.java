@@ -9,6 +9,7 @@ public class Music{
 
 	AudioInputStream in;
     Clip music;
+    Clip voice;
     Clip effect;
     Clip explosion;
     AudioLoader loader;
@@ -28,7 +29,7 @@ public class Music{
 	}
 	public void playBgm(){
 		music=loader.newClip("/sound/bgm1.wav");
-		music.start();
+		music.loop(music.LOOP_CONTINUOUSLY);
 	}
 	public void playExplosion(){
 		explosion.start();
@@ -39,10 +40,10 @@ public class Music{
 		music = loader.newClip("/sound/Delusio_summa.wav");
 		music.start();
 	}
-	public void stop(){
+	public void stopMusic(){
 		music.stop();
 	}
-	public void resume(){
+	public void resumeMusic(){
 		music.start();
 	}
 	public void pause(){
@@ -59,7 +60,11 @@ public class Music{
 	}
 	public void playMusic(String url){
 		music = loader.newClip(url);
-		music.start();
+		music.loop(music.LOOP_CONTINUOUSLY);
+	}
+	public void playVoice(String url){
+		voice = loader.newClip(url);
+		voice.start();
 	}
 	public void reloadExplosion(){
 		explosion = loader.newClip("/sound/expl1.wav");

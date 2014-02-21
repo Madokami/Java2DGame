@@ -23,14 +23,14 @@ public class Homura extends Player{
 		int x = rand.nextInt(3);
 		String url = "/sound/hoDeath";
 		url=url.concat(Integer.toString(x)).concat(".wav");
-		musicPlayer.playMusic(url);
+		game.musicPlayer.playVoice(url);
 	}
 	public void playUltimateSound(){
 		int x = rand.nextInt(3);
 		String url = "/sound/hoUlt";
 		url=url.concat(Integer.toString(x)).concat(".wav");
 		System.out.println(url);
-		musicPlayer.playMusic(url);
+		game.musicPlayer.playVoice(url);
 	}
 	
 }

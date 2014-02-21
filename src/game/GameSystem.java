@@ -129,17 +129,11 @@ public class GameSystem extends Canvas implements Runnable{
 		if(state==STATE.GAME){
 			game.tick();
 		}
-		if(musicOn){
-			if(state!=STATE.MENU&&state!=STATE.STORY){
-				bgmPlayer.stop();
-				musicOn=false;
-			}
+		else if(state==STATE.MENU){
+			menu.tick();
 		}
-		else if(state==STATE.MENU||state==STATE.STORY){
-			if(!musicOn){
-				bgmPlayer.playBgm();
-				musicOn=true;
-			}
+		else if(state==STATE.STORY){
+			story.tick();
 		}
 	}
 	
@@ -196,87 +190,15 @@ public class GameSystem extends Canvas implements Runnable{
 	public void keyPressed(KeyEvent e){
 		int key = e.getKeyCode();
 		if(state==STATE.MENU){
-			if(key==KeyEvent.VK_X){
-				Menu.mState=Menu.MENUSTATE.MAIN;
-			}
-			else if(key==KeyEvent.VK_DOWN){
-				if(Menu.selected==Menu.SELECTED.STORY){
-					Menu.selected=Menu.SELECTED.ARCADE;
-				}
-			}
-			else if(key==KeyEvent.VK_UP){
-				if(Menu.selected==Menu.SELECTED.ARCADE){
-					Menu.selected=Menu.SELECTED.STORY;
-				}
-			}
-			else if(key==KeyEvent.VK_Z){
-				if(Menu.selected==Menu.SELECTED.STORY){
-					state=STATE.STORY;
-				}
-				else if(Menu.selected==Menu.SELECTED.ARCADE){
-					Menu.mState=Menu.MENUSTATE.CHOOSECHAR;
-				}
-			}
+			menu.keyPressed(key);
 		}
+		//in story state
 		else if(state==STATE.STORY){
-			if(key==KeyEvent.VK_ENTER||key==KeyEvent.VK_Z){
-				if(story.lineNum>4){
-					story.lineNum=1;
-				}
-				int x = story.lineNum;
-				try{
-				if(x==1){
-					story.line1=story.br.readLine();
-				}
-				else if(x==2){
-					story.line2=story.br.readLine();
-				}
-				else if(x==3){
-					story.line3=story.br.readLine();
-				}
-				else if(x==4){
-					story.line4=story.br.readLine();
-				}
-				}catch(Exception abc){
-					System.out.println("can't read from line");
-				}
-				story.lineNum++;
-				
-			}
+			story.keyPressed(e);
 		}
 		//in game state
 		else if(state==STATE.GAME){
-			if(key==KeyEvent.VK_P){
-				state=STATE.PAUSE;
-			}
-			if(game.gState==GameState.PLAY){
-				if(key==KeyEvent.VK_T){
-					if(game.p.hasUltimate()){
-						game.p.useUltimate();
-					}
-				}
-				else if(key==KeyEvent.VK_SPACE){
-					game.c.addEntity(new Bomb(game.p.xGridNearest,game.p.yGridNearest,game));
-					
-				}
-			}
-			if(!game.p.finishingMove){
-				if(key==KeyEvent.VK_RIGHT){
-					game.p.moveRight();
-				}
-				else if(key==KeyEvent.VK_LEFT){
-					game.p.moveLeft();
-				}
-				else if(key==KeyEvent.VK_UP){
-					game.p.moveUp();
-
-				}
-				else if(key==KeyEvent.VK_DOWN){
-					game.p.moveDown();	
-				}
-				
-			}
-			
+			game.keyPressed(key);
 		}
 		else if(state==STATE.PAUSE){
 			if(key==KeyEvent.VK_P){
@@ -289,28 +211,7 @@ public class GameSystem extends Canvas implements Runnable{
 	public void keyReleased(KeyEvent e){
 		int key = e.getKeyCode();
 		if(state==STATE.GAME){
-			if(!game.p.finishingMove){
-				if(key==KeyEvent.VK_RIGHT){				
-					game.p.moveStop();
-					//game.p.movable=false;
-					game.p.moveToNext(game.p.nextX,game.p.nextY);
-				}
-				else if(key==KeyEvent.VK_LEFT){
-					game.p.moveStop();
-					//game.p.movable=false;
-					game.p.moveToNext(game.p.nextX,game.p.nextY);
-				}
-				else if(key==KeyEvent.VK_UP){
-					game.p.moveStop();
-					//game.p.movable=false;
-					game.p.moveToNext(game.p.nextX,game.p.nextY);
-				}
-				else if(key==KeyEvent.VK_DOWN){
-					game.p.moveStop();
-					//game.p.movable=false;
-					game.p.moveToNext(game.p.nextX,game.p.nextY);
-				}
-			}
+			game.keyReleased(key);
 		}
 	}
 }

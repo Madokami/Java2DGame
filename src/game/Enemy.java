@@ -1,11 +1,12 @@
 package game;
 
+import game.Object.ORIENTATION;
+
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 public class Enemy extends Object implements EnemyInterface{
 
-	
 	public Enemy(int x,int y, Game game){
 		super(x,y,game);
 		//image = ss.grabImage(10, 1, 32, 32);

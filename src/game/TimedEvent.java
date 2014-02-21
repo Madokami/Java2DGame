@@ -92,7 +92,6 @@ public class TimedEvent {
 			g.setFont(new Font("arial",Font.ITALIC,32));
 			g.drawImage(homuraCutIn,(int) (100-translate),0,null);
 			g.drawString("TIME STOP", 50, 400);
-			g.drawImage(gif,0,0,null);
 		}
 	}
 	

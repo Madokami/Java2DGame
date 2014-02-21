@@ -1,7 +1,9 @@
-this is a sample storyline.
-I know this currently looks bad. But it shows
-that you can press enter to read from a file
-so you can just type the plot into a .txt file.
-Also,
-press "space" to place bombs.
-press "p" to pause.
+I have commented the Menu class so it
+should be readible now.
+I have changed user inputs.
+Menu control is now done by the keyboard
+Also, "z" confirms in menu
+"x" cancels in menu
+"z" places bombs in game
+"p" pauses
+"c" activate special ability

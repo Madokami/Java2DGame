@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
@@ -85,6 +86,38 @@ public class Story {
 		
 		//g2d.draw(helpButton);
 		//g2d.draw(quitButton);
+		
+	}
+	public void keyPressed(KeyEvent e) {
+		int key = e.getKeyCode();
+		if(key==KeyEvent.VK_ENTER||key==KeyEvent.VK_Z){
+			if(lineNum>4){
+				lineNum=1;
+			}
+			int x = lineNum;
+			try{
+			if(x==1){
+				line1=br.readLine();
+			}
+			else if(x==2){
+				line2=br.readLine();
+			}
+			else if(x==3){
+				line3=br.readLine();
+			}
+			else if(x==4){
+				line4=br.readLine();
+			}
+			}catch(Exception abc){
+				System.out.println("can't read from line");
+			}
+			lineNum++;
+			
+		}
+		
+	}
+	public void tick() {
+		// TODO Auto-generated method stub
 		
 	}
 }
