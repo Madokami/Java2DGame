@@ -3,7 +3,8 @@ package game;
 public class Homura extends Player{
 	public Homura(int x, int y, Game game) {
 		super(x, y, game);
-		bombStrength = 3;
+		hp=3;
+		bombStrength = 1;
 		bombLength = 3;
 		ssX=1;
 		ssY=1;
@@ -31,6 +32,9 @@ public class Homura extends Player{
 		url=url.concat(Integer.toString(x)).concat(".wav");
 		System.out.println(url);
 		game.musicPlayer.playVoice(url);
+	}
+	public void playDamagedSound(){
+		
 	}
 	
 }

@@ -19,12 +19,12 @@ public class Bomb extends Object implements FriendlyInterface{
 	}
 	public void tick(){
 		super.tick();
-		if(Physics.hitByAttack(this, game.fireList)){
-			super.game.e.createExplosion((int)super.xGridNearest, (int)super.yGridNearest, length, this.strength);
+		if(Physics.hitByAttack(this, game.fireList)!=-1){
+			super.game.e.createExplosion((int)super.xGridNearest, (int)super.yGridNearest, length, strength);
 			super.game.c.removeEntity(this);
 		}
 		if(System.currentTimeMillis()-start>2000){
-			super.game.e.createExplosion((int)super.xGridNearest, (int)super.yGridNearest, length, this.strength);
+			super.game.e.createExplosion((int)super.xGridNearest, (int)super.yGridNearest, length, strength);
 			super.game.c.removeEntity(this);
 		}
 		

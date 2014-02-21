@@ -24,8 +24,13 @@ public abstract class Player extends Object implements FriendlyInterface{
 		super.tick();
 		this.curX=super.curX;
 		this.curY=super.curY;
-		
-		if(Physics.hitByAttack(this, game.fireList)){
+		damage=Physics.hitByAttack(this, game.fireList);
+		if(damage!=-1){
+			hp=hp-damage;
+			System.out.println("you've taken "+damage+" damage");
+			playDamagedSound();
+		}
+		if(hp<=0){
 			playDeathSound();
 			game.c.removeEntity(this);
 			game.playerIsAlive=false;
@@ -35,6 +40,14 @@ public abstract class Player extends Object implements FriendlyInterface{
 		Animate.animate(this);
 	}
 	
+
+	public void playDamagedSound() {
+		
+	}
+	public void playDeathSound(){
+		
+	}
+
 	public void useUltimate(){
 		
 	}

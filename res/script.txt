@@ -3,7 +3,10 @@ should be readible now.
 I have changed user inputs.
 Menu control is now done by the keyboard
 Also, "z" confirms in menu
+Madoka:
 "x" cancels in menu
 "z" places bombs in game
 "p" pauses
+STOPSPEAKING
 "c" activate special ability
+END

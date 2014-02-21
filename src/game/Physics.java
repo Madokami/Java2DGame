@@ -32,12 +32,13 @@ public class Physics {
 		}
 		return false;
 	}
-	public static boolean hitByAttack(Object f, LinkedList<Fire> fi){
+	public static int hitByAttack(Object f, LinkedList<Fire> fi){
 		for(int i=0;i<fi.size();i++){
 			if(f.getBounds(GameSystem.SIZE-5, GameSystem.SIZE-5).intersects(fi.get(i).getBounds(GameSystem.SIZE-5, GameSystem.SIZE-5)))
-				return true;
+				//return fi.get(i).game.p.bombStrength;
+				return fi.get(i).getStrength();
 		}
-		return false;
+		return -1;
 	}
 	public static boolean collide(Object x,Object y){
 		if(x.getBounds(GameSystem.SIZE-2, GameSystem.SIZE-2).intersects(y.getBounds(GameSystem.SIZE-2,GameSystem.SIZE-2))){

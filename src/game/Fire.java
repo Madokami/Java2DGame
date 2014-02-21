@@ -19,7 +19,7 @@ BufferedImage image;
 		this.y=(y-1)*GameSystem.SIZE;
 		ss=SpriteData.bricks;
 		image=ss.grabImage(5, 15, 32, 32);
-		this.strength = strength;
+		this.strength = Strength;
 		start = System.currentTimeMillis();
 	}
 	public void tick(){
@@ -32,5 +32,8 @@ BufferedImage image;
 	}
 	public Rectangle getBounds(int width, int height){
 		return new Rectangle((int)x,(int)y,width,height);
+	}
+	public int getStrength(){
+		return strength;
 	}
 }

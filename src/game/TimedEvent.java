@@ -22,9 +22,10 @@ public class TimedEvent {
 	private BufferedImage homuraCutInBg;
 	private BufferedImage background;
 	private BufferedImage cutInLarge;
+	private BufferedImage madokaCutIn;
+	private BufferedImage madokaCutInLarge;
+	private BufferedImage pinkStripes;
 	private Image gif;
-	private String path;
-	private String url;
 	
 	private double translate;
 	private double imageTranslate;
@@ -39,9 +40,10 @@ public class TimedEvent {
 		homuraCutInBg = loader.loadImage("/homuraCutInBg.png");
 		background = loader.loadImage("/blueStripesTrans.png");
 		cutInLarge= loader.loadImage("/homuraCutInLarge.png");
-		path = getClass().getResource("/witch1.gif").getFile();
-		path = URLDecoder.decode(path);
-		gif = Toolkit.getDefaultToolkit().createImage(path);
+		gif = loader.loadGif("/image/particle.gif");
+		pinkStripes=loader.loadImage("/image/pinkStripesTransparent.png");
+		madokaCutIn=loader.loadImage("/image/madokaCutIn.png");
+		madokaCutInLarge=loader.loadImage("/image/madokaCutInLarge.png");
 		translate=1;
 		imageTranslate=0;
 		translateRight=true;
@@ -69,6 +71,14 @@ public class TimedEvent {
 			}
 			//game.pauseMusic();
 		}
+		else if(eventName.equals("madokaCutIn")){
+			game.stopTick();
+			translateImage(background);
+			translate = translate*1.13;
+			if(translate>=100){
+				translate=100;
+			}
+		}
 		
 	}
 	
@@ -85,13 +95,20 @@ public class TimedEvent {
 			//g.setColor(Color.WHITE);
 			//g.fillRect(0, 0, 700, 700);
 			//g.drawImage(homuraCutIn,(int) (100-translate),0,null);
-			
 			g.drawImage(cutInLarge, (int) (-400+translate), -200, null);
 			g.drawImage(background, (int) (-1*imageTranslate-20),0,null);
 			g.setColor(Color.BLACK);
 			g.setFont(new Font("arial",Font.ITALIC,32));
 			g.drawImage(homuraCutIn,(int) (100-translate),0,null);
 			g.drawString("TIME STOP", 50, 400);
+		}
+		else if(eventName.equals("madokaCutIn")){
+			g.drawImage(madokaCutInLarge, (int) (-400+translate), -200, null);
+			g.drawImage(pinkStripes, (int) (-1*imageTranslate-20),0,null);
+			g.setColor(Color.BLACK);
+			g.setFont(new Font("arial",Font.ITALIC,32));
+			g.drawImage(madokaCutIn,(int) (100-translate),0,null);
+			g.drawString("", 50, 400);
 		}
 	}
 	

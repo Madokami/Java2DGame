@@ -6,7 +6,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 public class Enemy extends Object implements EnemyInterface{
-
+	
 	public Enemy(int x,int y, Game game){
 		super(x,y,game);
 		//image = ss.grabImage(10, 1, 32, 32);
@@ -20,7 +20,11 @@ public class Enemy extends Object implements EnemyInterface{
 		super.tick();
 		this.curX=super.curX;
 		this.curY=super.curY;
-		if(Physics.hitByAttack(this, game.fireList)){
+		damage=Physics.hitByAttack(this, game.fireList);
+		if(damage!=-1){
+			hp=hp-damage;
+		}
+		if(hp<=0){
 			game.enemyCount--;
 			game.c.removeEntity(this);
 		}

@@ -8,7 +8,7 @@ public class Brick extends Object implements WallInterface{
 		super.image=ss.grabImage(1,1,32,32);
 	}
 	public void tick(){
-		if(Physics.hitByAttack(this, game.fireList)){
+		if(Physics.hitByAttack(this, game.fireList)!=-1){
 			game.e.removeEntity(this);
 			game.c.addEntity(new SpeedUp(xGridNearest,yGridNearest,game));
 		}

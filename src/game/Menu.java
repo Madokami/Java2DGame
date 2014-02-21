@@ -48,9 +48,15 @@ public class Menu {
 		ARCADE,
 	};
 	
+	public static enum CHARACTER{
+		MADOKA,
+		HOMURA
+	};
+	
 	//Initializes the two states.
 	public static SELECTED selected = SELECTED.STORY;
 	public static MENUSTATE mState = MENUSTATE.MAIN;
+	public static CHARACTER cSelected = CHARACTER.MADOKA;
 	
 	public Menu(){
 		loader = new BufferedImageLoader();
@@ -92,19 +98,34 @@ public class Menu {
 		g.drawString("Story", playButton.x-5, playButton.y+47);
 		g.drawString("Arcade", helpButton.x-2, helpButton.y+47);
 		g.drawString("Quit", quitButton.x, quitButton.y+43);
-		renderSelected(g);
+		//make sure renderSelected is under renderCurrentState or else you won't see the changes
 		renderCurrentState(g);
+		renderSelected(g);
 	}
 	
 	//this method simply filters what to draw out based on the current Menu.SELECTED state
 	public void renderSelected(Graphics g){
-		if(selected==SELECTED.STORY){
-			g.setColor(Color.RED);
-			g.drawString("Story", playButton.x-5, playButton.y+47);
+		if(mState==MENUSTATE.MAIN){
+			if(selected==SELECTED.STORY){
+				g.setColor(Color.RED);
+				g.drawString("Story", playButton.x-5, playButton.y+47);
+			}
+			else if(selected==SELECTED.ARCADE){
+				g.setColor(Color.RED);
+				g.drawString("Arcade", helpButton.x-2, helpButton.y+47);
+			}
 		}
-		else if(selected==SELECTED.ARCADE){
-			g.setColor(Color.RED);
-			g.drawString("Arcade", helpButton.x-2, helpButton.y+47);
+		if(mState==MENUSTATE.CHOOSECHAR){
+			if(cSelected == CHARACTER.MADOKA){
+				g.setFont(new Font("arial",Font.ITALIC,25));
+				g.setColor(Color.RED);
+				g.drawString("Madoka", 150, 200);
+			}
+			else if(cSelected == CHARACTER.HOMURA){
+				g.setFont(new Font("arial",Font.ITALIC,25));
+				g.setColor(Color.RED);
+				g.drawString("Homura", 150, 250);
+			}
 		}
 	}
 	//change what is render based on the current MENUSTATE
@@ -113,7 +134,10 @@ public class Menu {
 			return;
 		}
 		else if(mState == MENUSTATE.CHOOSECHAR){
-			g.fill3DRect(160, 200, 200, 50, true);
+			g.setFont(new Font("arial",Font.ITALIC,25));
+			g.setColor(Color.BLACK);
+			g.drawString("Madoka", 150, 200);
+			g.drawString("Homura", 150, 250);
 		}
 	}
 	
@@ -125,41 +149,74 @@ public class Menu {
 		//when "down" is pressed
 		else if(key==KeyEvent.VK_DOWN){
 			//if the current selected mode is story
-			if(Menu.selected==Menu.SELECTED.STORY){
-				//change the current selected mode to arcade
-				Menu.selected=Menu.SELECTED.ARCADE;
-				//hopefully find a better sound effect. this one is too long
-				musicPlayer.playVoice("/sound/soundEffect1.wav");
+			if(mState==MENUSTATE.MAIN){
+				if(Menu.selected==Menu.SELECTED.STORY){
+					//change the current selected mode to arcade
+					Menu.selected=Menu.SELECTED.ARCADE;
+					//hopefully find a better sound effect. this one is too long
+					musicPlayer.playVoice("/sound/soundEffect1.wav");
+				}
+			}
+			//in choose character mode
+			else if(mState==MENUSTATE.CHOOSECHAR){
+				if(cSelected == CHARACTER.MADOKA){
+					cSelected=CHARACTER.HOMURA;
+				}
 			}
 		}
 		else if(key==KeyEvent.VK_UP){
-			if(Menu.selected==Menu.SELECTED.ARCADE){
-				Menu.selected=Menu.SELECTED.STORY;
-				musicPlayer.playVoice("/sound/soundEffect1.wav");
+			if(mState==MENUSTATE.MAIN){
+				if(Menu.selected==Menu.SELECTED.ARCADE){
+					Menu.selected=Menu.SELECTED.STORY;
+					musicPlayer.playVoice("/sound/soundEffect1.wav");
+				}
+			}
+			else if(mState==MENUSTATE.CHOOSECHAR){
+				if(cSelected == CHARACTER.HOMURA){
+					cSelected=CHARACTER.MADOKA;
+				}
 			}
 		}
 		//user has pressed "z"
 		else if(key==KeyEvent.VK_Z){
-			//if currently story mode is selected
-			if(Menu.selected==Menu.SELECTED.STORY){
-				//first you have to stop music from playing
-				turnOffBgm();
-				//then change GameSystem's state to story mode
-				GameSystem.state=STATE.STORY;
+			if(mState==MENUSTATE.MAIN){
+				//if currently story mode is selected
+				if(Menu.selected==Menu.SELECTED.STORY){
+					toStoryMode();
+				}
+				//similarly if arcade mode is selected
+				else if(Menu.selected==Menu.SELECTED.ARCADE){
+					//change Menu state to CHOOSECHAR state.
+					Menu.mState=Menu.MENUSTATE.CHOOSECHAR;
+				}
 			}
-			//similarly if arcade mode is selected
-			else if(Menu.selected==Menu.SELECTED.ARCADE){
-				//change Menu state to CHOOSECHAR state.
-				Menu.mState=Menu.MENUSTATE.CHOOSECHAR;
+			else if(mState==MENUSTATE.CHOOSECHAR){
+				if(cSelected == CHARACTER.MADOKA){
+					Game.cChosen=Game.CHARACTER.MADOKA;
+				}
+				else if(cSelected == CHARACTER.HOMURA){
+					Game.cChosen=Game.CHARACTER.HOMURA;
+				}
+				toGameMode();
 			}
 		}
 		
 	}
+	private void toStoryMode() {
+		turnOffBgm();
+		GameSystem.state=STATE.STORY;
+	}
+
+	private void toGameMode() {
+		turnOffBgm();
+		GameSystem.state=STATE.GAME;
+	}
+
 	//2 ways to play bgm
 	//first one plays the default bgm
 	public void turnOnBgm(){
 		musicOn=true;
-		musicPlayer.playBgm();
+		musicPlayer.playMusic("/sound/ariaOnG.wav");
 	}
 	//this will play the .wav file idicated given the url
 	public void turnOnBgm(String url){

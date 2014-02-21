@@ -51,6 +51,10 @@ public class Game {
 	GameSystem sys;
 	BufferedImage cutIn;
 	
+	public static enum CHARACTER{
+		MADOKA,
+		HOMURA,
+	};
 	
 	public BufferedImageLoader l;
 	
@@ -60,6 +64,7 @@ public class Game {
 		LOAD,
 	};
 	public static GameState gState = GameState.WAIT;
+	public static CHARACTER cChosen = CHARACTER.HOMURA;
 	
 	public Game(GameSystem sys){
 		this.sys = sys;

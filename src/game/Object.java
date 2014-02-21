@@ -17,6 +17,8 @@ public class Object {
 		public int lastX,lastY,nextX,nextY; //used to implement moving into grids only
 		public double xTemp,yTemp;
 		public double speed=1;
+		public int hp=1;
+		public int damage;
 		public SpriteSheet ss;
 		public BufferedImage image;
 		//stores the height and width of the character sprite

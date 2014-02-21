@@ -2,6 +2,7 @@ package game;
 
 
 
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -24,30 +25,47 @@ public class Story {
 	public static Rectangle helpButton = new Rectangle(GameSystem.WIDTH/2 + 120, 250,100,50);
 	public static Rectangle quitButton = new Rectangle(GameSystem.WIDTH/2 + 120, 350,100,50);
 	BufferedReader br;
-	int w = 200;
+	int w = 320;
 	int h = 400;
 	String path;
-	String line1;
-	String line2;
-	String line3;
-	String line4;
+	String[] lines = new String[4];
 	int lineNum;
+	private Music musicPlayer;
+	private boolean musicOn;
+	
+	private String speaker = "";
+	
 	@SuppressWarnings("deprecation")
 	public Story(){
 		loader = new BufferedImageLoader();
-		sprite = loader.loadImage("/standingSprite.png");
+		musicPlayer = new Music();
+		sprite = loader.loadImage("/image/mdStand1.png");
 		background = loader.loadImage("/storyBackground.png");
 			path=getClass().getResource("/script.txt").getFile();
 			path = URLDecoder.decode(path);
 			try {
 				br = new BufferedReader(new FileReader(path));
 				//line1 = br.readLine();
-				lineNum=1;
+				lineNum=0;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
+	}
+	public void tick() {
+		if(!musicOn){
+			playMusic();
+		}
+		
+	}
+	private void playMusic() {
+		musicPlayer.playMusic("/sound/bgm1.wav");
+		musicOn=true;
+	}
+	private void stopMusic(){
+		musicOn=false;
+		musicPlayer.stopMusic();
 	}
 	public void render(Graphics g){
 		Graphics2D g2d = (Graphics2D)g;
@@ -59,24 +77,34 @@ public class Story {
 		g2d.draw(textBox);
 		g2d.fill(textBox);
 		g.setColor(Color.BLACK);
+		renderLines(g);
+	}
+	private void renderLines(Graphics g) {
 		try{
-		if(lineNum>1){
-			g.drawString(line1, (int)textBox.getX()+10, (int)textBox.getY()+20);
-		}
-		if(lineNum>2){
-			g.drawString(line2,(int)textBox.getX()+10, (int)textBox.getY()+57);
-		}
-		if(lineNum>3){
-			g.drawString(line3,(int)textBox.getX()+10, (int)textBox.getY()+94);
-		}
-		if(lineNum>4){
-			g.drawString(line4,(int)textBox.getX()+10, (int)textBox.getY()+131);
-		}
+			g.drawString(speaker,(int)textBox.getX()+10, (int)textBox.getY());
+			for(int i=0;i<lineNum;i++){
+				g.drawString(lines[i],(int)textBox.getX()+10, (int)textBox.getY()+20+i*37);
+			}
+			//the above forloop is basically a simplification of the following
+			/*
+			if(lineNum>0){
+				g.drawString(line1, (int)textBox.getX()+10, (int)textBox.getY()+20);
+			}
+			if(lineNum>1){
+				g.drawString(line2,(int)textBox.getX()+10, (int)textBox.getY()+57);
+			}
+			if(lineNum>2){
+				g.drawString(line3,(int)textBox.getX()+10, (int)textBox.getY()+94);
+			}
+			if(lineNum>3){
+				g.drawString(line4,(int)textBox.getX()+10, (int)textBox.getY()+131);
+			}
+			*/
 		}
 		catch(NullPointerException e){
 			try {
 				br=new BufferedReader(new FileReader(path));
-				lineNum=1;
+				lineNum=0;
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -84,40 +112,73 @@ public class Story {
 			GameSystem.state=GameSystem.STATE.GAME;
 		}
 		
-		//g2d.draw(helpButton);
-		//g2d.draw(quitButton);
-		
 	}
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
 		if(key==KeyEvent.VK_ENTER||key==KeyEvent.VK_Z){
-			if(lineNum>4){
-				lineNum=1;
-			}
-			int x = lineNum;
-			try{
-			if(x==1){
-				line1=br.readLine();
-			}
-			else if(x==2){
-				line2=br.readLine();
-			}
-			else if(x==3){
-				line3=br.readLine();
-			}
-			else if(x==4){
-				line4=br.readLine();
-			}
-			}catch(Exception abc){
-				System.out.println("can't read from line");
-			}
-			lineNum++;
-			
+			readNextLine();
 		}
 		
 	}
-	public void tick() {
-		// TODO Auto-generated method stub
-		
+	
+	public void readNextLine(){
+		if(lineNum>3){
+			lineNum=0;
+		}
+		try{
+		lines[lineNum]=br.readLine();
+		}catch(Exception abc){
+			System.out.println("can't read from line");
+		}
+		if(isEndOfSection(lines[lineNum])){
+			changeToGameState();
+		}
+		else if(isCharacterName(lines[lineNum])){
+			speaker = lines[lineNum];
+			lineNum=0;
+			try {
+				lines[lineNum]=br.readLine();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else if(isStopSpeaking(lines[lineNum])){
+			speaker="";
+			lineNum=0;
+			try {
+				lines[lineNum]=br.readLine();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		lineNum++;
+	}
+
+	private void changeToGameState() {
+		stopMusic();
+		GameSystem.state=GameSystem.STATE.GAME;
+	}
+
+	private boolean isEndOfSection(String s) {
+		if(s.equals("END")){
+			return true;
+		}
+		return false;
+	}
+
+	private boolean isStopSpeaking(String s) {
+		if(s.equals("STOPSPEAKING")){
+			return true;
+		}
+		return false;
+	}
+
+	private boolean isCharacterName(String s) {
+		if(s.equals("Madoka:")){
+			return true;
+		}
+		return false;
 	}
 }

@@ -36,8 +36,8 @@ public class LevelLoader {
 	public void stage1(){
 		reset();
 		game.background=loader.loadImage("/background.png");
-		game.c.addEntity(new Homura(7,15,game));
-		game.p = (Player) game.c.getFList().getLast();
+		//created the player depending on the player chosen state
+		createPlayer(7,15);
 		for(int i=0;i<GameSystem.GRIDW;i=i+3){
 			game.c.addEntity(new Enemy(i,0,game));
 			game.enemyCount++;
@@ -51,10 +51,10 @@ public class LevelLoader {
 		updateList();
 	}
 	
+	
 	public void stage2(){
 		reset();
-		game.c.addEntity(new Homura(1,2,game));
-		game.p = (Player) game.c.getFList().getLast();
+		createPlayer(1,2);
 		for(int i=4;i<GameSystem.GRIDW-4;i++){
 			game.c.addEntity(new Enemy(i,3,game));
 			game.enemyCount++;
@@ -90,5 +90,14 @@ public class LevelLoader {
 		if(System.currentTimeMillis()-renderStageStart>duration){
 			Game.gState=Game.GameState.PLAY;
 		}
+	}
+	private void createPlayer(int i, int j) {
+		if(game.cChosen==Game.CHARACTER.MADOKA){
+			game.c.addEntity(new Madoka(i,j,game));
+		}
+		else if(game.cChosen==Game.CHARACTER.HOMURA){
+			game.c.addEntity(new Homura(i,j,game));
+		}
+		game.p = (Player) game.c.getFList().getLast();
 	}
 }

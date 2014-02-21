@@ -48,7 +48,7 @@ public class GameSystem extends Canvas implements Runnable{
 		STORY
 	};
 	
-	public static STATE state = STATE.GAME;
+	public static STATE state = STATE.MENU;
 	public Controller c; 
 	public Explode e;
 	public void init(){
