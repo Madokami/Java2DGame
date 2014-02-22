@@ -94,7 +94,7 @@ public class Game {
 		if(!isWaiting()){
 			if(!playerIsAlive){
 				setWait();
-				goToMenu();
+				goToDeath();
 				return;
 			}
 			if(enemyCount==0){
@@ -104,7 +104,7 @@ public class Game {
 			if(curLevel>lastStage){
 				setWait();
 				curLevel=1;
-				goToMenu();
+				goToDeath();
 				return;
 			}
 		}
@@ -249,6 +249,11 @@ public class Game {
 	public void goToMenu(){
 		stopMusic();
 		Menu.mState=Menu.MENUSTATE.MAIN;
+		GameSystem.state=GameSystem.STATE.MENU;
+	}
+	public void goToDeath(){
+		stopMusic();
+		Menu.mState=Menu.MENUSTATE.DEATH;
 		GameSystem.state=GameSystem.STATE.MENU;
 	}
 	public void playMusic(){

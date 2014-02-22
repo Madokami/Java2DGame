@@ -29,7 +29,7 @@ public class GameSystem extends Canvas implements Runnable{
 	public static final int ABSHEIGHT=HEIGHT*SCALE;
 	public static final int GRIDW=WIDTH*SCALE/SIZE;
 	public static final int GRIDH=HEIGHT*SCALE/SIZE;
-	public static final String TITLE="Homuhomu booooom";
+	public static final String TITLE="Sis Puella Magica";
 	public JFrame frame;
 	private boolean running= false;
 	private Thread thread;
