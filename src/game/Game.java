@@ -162,7 +162,7 @@ public class Game {
 				loader.render(g);
 			}
 			else if(Game.gState==Game.GameState.PLAY){
-			g.drawImage(background, 0, 0,GameSystem.ABSWIDTH,GameSystem.ABSHEIGHT, null);
+			g.drawImage(background, 0, 0,GameSystem.ABSWIDTH+10,GameSystem.ABSHEIGHT+10, null);
 			c.render(g);
 			e.render(g);
 			event1.render(g);

@@ -28,6 +28,8 @@ public class Menu {
 	private BufferedImage mdSelectOn,mdSelectOff,hoSelectOn,hoSelectOff,saSelectOn,saSelectOff,kySelectOn,kySelectOff,maSelectOn,maSelectOff;
 	private int cSelectIndex;
 	private int cSelectHeight,cSelectWidth;
+	double yShift;
+	private boolean shiftingDown;
 	
 	Game game;
 	MouseInput in;
@@ -84,10 +86,13 @@ public class Menu {
 		cSelectIndex=(GameSystem.ABSWIDTH-5*mdSelectOn.getWidth())/6;
 		cSelectWidth=mdSelectOn.getWidth();
 		cSelectHeight = mdSelectOn.getHeight();
+		yShift=1;
+		shiftingDown=true;
 		
 		//example .gif loading
 		gif = loader.loadGif("/homura.gif");
 		musicPlayer = new Music();
+		
 	}
 	
 	//this method is called automatically by GameSystem
@@ -97,6 +102,9 @@ public class Menu {
 		if(!musicOn){
 			//turnOnBgm also sets musicOn=true
 			turnOnBgm();
+		}
+		if(mState==MENUSTATE.CHOOSECHAR){
+			shiftDown();
 		}
 	}
 	
@@ -137,10 +145,10 @@ public class Menu {
 		}
 		if(mState==MENUSTATE.CHOOSECHAR){
 			if(cSelected == CHARACTER.MADOKA){
-				g.drawImage(mdSelectOn,cSelectIndex+8,(GameSystem.ABSHEIGHT-cSelectHeight)/2,null);
+				g.drawImage(mdSelectOn,cSelectIndex+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift,null);
 			}
 			else if(cSelected == CHARACTER.HOMURA){
-				g.drawImage(hoSelectOn,2*cSelectIndex+cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)/2,null);
+				g.drawImage(hoSelectOn,2*cSelectIndex+cSelectWidth+8,(int)yShift,null);
 			}
 		}
 	}
@@ -153,17 +161,18 @@ public class Menu {
 			//draws a black background for now. Change it to something nicer :D
 			g.setColor(Color.BLACK);
 			g.fillRect(0, 0, GameSystem.ABSWIDTH+8, GameSystem.ABSHEIGHT+10);
-			g.drawImage(mdSelectOff,cSelectIndex+8,(GameSystem.ABSHEIGHT-cSelectHeight)/2,null);
-			g.drawImage(hoSelectOff,2*cSelectIndex+cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)/2,null);
-			g.drawImage(saSelectOff,3*cSelectIndex+2*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)/2,null);
-			g.drawImage(maSelectOff,4*cSelectIndex+3*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)/2,null);
-			g.drawImage(kySelectOff,5*cSelectIndex+4*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)/2,null);
+			g.drawImage(mdSelectOff,cSelectIndex+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift,null);
+			g.drawImage(hoSelectOff,2*cSelectIndex+cSelectWidth+8,(int) yShift,null);
+			g.drawImage(saSelectOff,3*cSelectIndex+2*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift,null);
+			g.drawImage(maSelectOff,4*cSelectIndex+3*cSelectWidth+8,(int)yShift,null);
+			g.drawImage(kySelectOff,5*cSelectIndex+4*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift,null);
 		}
 	}
 	
 	//detects user keyboard input. the parameter "key" is passed down from GameSystem.keyPressed
 	public void keyPressed(int key) {
 		if(key==KeyEvent.VK_X){
+			yShift=1;
 			Menu.mState=Menu.MENUSTATE.MAIN;
 		}
 		//when "down" is pressed
@@ -249,5 +258,13 @@ public class Menu {
 	public void turnOffBgm(){
 		musicOn=false;
 		musicPlayer.stopMusic();
+	}
+	public void shiftDown(){
+			if(yShift>=(GameSystem.ABSHEIGHT-cSelectHeight)/2){
+				yShift=(GameSystem.ABSHEIGHT-cSelectHeight)/2;
+				return;
+			}
+			yShift=yShift*1.23;
+		
 	}
 }
