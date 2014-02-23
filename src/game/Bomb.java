@@ -7,6 +7,7 @@ public class Bomb extends Object implements FriendlyInterface{
 	public long start;
 	public int strength;
 	public int length;
+	public String direction;
 	
 	public Bomb(int x,int y, Game game){
 		super(x,y,game);
@@ -15,6 +16,8 @@ public class Bomb extends Object implements FriendlyInterface{
 		ss = SpriteData.bomb;
 		image = ss.grabImage(1, 1, 32, 32);
 		start = System.currentTimeMillis();
+		direction=game.p.direction;
+		//fireBomb();
 		
 	}
 	public void tick(){
@@ -29,5 +32,18 @@ public class Bomb extends Object implements FriendlyInterface{
 		}
 		
 	}
-	
+	public void fireBomb(){
+		if(direction.equals("up")){
+			moveUp();
+		}
+		else if(direction.equals("down")){
+			moveDown();
+		}
+		else if(direction.equals("right")){
+			moveRight();
+		}
+		else if(direction.equals("left")){
+			moveLeft();
+		}
+	}
 }

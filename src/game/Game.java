@@ -2,6 +2,8 @@ package game;
 
 import game.GameSystem.STATE;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -32,6 +34,12 @@ public class Game {
 	public int lastStage=2;
 	public boolean musicOn;
 	public int duration = 4000;
+	public BufferedImage soulGem1;
+	public BufferedImage soulGem2;
+	public BufferedImage soulGem3;
+	public BufferedImage soulGem4;
+
+	
 	
 	
 	//handles ticking problems with respect to bomb explosion sound.
@@ -80,6 +88,11 @@ public class Game {
 		l = new BufferedImageLoader();
 		//car = l.loadImage("/car.gif");
 		cutIn = l.loadImage("/homuraCutIn.png");
+		soulGem1= l.loadImage("/image/soulGemQuaterDark.png");
+		soulGem2= l.loadImage("/image/soulGemHalfDark.png");
+		soulGem3= l.loadImage("/image/soulGemThreeQuaterDark.png");
+		soulGem4= l.loadImage("/image/soulGemFullDark.png");
+
 	}
 
 	public void loadLevel(){
@@ -162,11 +175,15 @@ public class Game {
 				loader.render(g);
 			}
 			else if(Game.gState==Game.GameState.PLAY){
-			g.drawImage(background, 0, 0,GameSystem.ABSWIDTH+10,GameSystem.ABSHEIGHT+10, null);
+			g.drawImage(background, 0, 0,GameSystem.ABSWIDTH+10,GameSystem.ABSHEIGHT-96, null);
 			c.render(g);
 			e.render(g);
 			event1.render(g);
 			event2.render(g);
+			renderPlayerSoul(g);
+			renderPlayerHealth(g);
+			renderPlayerMana(g);
+			renderSoulGemState(g);
 			}
 		
 	}
@@ -223,25 +240,33 @@ public class Game {
 
 	public void keyReleased(int key) {
 		if(!p.finishingMove){
-			if(key==KeyEvent.VK_RIGHT){				
-				p.moveStop();
-				//game.p.movable=false;
-				p.moveToNext(p.nextX,p.nextY);
+			if(key==KeyEvent.VK_RIGHT){
+				if(p.direction.equals("right")){
+					p.moveStop();
+					//game.p.movable=false;
+					p.moveToNext(p.nextX,p.nextY);
+				}
 			}
 			else if(key==KeyEvent.VK_LEFT){
+				if(p.direction.equals("left")){
 				p.moveStop();
 				//game.p.movable=false;
 				p.moveToNext(p.nextX,p.nextY);
+				}
 			}
 			else if(key==KeyEvent.VK_UP){
+				if(p.direction.equals("up")){
 				p.moveStop();
 				//game.p.movable=false;
 				p.moveToNext(p.nextX,p.nextY);
+				}
 			}
 			else if(key==KeyEvent.VK_DOWN){
+				if(p.direction.equals("down")){
 				p.moveStop();
 				//game.p.movable=false;
 				p.moveToNext(p.nextX,p.nextY);
+				}
 			}
 		}
 		
@@ -263,5 +288,40 @@ public class Game {
 	public void stopMusic(){
 		musicPlayer.stopMusic();
 		musicOn=false;
+	}
+	public void renderPlayerSoul(Graphics g){
+		g.drawImage(p.soulGem,0,GameSystem.ABSHEIGHT-p.soulGem.getHeight(),null);
+		g.setFont(new Font("arial",Font.PLAIN,15));
+		g.drawString((Integer.toString((int)p.soul)), 30, GameSystem.ABSHEIGHT-p.soulGem.getHeight()+50);
+	}
+	public void renderPlayerHealth(Graphics g){
+		g.setColor(Color.GRAY);
+		g.fillRect(100, GameSystem.ABSHEIGHT-80, 200, 20);
+		g.setColor(Color.GREEN);
+		g.fillRect(100, GameSystem.ABSHEIGHT-80, (int) (p.hp*2), 20);
+		g.setColor(Color.WHITE);
+		g.drawRect(100, GameSystem.ABSHEIGHT-80, 200, 20);
+	}
+	public void renderPlayerMana(Graphics g){
+		g.setColor(Color.GRAY);
+		g.fillRect(100, GameSystem.ABSHEIGHT-50, 200, 20);
+		g.setColor(Color.BLUE);
+		g.fillRect(100, GameSystem.ABSHEIGHT-50, (int) (p.mp*2), 20);
+		g.setColor(Color.WHITE);
+		g.drawRect(100, GameSystem.ABSHEIGHT-50, 200, 20);
+	}
+	public void renderSoulGemState(Graphics g){
+		if(1-p.soul/p.maxSoul>=0.25&&1-p.soul/p.maxSoul<0.5){
+			g.drawImage(soulGem1, 0, GameSystem.ABSHEIGHT-p.soulGem.getHeight(),null);
+		}
+		else if(1-p.soul/p.maxSoul>=0.5&&1-p.soul/p.maxSoul<0.75){
+			g.drawImage(soulGem2, 0, GameSystem.ABSHEIGHT-p.soulGem.getHeight(),null);
+		}
+		else if(1-p.soul/p.maxSoul>=0.75&&1-p.soul/p.maxSoul<1){
+			g.drawImage(soulGem3, 0, GameSystem.ABSHEIGHT-p.soulGem.getHeight(),null);
+		}
+		else if(1-p.soul/p.maxSoul==1){
+			g.drawImage(soulGem4, 0, GameSystem.ABSHEIGHT-p.soulGem.getHeight(),null);
+		}
 	}
 }

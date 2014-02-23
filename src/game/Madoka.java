@@ -5,6 +5,8 @@ public class Madoka extends Player{
 	public Madoka(int x, int y, Game game) {
 		super(x, y, game);
 		bombLength = 3;
+		bombStrength= 20;
+		hp=100;
 		ssX=7;
 		ssY=1;
 		ultCount=200;
@@ -13,11 +15,7 @@ public class Madoka extends Player{
 		// TODO Auto-generated constructor stub
 	}
 	public void useUltimate(){
-		playUltimateSound();
-		game.event1.startEvent(2000, "madokaCutIn");
-		game.event2.startEvent(5000, "timeStop");
-		game.musicPlayer.playSwoosh();
-		ultCount--;
+		
 	}
 	public void playDeathSound(){
 		int x = rand.nextInt(2);

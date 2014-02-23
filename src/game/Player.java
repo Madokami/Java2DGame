@@ -11,11 +11,21 @@ public abstract class Player extends Object implements FriendlyInterface{
 	protected int ultCount;
 	public int bombStrength;
 	public int bombLength;
+	public BufferedImage soulGem;
+	public BufferedImageLoader loader;
+	public double maxSoul;
+	public double soul;
+	public double mp;
 
 	public Player(int x, int y, Game game) {
 		super(x, y, game);
+		loader = new BufferedImageLoader();
 		bombStrength = 1;
+		mp = 100;
+		maxSoul=500;
+		soul=maxSoul;
 		super.speed=6;
+		soulGem=loader.loadImage("/image/soulGemRed.png");
 		// TODO Auto-generated constructor stub
 	}
 
@@ -26,15 +36,27 @@ public abstract class Player extends Object implements FriendlyInterface{
 		this.curY=super.curY;
 		damage=Physics.hitByAttack(this, game.fireList);
 		if(damage!=-1){
-			hp=hp-damage;
-			System.out.println("you've taken "+damage+" damage");
-			playDamagedSound();
+			takeDamage();
+			setInvulnerable();			
 		}
 		if(hp<=0){
 			playDeathSound();
 			game.c.removeEntity(this);
 			game.playerIsAlive=false;
 		}
+		if(soul>0){
+			if(hp<100){
+				soul--;
+				hp=hp+0.2;
+			}
+		}
+		if(soul>0){
+			if(mp<100){
+				soul--;
+				mp=mp+0.2;
+			}
+		}
+		
 	
 		//changes the player's "playerImage" depending on movement orientation
 		Animate.animate(this);
@@ -47,6 +69,16 @@ public abstract class Player extends Object implements FriendlyInterface{
 	public void playDeathSound(){
 		
 	}
+	public void takeDamage(){
+		if(!invulnerable){
+			hp=hp-damage;
+			System.out.println("you've taken "+damage+" damage");
+			playDamagedSound();
+		}
+	}
+	public void setInvulnerable(){
+		invulnerable=true;
+	}
 
 	public void useUltimate(){
 		
@@ -56,6 +88,12 @@ public abstract class Player extends Object implements FriendlyInterface{
 			return true;
 		}
 		return false;
+	}
+
+
+	public void renderPlayerHp(Graphics g) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

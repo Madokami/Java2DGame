@@ -160,7 +160,7 @@ public class Menu {
 					//change the current selected mode to arcade
 					Menu.selected=Menu.SELECTED.ARCADE;
 					//hopefully find a better sound effect. this one is too long
-					musicPlayer.playVoice("/sound/soundEffect1.wav");
+					playSwitch();
 				}
 			}
 		}
@@ -168,7 +168,7 @@ public class Menu {
 			if(mState==MENUSTATE.MAIN){
 				if(Menu.selected==Menu.SELECTED.ARCADE){
 					Menu.selected=Menu.SELECTED.STORY;
-					musicPlayer.playVoice("/sound/soundEffect1.wav");
+					playSwitch();
 				}
 			}
 		}

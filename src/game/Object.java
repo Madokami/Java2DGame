@@ -17,7 +17,7 @@ public class Object {
 		public int lastX,lastY,nextX,nextY; //used to implement moving into grids only
 		public double xTemp,yTemp;
 		public double speed=2;
-		public int hp=1;
+		public double hp=100;
 		public int damage;
 		public SpriteSheet ss;
 		public BufferedImage image;
@@ -48,6 +48,8 @@ public class Object {
 		public String direction;
 		public double i=0;
 		public boolean blocked;
+		public boolean invulnerable = false;
+		public int timer;
 		
 		public enum ORIENTATION{
 			DOWN,
@@ -79,6 +81,13 @@ public class Object {
 		public void tick(){
 			//updates position of char
 			//maps the position to the closest "grid"
+			if(invulnerable){
+				timer++;
+				if(timer>60){
+					timer=0;
+					invulnerable=false;
+				}
+			}
 			checkIfBlocked();
 			if(blocked){
 				return;
@@ -148,8 +157,8 @@ public class Object {
 				x=GameSystem.WIDTH*GameSystem.SCALE-33;
 				atEdge=true;
 			}
-			else if(y>=GameSystem.HEIGHT*GameSystem.SCALE-32){
-				y=GameSystem.HEIGHT*GameSystem.SCALE-33;
+			else if(y>=GameSystem.HEIGHT*GameSystem.SCALE-32-96){
+				y=GameSystem.HEIGHT*GameSystem.SCALE-33-96;
 				atEdge=true;
 			}
 			else{
