@@ -7,6 +7,9 @@ Madoka:
 "x" cancels in menu
 "z" places bombs in game
 "p" pauses
+asahflksadhfljsadjf
+aslkfdjsdalfkjas
+fdsfd
 STOPSPEAKING
 "c" activate special ability
 END
