@@ -12,6 +12,7 @@ public class Music{
     Clip voice;
     Clip effect;
     Clip explosion;
+    Clip sisPuellaMagica;
     AudioLoader loader;
 	public Music(){
 		//musicFile=new File("/bgm1.wav");
@@ -19,6 +20,7 @@ public class Music{
 		try {
 			music = AudioSystem.getClip();
 			effect = AudioSystem.getClip();
+			sisPuellaMagica = AudioSystem.getClip();
 			explosion = loader.newClip("/sound/expl1.wav");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -58,9 +60,15 @@ public class Music{
 		effect = loader.newClip("/sound/soundEffect1.wav");
 		effect.start();
 	}
-	public void playMusic(String url){
+	public synchronized void playMusic(String url){
 		music = loader.newClip(url);
+		music.start();
 		music.loop(music.LOOP_CONTINUOUSLY);
+		while(!musicIsPlaying()){
+			music.loop(music.LOOP_CONTINUOUSLY);
+			System.out.println("playMusic called");
+		}
+		System.out.println("playMusic called");
 	}
 	public void playVoice(String url){
 		voice = loader.newClip(url);
@@ -68,5 +76,10 @@ public class Music{
 	}
 	public void reloadExplosion(){
 		explosion = loader.newClip("/sound/expl1.wav");
+	}
+	public boolean musicIsPlaying(){
+		if(music.isActive())
+			return true;
+		return false;
 	}
 }

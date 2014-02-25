@@ -9,7 +9,6 @@ public class Madoka extends Player{
 		hp=100;
 		ssX=7;
 		ssY=1;
-		ultCount=200;
 		ss=SpriteData.char1;
 		image=ss.grabImage(ssX, ssY, size, size);
 		// TODO Auto-generated constructor stub

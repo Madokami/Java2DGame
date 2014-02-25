@@ -27,7 +27,7 @@ public class AudioLoader {
 			e.printStackTrace();
 		}
 	}
-	public Clip newClip(String path){
+	public synchronized Clip newClip(String path){
 		Clip c = null;
 		try {
 			try {

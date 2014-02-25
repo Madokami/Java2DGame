@@ -20,7 +20,7 @@ import java.net.URLDecoder;
 public class Story {
 	BufferedImageLoader loader;
 	BufferedImage sprite;
-	BufferedImage background;
+	BufferedImage background,mdTextBox;
 	public static Rectangle textBox = new Rectangle(GameSystem.WIDTH*GameSystem.SCALE/10, GameSystem.HEIGHT*GameSystem.SCALE-160,GameSystem.WIDTH*GameSystem.SCALE*4/5,150);
 	public static Rectangle helpButton = new Rectangle(GameSystem.WIDTH/2 + 120, 250,100,50);
 	public static Rectangle quitButton = new Rectangle(GameSystem.WIDTH/2 + 120, 350,100,50);
@@ -41,6 +41,7 @@ public class Story {
 		musicPlayer = new Music();
 		sprite = loader.loadImage("/image/mdStand1.png");
 		background = loader.loadImage("/storyBackground.png");
+		mdTextBox = loader.loadImage("/image/mdTextBox.png");
 			path=getClass().getResource("/script.txt").getFile();
 			path = URLDecoder.decode(path);
 			try {
@@ -73,9 +74,10 @@ public class Story {
 		g.setFont(f1);
 		g.drawImage(background, 0, 0,GameSystem.WIDTH*GameSystem.SCALE,GameSystem.HEIGHT*GameSystem.SCALE, null);
 		g.drawImage(sprite,GameSystem.WIDTH*GameSystem.SCALE-w,GameSystem.HEIGHT*GameSystem.SCALE-h,w,h,null);
+		g.drawImage(mdTextBox,(GameSystem.ABSWIDTH-mdTextBox.getWidth())/2-170,GameSystem.ABSHEIGHT-mdTextBox.getHeight()-90,GameSystem.WIDTH*GameSystem.SCALE*4/5+200,220,null);
 		g2d.setColor(Color.WHITE);
-		g2d.draw(textBox);
-		g2d.fill(textBox);
+		//g2d.draw(textBox);
+		//g2d.fill(textBox);
 		g.setColor(Color.BLACK);
 		renderLines(g);
 	}

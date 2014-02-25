@@ -21,7 +21,6 @@ public class GameSystem extends Canvas implements Runnable{
 	
 	
 	public static final int SIZE = 32;
-	private static final long serialVersionUID = 1L;
 	public static final int WIDTH=384;
 	public static final int HEIGHT=WIDTH*9/12;
 	public static final int SCALE=2;
@@ -34,11 +33,11 @@ public class GameSystem extends Canvas implements Runnable{
 	private boolean running= false;
 	private Thread thread;
 	private BufferedImage image = new BufferedImage(WIDTH*SCALE,HEIGHT*SCALE,BufferedImage.TYPE_INT_RGB);
-	public Music bgmPlayer;
+	public static Music musicPlayer;
 	public Menu menu;
 	public Story story;
 	public Game game;
-	public boolean musicOn;
+	public static boolean musicOn;
 	
 	public static enum STATE{
 		MENU,
@@ -58,11 +57,9 @@ public class GameSystem extends Canvas implements Runnable{
 		//m = new Menu2(this);
 		this.requestFocus();
 		//bgmPlayer=new Music();
-		bgmPlayer=new Music();
+		musicPlayer=new Music();
 		//event listeners
 		//this.addKeyListener(new Input(this));
-		this.addMouseListener(new MouseInput(this));
-		this.addMouseMotionListener(new MouseInput(this));
 		this.addKeyListener(new Input(this));
 	}
 	
@@ -115,7 +112,7 @@ public class GameSystem extends Canvas implements Runnable{
 			frames++;
 			if(System.currentTimeMillis()-timer > 1000){
 				timer += 1000;
-				System.out.println(updates + "ticks, frame" + frames);
+				//System.out.println(updates + "ticks, frame" + frames);
 				//System.out.println(p.curX+" "+p.curY);
 				updates=0;
 				frames=0;
@@ -214,5 +211,34 @@ public class GameSystem extends Canvas implements Runnable{
 			game.keyReleased(key);
 		}
 	}
+	
+	public static void turnOnBgm(){
+		if(musicOn)
+			return;
+		musicPlayer.playMusic("/sound/sisPuellaMagica.wav");
+		musicOn=true;
+	}
+	//this will play the .wav file idicated given the url
+	public static void turnOnBgm(String url){
+		if(musicOn)
+			return;
+		musicOn=true;
+		System.out.println("turnOnBgm Called");
+		musicPlayer.playMusic(url);
+	}
+	public static void turnOffBgm(){
+		musicOn=false;
+		musicPlayer.stopMusic();
+	}
+	public static void playSwitch(){
+		musicPlayer.playVoice("/sound/switch1.wav");
+	}
+	public static void playConfirm(){
+		musicPlayer.playVoice("/sound/choice2.wav");
+	}
+	public static void playCancel(){
+		musicPlayer.playVoice("/sound/cancel2.wav");
+	}
+	
 }
 

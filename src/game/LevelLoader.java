@@ -98,6 +98,18 @@ public class LevelLoader {
 		else if(game.cChosen==Game.CHARACTER.HOMURA){
 			game.c.addEntity(new Homura(i,j,game));
 		}
+		else if(game.cChosen==Game.CHARACTER.SAYAKA){
+			game.c.addEntity(new Sayaka(i,j,game));
+			game.p = (Player) game.c.getFList().getLast();
+		}
+		else if(game.cChosen==Game.CHARACTER.MAMI){
+			game.c.addEntity(new Mami(i,j,game));
+			game.p = (Player) game.c.getFList().getLast();
+		}
+		else if(game.cChosen==Game.CHARACTER.KYOUKO){
+			game.c.addEntity(new Kyouko(i,j,game));
+			game.p = (Player) game.c.getFList().getLast();
+		}
 		game.p = (Player) game.c.getFList().getLast();
 	}
 }

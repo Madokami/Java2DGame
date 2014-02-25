@@ -7,6 +7,6 @@ public class SpriteData {
 	public static SpriteSheet bricks = new SpriteSheet(loader.loadImage("/bricks.png"));
 	public static SpriteSheet upgrades = new SpriteSheet(loader.loadImage("/powerUps.png"));
 	public static SpriteSheet char1 = new SpriteSheet(loader.loadImage("/PuellaSet1.png"));
-	//public SpriteData
+	public static SpriteSheet char3 = new SpriteSheet(loader.loadImage("/image/PuellaSet3.png"));
 	
 }

@@ -19,8 +19,6 @@ public class Menu {
 	public MenuDeath mDeath;
 	public MenuChar mChar;
 	
-	
-	
 	public static Rectangle playButton = new Rectangle(GameSystem.WIDTH/2 + 120, 150,100,50);
 	public static Rectangle helpButton = new Rectangle(GameSystem.WIDTH/2 + 120, 250,100,50);
 	public static Rectangle quitButton = new Rectangle(GameSystem.WIDTH/2 + 120, 350,100,50);
@@ -31,7 +29,6 @@ public class Menu {
 	BufferedImage menu;
 	BufferedImage help;
 	Game game;
-	MouseInput in;
 	Image gif;
 	
 	public static Music musicPlayer;
@@ -70,8 +67,6 @@ public class Menu {
 		help = loader.loadImage("/help.png");
 		//example .gif loading
 		gif = loader.loadGif("/homura.gif");
-		musicPlayer = new Music();
-		
 	}
 	
 	//this method is called automatically by GameSystem
@@ -85,10 +80,7 @@ public class Menu {
 			mDeath.tick();
 		}
 		else{
-			if(!musicOn){
-				//turnOnBgm also sets musicOn=true
-				turnOnBgm();
-			}
+			GameSystem.turnOnBgm();
 		}
 	}
 	
@@ -160,7 +152,7 @@ public class Menu {
 					//change the current selected mode to arcade
 					Menu.selected=Menu.SELECTED.ARCADE;
 					//hopefully find a better sound effect. this one is too long
-					playSwitch();
+					GameSystem.playSwitch();
 				}
 			}
 		}
@@ -168,7 +160,7 @@ public class Menu {
 			if(mState==MENUSTATE.MAIN){
 				if(Menu.selected==Menu.SELECTED.ARCADE){
 					Menu.selected=Menu.SELECTED.STORY;
-					playSwitch();
+					GameSystem.playSwitch();
 				}
 			}
 		}
@@ -177,13 +169,13 @@ public class Menu {
 			if(mState==MENUSTATE.MAIN){
 				//if currently story mode is selected
 				if(Menu.selected==Menu.SELECTED.STORY){
-					playConfirm();
+					GameSystem.playConfirm();
 					toStoryMode();
 				}
 				//similarly if arcade mode is selected
 				else if(Menu.selected==Menu.SELECTED.ARCADE){
 					//change Menu state to CHOOSECHAR state.
-					playConfirm();
+					GameSystem.playConfirm();
 					Menu.mState=Menu.MENUSTATE.CHOOSECHAR;
 				}
 			}
@@ -191,38 +183,19 @@ public class Menu {
 		}
 		
 	}
-	private void toStoryMode() {
-		turnOffBgm();
+	public static void toStoryMode() {
+		GameSystem.turnOffBgm();
 		GameSystem.state=STATE.STORY;
 	}
 
-	private void toGameMode() {
-		turnOffBgm();
+	public static void toGameMode() {
+		GameSystem.turnOffBgm();
 		GameSystem.state=STATE.GAME;
 	}
-
 	//2 ways to play bgm
 	//first one plays the default bgm
-	public void turnOnBgm(){
-		musicOn=true;
-		musicPlayer.playMusic("/sound/sisPuellaMagica.wav");
-	}
-	//this will play the .wav file idicated given the url
-	public void turnOnBgm(String url){
-		musicOn=true;
-		musicPlayer.playMusic(url);
-	}
-	public static void turnOffBgm(){
-		musicOn=false;
-		musicPlayer.stopMusic();
-	}
-	public void playSwitch(){
-		musicPlayer.playVoice("/sound/switch1.wav");
-	}
-	public void playConfirm(){
-		musicPlayer.playVoice("/sound/choice2.wav");
-	}
-	public void playCancel(){
-		musicPlayer.playVoice("/sound/cancel2.wav");
+	public static void backToMenu() {
+		GameSystem.turnOffBgm();
+		Menu.mState=MENUSTATE.MAIN;
 	}
 }

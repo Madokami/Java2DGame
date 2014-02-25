@@ -62,6 +62,9 @@ public class Game {
 	public static enum CHARACTER{
 		MADOKA,
 		HOMURA,
+		SAYAKA,
+		MAMI,
+		KYOUKO,
 	};
 	
 	public BufferedImageLoader l;
@@ -124,6 +127,9 @@ public class Game {
 		if(Game.gState==Game.GameState.PLAY){
 			event1.tick();
 			event2.tick();
+			if(stopTick){
+				return;
+			}
 			if(timeStop){
 				if(stopTick){
 					return;
@@ -211,9 +217,7 @@ public class Game {
 		}
 		if(gState==GameState.PLAY){
 			if(key==KeyEvent.VK_C){
-				if(p.hasUltimate()){
-					p.useUltimate();
-				}
+				p.useUltimate();
 			}
 			else if(key==KeyEvent.VK_Z){
 				c.addEntity(new Bomb(p.xGridNearest,p.yGridNearest,this));
@@ -296,19 +300,19 @@ public class Game {
 	}
 	public void renderPlayerHealth(Graphics g){
 		g.setColor(Color.GRAY);
-		g.fillRect(100, GameSystem.ABSHEIGHT-80, 200, 20);
+		g.fillRoundRect(100, GameSystem.ABSHEIGHT-80, 200, 20,10,10);
 		g.setColor(Color.GREEN);
-		g.fillRect(100, GameSystem.ABSHEIGHT-80, (int) (p.hp*2), 20);
+		g.fillRoundRect(100, GameSystem.ABSHEIGHT-80, (int) (p.hp*2), 20,10,10);
 		g.setColor(Color.WHITE);
-		g.drawRect(100, GameSystem.ABSHEIGHT-80, 200, 20);
+		g.drawRoundRect(100, GameSystem.ABSHEIGHT-80, 200, 20,10,10);
 	}
 	public void renderPlayerMana(Graphics g){
 		g.setColor(Color.GRAY);
-		g.fillRect(100, GameSystem.ABSHEIGHT-50, 200, 20);
+		g.fillRoundRect(100, GameSystem.ABSHEIGHT-50, 200, 20,10,10);
 		g.setColor(Color.BLUE);
-		g.fillRect(100, GameSystem.ABSHEIGHT-50, (int) (p.mp*2), 20);
+		g.fillRoundRect(100, GameSystem.ABSHEIGHT-50, (int) (p.mp*2), 20,10,10);
 		g.setColor(Color.WHITE);
-		g.drawRect(100, GameSystem.ABSHEIGHT-50, 200, 20);
+		g.drawRoundRect(100, GameSystem.ABSHEIGHT-50, 200, 20,10,10);
 	}
 	public void renderSoulGemState(Graphics g){
 		if(1-p.soul/p.maxSoul>=0.25&&1-p.soul/p.maxSoul<0.5){

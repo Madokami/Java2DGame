@@ -9,16 +9,9 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
-public class MenuDeath {
-	private BufferedImage mdSelectOn,mdSelectOff,hoSelectOn,hoSelectOff,saSelectOn,saSelectOff,kySelectOn,kySelectOff,maSelectOn,maSelectOff;
-	private int cSelectIndex;
-	private int cSelectHeight,cSelectWidth;
-	double yShift;
-	private boolean shiftingDown;
+public class MenuDeath{
 	private BufferedImageLoader loader;
-	private Music musicPlayer;
-	private boolean musicOn;
-	
+	private BufferedImage dBackground, dText;
 	public static enum DEATH{
 		RESTART,
 		BACKTOMENU,
@@ -28,48 +21,31 @@ public class MenuDeath {
 	
 	public MenuDeath(){
 		loader = new BufferedImageLoader();
-		musicPlayer = new Music();
-		mdSelectOn = loader.loadImage("/image/mdSelectOn.png");
-		mdSelectOff = loader.loadImage("/image/mdSelectOff.png");
-		hoSelectOn = loader.loadImage("/image/hoSelectOn.png");
-		hoSelectOff = loader.loadImage("/image/hoSelectOff.png");
-		maSelectOn = loader.loadImage("/image/maSelectOn.png");
-		maSelectOff = loader.loadImage("/image/maSelectOff.png");
-		saSelectOn = loader.loadImage("/image/saSelectOn.png");
-		saSelectOff = loader.loadImage("/image/saSelectOff.png");
-		kySelectOn = loader.loadImage("/image/kySelectOn.png");
-		kySelectOff = loader.loadImage("/image/kySelectOff.png");
-		cSelectIndex=(GameSystem.ABSWIDTH-5*mdSelectOn.getWidth())/6;
-		cSelectWidth=mdSelectOn.getWidth();
-		cSelectHeight = mdSelectOn.getHeight();
-		yShift=1;
-		shiftingDown=true;
-		musicOn=false;
+		dBackground = loader.loadImage("/image/gameOverBg.png");
+		dText = loader.loadImage("/image/gameOverText.png");
 	}
 	public void tick(){
-		if(!musicOn){
-			turnOnBgm("/sound/death0.wav");
-		}
+		GameSystem.turnOnBgm("/sound/death0.wav");	
 	}
 	public void render(Graphics g){
 		g.setColor(Color.WHITE);
-		g.fillRect(0, 0, GameSystem.ABSWIDTH+10, GameSystem.ABSHEIGHT+10);
+		g.drawImage(dBackground,0, 0, GameSystem.ABSWIDTH+10, GameSystem.ABSHEIGHT+10,null);
 		g.setFont(new Font("arial",Font.BOLD,45));
 		g.setColor(Color.BLACK);
-		g.drawString("Game Over", GameSystem.ABSWIDTH/3, 100);
+		g.drawImage(dText, GameSystem.ABSWIDTH-GameSystem.ABSWIDTH/3-110, 100,null);
 		g.setFont(new Font("arial",Font.ITALIC,30));
-		g.drawString("Restart Level",GameSystem.ABSWIDTH/2,300);
-		g.drawString("Back to Menu",GameSystem.ABSWIDTH/2,400);
+		g.drawString("Restart Level",GameSystem.ABSWIDTH/2+100,300);
+		g.drawString("Back to Menu",GameSystem.ABSWIDTH/2+100,400);
 		renderSelected(g);
 	}
-	private void renderSelected(Graphics g) {
+	public void renderSelected(Graphics g) {
 			if(dSelected==DEATH.RESTART){
 				g.setColor(Color.RED);
-				g.drawString("Restart Level",GameSystem.ABSWIDTH/2,300);
+				g.drawString("Restart Level",GameSystem.ABSWIDTH/2+100,300);
 			}
 			else if(dSelected==DEATH.BACKTOMENU){
 				g.setColor(Color.RED);
-				g.drawString("Back to Menu",GameSystem.ABSWIDTH/2,400);
+				g.drawString("Back to Menu",GameSystem.ABSWIDTH/2+100,400);
 			} 		
 	}
 	
@@ -86,38 +62,15 @@ public class MenuDeath {
 		}
 		else if(key==KeyEvent.VK_Z){
 			if(dSelected==DEATH.BACKTOMENU){
-				backToMenu();
+				Menu.backToMenu();
 			}
 			else if(dSelected==DEATH.RESTART){
-				toGame();
+				Menu.toGameMode();
 			}
 		}
 	}
 	
-	private void backToMenu() {
-		turnOffBgm();
-		Menu.mState=MENUSTATE.MAIN;
-	}
-	private void toGame() {
-		turnOffBgm();
-		Menu.turnOffBgm();
-		GameSystem.state=STATE.GAME;
-	}
-	public void turnOnBgm(String url){
-		musicOn=true;
-		musicPlayer.playMusic(url);
-	}
-	public void turnOffBgm(){
-		musicOn=false;
-		musicPlayer.stopMusic();
-	}
-	public void playSwitch(){
-		musicPlayer.playVoice("/sound/switch1.wav");
-	}
-	public void playConfirm(){
-		musicPlayer.playVoice("/sound/choice2.wav");
-	}
-	public void playCancel(){
-		musicPlayer.playVoice("/sound/cancel2.wav");
-	}
+	
+	
+	
 }

@@ -20,8 +20,10 @@ public abstract class Player extends Object implements FriendlyInterface{
 	public Player(int x, int y, Game game) {
 		super(x, y, game);
 		loader = new BufferedImageLoader();
-		bombStrength = 1;
-		mp = 100;
+		bombStrength = 50;
+		bombLength=3;
+		hp=100;
+		mp=100;
 		maxSoul=500;
 		soul=maxSoul;
 		super.speed=6;
@@ -95,13 +97,4 @@ public abstract class Player extends Object implements FriendlyInterface{
 		// TODO Auto-generated method stub
 		
 	}
-
-
-
-	
-	
-	//basic getter and setter methods
-
-	//this method crashes if you presses movement buttons in rapid random order....
-	
 }
