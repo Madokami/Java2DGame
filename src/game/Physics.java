@@ -25,14 +25,14 @@ public class Physics {
 		}
 		return -1;
 	}
-	public static boolean hitWall(Object f,LinkedList<WallInterface> wi){
+	public static boolean hitWall(GameObject f,LinkedList<WallInterface> wi){
 		for(int i=0;i<wi.size();i++){
 			if(f.getBounds(31, 31).intersects(wi.get(i).getBounds(31, 31)))
 				return true;
 		}
 		return false;
 	}
-	public static int hitByAttack(Object f, LinkedList<Fire> fi){
+	public static int hitByAttack(GameObject f, LinkedList<Fire> fi){
 		for(int i=0;i<fi.size();i++){
 			if(f.getBounds(GameSystem.SIZE-5, GameSystem.SIZE-5).intersects(fi.get(i).getBounds(GameSystem.SIZE-5, GameSystem.SIZE-5)))
 				//return fi.get(i).game.p.bombStrength;
@@ -40,7 +40,7 @@ public class Physics {
 		}
 		return -1;
 	}
-	public static boolean collide(Object x,Object y){
+	public static boolean collide(GameObject x,GameObject y){
 		if(x.getBounds(GameSystem.SIZE-2, GameSystem.SIZE-2).intersects(y.getBounds(GameSystem.SIZE-2,GameSystem.SIZE-2))){
 			return true;
 		}

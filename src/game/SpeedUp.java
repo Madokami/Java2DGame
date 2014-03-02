@@ -10,7 +10,8 @@ public class SpeedUp extends PowerUps{
 	public void tick(){
 		if(Physics.collide(this,game.p)){
 			game.c.removeEntity(this);
-			game.p.speed=game.p.speed+1;
+			game.p.spd=game.p.spd+1;
+			game.p.pData.saSpd++;
 		}
 	}
 

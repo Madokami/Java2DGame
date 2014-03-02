@@ -1,8 +1,6 @@
 package game;
 
 
-import game.Game.GameState;
-
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
@@ -12,16 +10,19 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 public class GameSystem extends Canvas implements Runnable{
 	
 	
-	
 	public static final int SIZE = 32;
-	public static final int WIDTH=384;
+	public static final int WIDTH=320;
 	public static final int HEIGHT=WIDTH*9/12;
 	public static final int SCALE=2;
 	public static final int ABSWIDTH=WIDTH*SCALE;
@@ -186,6 +187,51 @@ public class GameSystem extends Canvas implements Runnable{
 	
 	public void keyPressed(KeyEvent e){
 		int key = e.getKeyCode();
+		if(key==KeyEvent.VK_S){
+			try
+		      {
+				//String path = getClass().getResource("/save/game.ser").toString();
+				//path = URLDecoder.decode(path);
+				//File newFile = new File(path);
+				//String path = getClass().getResource("/save/game.se").toString();
+				//path = URLDecoder.decode(path);
+				//path = path.concat("r");
+				GameData saveData = new GameData();
+				//game.p.pData.upDatePlayerData(game.p);
+				saveData.updateGameData(game);
+		         FileOutputStream fileOut = new FileOutputStream("C:/Users/Attack on Majou/workspace/Java2DGame/res/save/game.ser");
+		         ObjectOutputStream out = new ObjectOutputStream(fileOut);
+		         //game.pData.upDatePlayerData(game.p);
+		         out.writeObject(saveData);
+		         out.close();
+		         fileOut.close();
+		         System.out.printf("Serialized data is saved in /tmp/game.ser");
+		      }catch(IOException i)
+		      {
+		          i.printStackTrace();
+		      }
+		}
+		else if(key==KeyEvent.VK_L){
+		      try
+		      {
+		    	  GameData loadData;
+		         FileInputStream fileIn = new FileInputStream("C:/Users/Attack on Majou/workspace/Java2DGame/res/save/game.ser");
+		         ObjectInputStream in = new ObjectInputStream(fileIn);
+		          loadData = (GameData) in.readObject();
+		          loadData.loadGame(game);
+		         in.close();
+		         fileIn.close();
+		      }catch(IOException i)
+		      {
+		         i.printStackTrace();
+		         return;
+		      }catch(ClassNotFoundException c)
+		      {
+		         System.out.println("Employee class not found");
+		         c.printStackTrace();
+		         return;
+		      }
+		}
 		if(state==STATE.MENU){
 			menu.keyPressed(key);
 		}

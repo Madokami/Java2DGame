@@ -1,6 +1,6 @@
 package game;
 
-public class Brick extends Object implements WallInterface{
+public class Brick extends GameObject implements WallInterface{
 
 	public Brick(int x, int y, Game game) {
 		super(x, y, game);

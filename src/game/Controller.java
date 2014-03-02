@@ -1,17 +1,17 @@
 package game;
 
 import java.awt.Graphics;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Random;
 
-public class Controller {
+public class Controller implements Serializable {
 	private LinkedList<FriendlyInterface> f= new LinkedList<FriendlyInterface>();
 	private LinkedList<EnemyInterface> e= new LinkedList<EnemyInterface>();
 	private LinkedList<PowerUps> p = new LinkedList<PowerUps>();
 	FriendlyInterface fInt;
 	EnemyInterface eInt;
 	Random r = new Random();
-	Game game;
 	public Controller(){
 		
 	}

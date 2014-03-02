@@ -1,5 +1,6 @@
 package game;
 
+import game.Game.GameState;
 import game.GameSystem.STATE;
 
 import java.awt.Color;
@@ -18,6 +19,7 @@ public class Menu {
 	
 	public MenuDeath mDeath;
 	public MenuChar mChar;
+	public MenuScore mScore;
 	
 	public static Rectangle playButton = new Rectangle(GameSystem.WIDTH/2 + 120, 150,100,50);
 	public static Rectangle helpButton = new Rectangle(GameSystem.WIDTH/2 + 120, 250,100,50);
@@ -31,9 +33,6 @@ public class Menu {
 	Game game;
 	Image gif;
 	
-	public static Music musicPlayer;
-	private static boolean musicOn;
-	
 	//enum: only 1 state can be true at a time.
 	//used to track state of game and change what gets rendered;
 	public static enum MENUSTATE{
@@ -42,7 +41,8 @@ public class Menu {
 		SAVE,
 		LOAD,
 		SETTING,
-		DEATH
+		DEATH,
+		SCORE,
 	};
 	
 	//determines what menu option is currently selected by the user
@@ -59,6 +59,7 @@ public class Menu {
 	public Menu(){
 		mChar = new MenuChar();
 		mDeath = new MenuDeath();
+		mScore = new MenuScore();
 		loader = new BufferedImageLoader();
 		//sample usage
 		//NOTE: use loader.loadGif(path) to load .gif, or else doesn't work.
@@ -71,7 +72,7 @@ public class Menu {
 	
 	//this method is called automatically by GameSystem
 	//use this method to update variables continuously
-	//this method will be called exactly 60 times per second.
+	//this method will be called exactly 30 times per second.
 	public void tick(){
 		if(mState==MENUSTATE.CHOOSECHAR){
 			mChar.tick();
@@ -134,6 +135,9 @@ public class Menu {
 		else if(mState == MENUSTATE.DEATH){
 			mDeath.render(g);
 		}
+		else if(mState == MENUSTATE.SCORE){
+			mScore.render(g);
+		}
 	}
 	
 	//detects user keyboard input. the parameter "key" is passed down from GameSystem.keyPressed
@@ -143,6 +147,9 @@ public class Menu {
 		}
 		else if(mState==MENUSTATE.DEATH){
 			mDeath.keyPressed(key);
+		}
+		else if(mState==MENUSTATE.SCORE){
+			mScore.keyPressed(key);
 		}
 		//when "down" is pressed
 		else if(key==KeyEvent.VK_DOWN){
@@ -190,6 +197,7 @@ public class Menu {
 
 	public static void toGameMode() {
 		GameSystem.turnOffBgm();
+		Game.gState=GameState.WAIT;
 		GameSystem.state=STATE.GAME;
 	}
 	//2 ways to play bgm

@@ -8,6 +8,9 @@ public class Mami extends Player{
 		ssY=1;
 		ss=SpriteData.char3;
 		image=ss.grabImage(ssX, ssY, size, size);
+		
+		status = SpriteData.maStatus;
+		setStatusImages();
 	}
 	public void useUltimate(){
 		
@@ -16,14 +19,14 @@ public class Mami extends Player{
 		int x = rand.nextInt(3);
 		String url = "/sound/maDeath";
 		url=url.concat(Integer.toString(x)).concat(".wav");
-		game.musicPlayer.playVoice(url);
+		GameSystem.musicPlayer.playVoice(url);
 	}
 	public void playUltimateSound(){
 		int x = rand.nextInt(3);
 		String url = "/sound/hoUlt";
 		url=url.concat(Integer.toString(x)).concat(".wav");
 		System.out.println(url);
-		game.musicPlayer.playVoice(url);
+		GameSystem.musicPlayer.playVoice(url);
 	}
 
 }

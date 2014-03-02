@@ -9,4 +9,10 @@ public class SpriteData {
 	public static SpriteSheet char1 = new SpriteSheet(loader.loadImage("/PuellaSet1.png"));
 	public static SpriteSheet char3 = new SpriteSheet(loader.loadImage("/image/PuellaSet3.png"));
 	
+	public static SpriteSheet mdStatus = new SpriteSheet(loader.loadImage("/image/mdStatus.png"));
+	public static SpriteSheet hoStatus = new SpriteSheet(loader.loadImage("/image/hoStatus.png"));
+	public static SpriteSheet saStatus = new SpriteSheet(loader.loadImage("/image/saStatus.png"));
+	public static SpriteSheet maStatus = new SpriteSheet(loader.loadImage("/image/maStatus.png"));
+	public static SpriteSheet kyStatus = new SpriteSheet(loader.loadImage("/image/kyStatus.png"));
+	
 }

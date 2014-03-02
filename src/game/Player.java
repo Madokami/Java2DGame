@@ -1,21 +1,27 @@
 package game;
 
 
-import game.Object.ORIENTATION;
+import game.GameObject.ORIENTATION;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
-public abstract class Player extends Object implements FriendlyInterface{
-	protected int ultCount;
+public abstract class Player extends MovableObject implements FriendlyInterface{
 	public int bombStrength;
 	public int bombLength;
 	public BufferedImage soulGem;
 	public BufferedImageLoader loader;
 	public double maxSoul;
 	public double soul;
-	public double mp;
+	public double mp,maxMp,maxHp;
+	
+	public SpriteSheet status;
+	public BufferedImage okStatus,midDamageStatus,highDamageStatus,despairStatus,statusBg;
+	public final int W_STATUS = 128;
+	public final int H_STATUS = 128;
+	
+	public PlayerData pData;
 
 	public Player(int x, int y, Game game) {
 		super(x, y, game);
@@ -24,10 +30,15 @@ public abstract class Player extends Object implements FriendlyInterface{
 		bombLength=3;
 		hp=100;
 		mp=100;
+		maxHp=hp;
+		maxMp=mp;
 		maxSoul=500;
 		soul=maxSoul;
-		super.speed=6;
+		spd=6;
 		soulGem=loader.loadImage("/image/soulGemRed.png");
+		statusBg=loader.loadImage("/image/statusBg.png");
+		
+		pData = game.pData;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -64,7 +75,10 @@ public abstract class Player extends Object implements FriendlyInterface{
 		Animate.animate(this);
 	}
 	
-
+	public void render(Graphics g){
+		super.render(g);
+		renderPlayerStatus(g);
+	}
 	public void playDamagedSound() {
 		
 	}
@@ -85,14 +99,30 @@ public abstract class Player extends Object implements FriendlyInterface{
 	public void useUltimate(){
 		
 	}
-	public boolean hasUltimate(){
-		if(ultCount>0){
-			return true;
-		}
-		return false;
+	public void setStatusImages() {
+		okStatus = status.grabImage(1, 1, W_STATUS, H_STATUS);
+		midDamageStatus = status.grabImage(2, 1, W_STATUS, H_STATUS);
+		highDamageStatus = status.grabImage(3, 1, W_STATUS, H_STATUS);
+		despairStatus = status.grabImage(4, 1, W_STATUS, H_STATUS);
+		
 	}
 
-
+	public void renderPlayerStatus(Graphics g){
+		//g.drawImage(statusBg,0, GameSystem.ABSHEIGHT-H_STATUS+28,null);
+	if(soul==0){
+			g.drawImage(despairStatus,0, GameSystem.ABSHEIGHT-H_STATUS+14,null);
+			return;
+	}
+	if(hp/maxHp>0.6){
+		g.drawImage(okStatus,0, GameSystem.ABSHEIGHT-H_STATUS+14,null);
+	}
+	else if(hp/maxHp<=0.6&&hp/maxHp>0.3){
+		g.drawImage(midDamageStatus,0, GameSystem.ABSHEIGHT-H_STATUS+14,null);
+	}
+	else if(hp/maxHp<=0.3){
+		g.drawImage(highDamageStatus,0, GameSystem.ABSHEIGHT-H_STATUS+14,null);
+	}
+	}
 	public void renderPlayerHp(Graphics g) {
 		// TODO Auto-generated method stub
 		

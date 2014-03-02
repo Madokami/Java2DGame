@@ -11,6 +11,9 @@ public class Madoka extends Player{
 		ssY=1;
 		ss=SpriteData.char1;
 		image=ss.grabImage(ssX, ssY, size, size);
+		
+		status = SpriteData.mdStatus;
+		setStatusImages();
 		// TODO Auto-generated constructor stub
 	}
 	public void useUltimate(){
@@ -20,14 +23,14 @@ public class Madoka extends Player{
 		int x = rand.nextInt(2);
 		String url = "/sound/mdDeath";
 		url=url.concat(Integer.toString(x)).concat(".wav");
-		game.musicPlayer.playVoice(url);
+		GameSystem.musicPlayer.playVoice(url);
 	}
 	public void playUltimateSound(){
 		int x = rand.nextInt(3);
 		String url = "/sound/hoUlt";
 		url=url.concat(Integer.toString(x)).concat(".wav");
 		System.out.println(url);
-		game.musicPlayer.playVoice(url);
+		GameSystem.musicPlayer.playVoice(url);
 	}
 
 }

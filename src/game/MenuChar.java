@@ -8,7 +8,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
-public class MenuChar{
+public class MenuChar implements GeneralMenu{
 		private BufferedImage mdSelectOn,mdSelectOff,hoSelectOn,hoSelectOff,saSelectOn,saSelectOff,kySelectOn,kySelectOff,maSelectOn,maSelectOff;
 		private BufferedImage mdBg,kyBg,saBg,maBg,hoBg,charSelectBg;
 		private BufferedImage mdName,kyName,saName,maName,hoName;
@@ -17,7 +17,9 @@ public class MenuChar{
 		double yShift;
 		private boolean shiftingDown;
 		private BufferedImageLoader loader;
-		private Music musicPlayer;
+		
+		private int height = 350;
+		private int width = 115;
 		
 		public static enum CHARACTER{
 			MADOKA,
@@ -31,7 +33,6 @@ public class MenuChar{
 		
 		public MenuChar(){
 			loader = new BufferedImageLoader();
-			musicPlayer = new Music();
 			mdSelectOn = loader.loadImage("/image/mdSelectOn.png");
 			mdSelectOff = loader.loadImage("/image/mdSelectOff.png");
 			hoSelectOn = loader.loadImage("/image/hoSelectOn.png");
@@ -76,11 +77,11 @@ public class MenuChar{
 			//	g.drawImage(mdBg,0,0,GameSystem.ABSWIDTH+10,GameSystem.ABSHEIGHT+10,null);
 			//}
 			g.drawImage(charSelectBg,0,0,GameSystem.ABSWIDTH+10,GameSystem.ABSHEIGHT+10,null);
-			g.drawImage(mdSelectOff,cSelectIndex+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift,null);
-			g.drawImage(hoSelectOff,2*cSelectIndex+cSelectWidth+8,(int) yShift,null);
-			g.drawImage(saSelectOff,3*cSelectIndex+2*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift,null);
-			g.drawImage(maSelectOff,4*cSelectIndex+3*cSelectWidth+8,(int)yShift,null);
-			g.drawImage(kySelectOff,5*cSelectIndex+4*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift,null);
+			g.drawImage(mdSelectOff,cSelectIndex+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift+32,null);
+			g.drawImage(hoSelectOff,2*cSelectIndex+cSelectWidth+8,(int) yShift+32,null);
+			g.drawImage(saSelectOff,3*cSelectIndex+2*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift+32,null);
+			g.drawImage(maSelectOff,4*cSelectIndex+3*cSelectWidth+8,(int)yShift+32,null);
+			g.drawImage(kySelectOff,5*cSelectIndex+4*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift+32,null);
 			renderSelected(g);
 		}
 		
@@ -96,27 +97,27 @@ public class MenuChar{
 		public void renderSelected(Graphics g){
 			if(cSelected == CHARACTER.MADOKA){
 				//g.drawImage(mdBg,0,0,GameSystem.ABSWIDTH+10,GameSystem.ABSHEIGHT+10,null);
-				g.drawImage(mdSelectOn,cSelectIndex+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift,null);
-				g.drawImage(mdName,cSelectIndex+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift-64,null);
+				g.drawImage(mdSelectOn,cSelectIndex+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift+32,null);
+				g.drawImage(mdName,cSelectIndex+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift-16,null);
 			}
 			else if(cSelected == CHARACTER.HOMURA){
 				//g.drawImage(hoBg,0,0,GameSystem.ABSWIDTH+10,GameSystem.ABSHEIGHT+10,null);
-				g.drawImage(hoSelectOn,2*cSelectIndex+cSelectWidth+8,(int)yShift,null);
-				g.drawImage(hoName,2*cSelectIndex+cSelectWidth+8,(int)yShift-64,null);
+				g.drawImage(hoSelectOn,2*cSelectIndex+cSelectWidth+8,(int)yShift+32,null);
+				g.drawImage(hoName,2*cSelectIndex+cSelectWidth+8,(int)yShift-16,null);
 			}
 			else if(cSelected == CHARACTER.SAYAKA){
 				//g.drawImage(saBg,0,0,GameSystem.ABSWIDTH+10,GameSystem.ABSHEIGHT+10,null);
-				g.drawImage(saSelectOn,3*cSelectIndex+2*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift,null);
-				g.drawImage(saName,3*cSelectIndex+2*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift-64,null);
+				g.drawImage(saSelectOn,3*cSelectIndex+2*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift+32,null);
+				g.drawImage(saName,3*cSelectIndex+2*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift-16,null);
 				
 			}
 			else if(cSelected == CHARACTER.MAMI){
-				g.drawImage(maSelectOn,4*cSelectIndex+3*cSelectWidth+8,(int)yShift,null);
-				g.drawImage(maName,4*cSelectIndex+3*cSelectWidth+8,(int)yShift-64,null);
+				g.drawImage(maSelectOn,4*cSelectIndex+3*cSelectWidth+8,(int)yShift+32,null);
+				g.drawImage(maName,4*cSelectIndex+3*cSelectWidth+8,(int)yShift-16,null);
 			}
 			else if(cSelected == CHARACTER.KYOUKO){
-				g.drawImage(kySelectOn,5*cSelectIndex+4*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift,null);
-				g.drawImage(kyName,5*cSelectIndex+4*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift-64,null);
+				g.drawImage(kySelectOn,5*cSelectIndex+4*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift+32,null);
+				g.drawImage(kyName,5*cSelectIndex+4*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift-16,null);
 			}
 		}
 
@@ -173,29 +174,41 @@ public class MenuChar{
 			}
 			else if(key==KeyEvent.VK_Z){
 				if(cSelected == CHARACTER.MADOKA){
-					GameSystem.playConfirm();
 					Game.cChosen=Game.CHARACTER.MADOKA;
 				}
 				else if(cSelected == CHARACTER.HOMURA){
-					GameSystem.playConfirm();
 					Game.cChosen=Game.CHARACTER.HOMURA;
 				}
 				else if(cSelected == CHARACTER.SAYAKA){
-					GameSystem.playConfirm();
 					Game.cChosen=Game.CHARACTER.SAYAKA;
 				}
 				else if(cSelected == CHARACTER.MAMI){
-					GameSystem.playConfirm();
 					Game.cChosen=Game.CHARACTER.MAMI;
 				}
 				else if(cSelected == CHARACTER.KYOUKO){
-					GameSystem.playConfirm();
 					Game.cChosen=Game.CHARACTER.KYOUKO;
 				}
+				GameSystem.playConfirm();
+				playSelectionSound();
 				Menu.toGameMode();
 			}
-			
 		}
-		
+		public void playSelectionSound(){
+			if(cSelected == CHARACTER.MADOKA){
+				GameSystem.musicPlayer.playVoice("/sound/mdSelect.wav");
+			}
+			else if(cSelected == CHARACTER.HOMURA){
+				GameSystem.musicPlayer.playVoice("/sound/hoSelect.wav");
+			}
+			else if(cSelected == CHARACTER.SAYAKA){
+				GameSystem.musicPlayer.playVoice("/sound/saSelect.wav");
+			}
+			else if(cSelected == CHARACTER.MAMI){
+				GameSystem.musicPlayer.playVoice("/sound/maSelect.wav");
+			}
+			else if(cSelected == CHARACTER.KYOUKO){
+				GameSystem.musicPlayer.playVoice("/sound/kySelect.wav");
+			}
+		}
 	
 }

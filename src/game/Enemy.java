@@ -1,11 +1,11 @@
 package game;
 
-import game.Object.ORIENTATION;
+import game.GameObject.ORIENTATION;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
-public class Enemy extends Object implements EnemyInterface{
+public class Enemy extends MovableObject implements EnemyInterface{
 	
 	public Enemy(int x,int y, Game game){
 		super(x,y,game);

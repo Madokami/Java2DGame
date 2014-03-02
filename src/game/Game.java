@@ -1,22 +1,27 @@
 package game;
 
 import game.GameSystem.STATE;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.util.LinkedList;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-
 public class Game {
+	public GameData gData;
 	public Player p;
+	public BufferedImage background;
+	public boolean playing;
+	public boolean musicOn;
+	public int duration = 4000;
+	public BufferedImage soulGem1;
+	public BufferedImage soulGem2;
+	public BufferedImage soulGem3;
+	public BufferedImage soulGem4;
+	public BufferedImage hpGauge;
+
 	public boolean playerIsAlive = true;
 	public LinkedList<FriendlyInterface> fi;
 	public LinkedList<EnemyInterface> ei;
@@ -27,25 +32,19 @@ public class Game {
 	public Explode e;
 	public int curLevel;
 	public LevelLoader loader;
-	public BufferedImage background;
-	public boolean playing;
-	public Music musicPlayer;
-	public int enemyCount;
 	public int lastStage=2;
-	public boolean musicOn;
-	public int duration = 4000;
-	public BufferedImage soulGem1;
-	public BufferedImage soulGem2;
-	public BufferedImage soulGem3;
-	public BufferedImage soulGem4;
-
+	public int enemyCount;
+	public boolean victory;
 	
+	private int shift = 428;
+	
+	public PlayerData pData;
 	
 	
 	//handles ticking problems with respect to bomb explosion sound.
 	//"time stop" ability + mass bombing leads to serious lag
 	public int timePastSinceLastExplode=0;
-	public boolean explosionPlayed;
+	public static boolean explosionPlayed;
 	
 	
 	public long renderStageStart;
@@ -79,7 +78,6 @@ public class Game {
 	
 	public Game(GameSystem sys){
 		this.sys = sys;
-		musicPlayer = new Music();
 		playing = false;
 		loader = new LevelLoader(this);
 		c = new Controller();
@@ -95,11 +93,15 @@ public class Game {
 		soulGem2= l.loadImage("/image/soulGemHalfDark.png");
 		soulGem3= l.loadImage("/image/soulGemThreeQuaterDark.png");
 		soulGem4= l.loadImage("/image/soulGemFullDark.png");
+		hpGauge = l.loadImage("/image/hpGauge.png");
+		
+		pData = new PlayerData();
+		pData.loadDefaultValues();
 
 	}
 
 	public void loadLevel(){
-		loader.load(this);
+		loader.load();
 	}
 	public void tick(){
 		if(isWaiting()){
@@ -113,20 +115,21 @@ public class Game {
 				goToDeath();
 				return;
 			}
-			if(enemyCount==0){
+			if(victory){
 				curLevel++;
-				setWait();
-			}
-			if(curLevel>lastStage){
-				setWait();
-				curLevel=1;
-				goToDeath();
+				if(curLevel>lastStage){
+					curLevel=1;
+				}
+				goToScore();
 				return;
 			}
+			
 		}
 		if(Game.gState==Game.GameState.PLAY){
 			event1.tick();
 			event2.tick();
+			GameSystem.turnOnBgm("/sound/delusio_summa.wav");
+			checkVictoryCondition();
 			if(stopTick){
 				return;
 			}
@@ -140,16 +143,13 @@ public class Game {
 			c.tick();
 			e.tick();
 		}
-		if(!musicOn){
-			playMusic();
-		}
 		if(explosionPlayed){
 			if(timePastSinceLastExplode<10){
 				timePastSinceLastExplode++;
 				
 			}
 			else{
-				musicPlayer.reloadExplosion();
+				GameSystem.musicPlayer.reloadExplosion();
 				explosionPlayed=false;
 				timePastSinceLastExplode=0;
 			}
@@ -199,14 +199,7 @@ public class Game {
 	public void stopTick(){
 		stopTick = true;
 	}
-	public void pauseMusic(){
-		musicPlayer.stopMusic();
-	}
-	public void resumeMusic(){
-		musicPlayer.resumeMusic();
-	}
 	public void removeTimedEvents(){
-		resumeMusic();
 		stopTick = false;
 		timeStop = false;
 	}
@@ -215,7 +208,7 @@ public class Game {
 		if(key==KeyEvent.VK_P){
 			GameSystem.state=STATE.PAUSE;
 		}
-		if(gState==GameState.PLAY){
+	if(gState==GameState.PLAY){
 			if(key==KeyEvent.VK_C){
 				p.useUltimate();
 			}
@@ -243,89 +236,94 @@ public class Game {
 	}
 
 	public void keyReleased(int key) {
+	if(gState==GameState.PLAY){
 		if(!p.finishingMove){
 			if(key==KeyEvent.VK_RIGHT){
 				if(p.direction.equals("right")){
 					p.moveStop();
 					//game.p.movable=false;
-					p.moveToNext(p.nextX,p.nextY);
+					//p.moveToNext(p.nextX,p.nextY);
 				}
 			}
 			else if(key==KeyEvent.VK_LEFT){
 				if(p.direction.equals("left")){
 				p.moveStop();
 				//game.p.movable=false;
-				p.moveToNext(p.nextX,p.nextY);
+				//p.moveToNext(p.nextX,p.nextY);
 				}
 			}
 			else if(key==KeyEvent.VK_UP){
 				if(p.direction.equals("up")){
 				p.moveStop();
 				//game.p.movable=false;
-				p.moveToNext(p.nextX,p.nextY);
+				//p.moveToNext(p.nextX,p.nextY);
 				}
 			}
 			else if(key==KeyEvent.VK_DOWN){
 				if(p.direction.equals("down")){
 				p.moveStop();
 				//game.p.movable=false;
-				p.moveToNext(p.nextX,p.nextY);
+				//p.moveToNext(p.nextX,p.nextY);
 				}
 			}
+		}
 		}
 		
 	}
 	public void goToMenu(){
-		stopMusic();
+		GameSystem.turnOffBgm();
 		Menu.mState=Menu.MENUSTATE.MAIN;
 		GameSystem.state=GameSystem.STATE.MENU;
 	}
 	public void goToDeath(){
-		stopMusic();
+		GameSystem.turnOffBgm();
 		Menu.mState=Menu.MENUSTATE.DEATH;
 		GameSystem.state=GameSystem.STATE.MENU;
 	}
-	public void playMusic(){
-		musicPlayer.playBattleMusic();
-		musicOn=true;
-	}
-	public void stopMusic(){
-		musicPlayer.stopMusic();
-		musicOn=false;
+	public void goToScore(){
+		GameSystem.turnOffBgm();
+		Menu.mState=Menu.MENUSTATE.SCORE;
+		GameSystem.state=GameSystem.STATE.MENU;
 	}
 	public void renderPlayerSoul(Graphics g){
-		g.drawImage(p.soulGem,0,GameSystem.ABSHEIGHT-p.soulGem.getHeight(),null);
+		g.drawImage(p.soulGem,shift,GameSystem.ABSHEIGHT-p.soulGem.getHeight(),null);
 		g.setFont(new Font("arial",Font.PLAIN,15));
-		g.drawString((Integer.toString((int)p.soul)), 30, GameSystem.ABSHEIGHT-p.soulGem.getHeight()+50);
+		g.drawString((Integer.toString((int)p.soul)), 30+shift, GameSystem.ABSHEIGHT-p.soulGem.getHeight()+50);
 	}
 	public void renderPlayerHealth(Graphics g){
+		g.drawImage(hpGauge, 90, GameSystem.ABSHEIGHT-75, null);
 		g.setColor(Color.GRAY);
-		g.fillRoundRect(100, GameSystem.ABSHEIGHT-80, 200, 20,10,10);
+		//g.fillRoundRect(100, GameSystem.ABSHEIGHT-80, 200, 10,10,10);
 		g.setColor(Color.GREEN);
-		g.fillRoundRect(100, GameSystem.ABSHEIGHT-80, (int) (p.hp*2), 20,10,10);
+		g.fillRect(138, GameSystem.ABSHEIGHT-62, (int) (p.hp/p.maxHp*120), 7);
 		g.setColor(Color.WHITE);
-		g.drawRoundRect(100, GameSystem.ABSHEIGHT-80, 200, 20,10,10);
+		g.drawRect(138, GameSystem.ABSHEIGHT-62, 120,7);
 	}
 	public void renderPlayerMana(Graphics g){
 		g.setColor(Color.GRAY);
-		g.fillRoundRect(100, GameSystem.ABSHEIGHT-50, 200, 20,10,10);
+		g.fillRoundRect(100+shift, GameSystem.ABSHEIGHT-50, 200, 20,10,10);
 		g.setColor(Color.BLUE);
-		g.fillRoundRect(100, GameSystem.ABSHEIGHT-50, (int) (p.mp*2), 20,10,10);
+		g.fillRect(118, GameSystem.ABSHEIGHT-27, (int) (p.mp/p.maxMp*120), 7);
 		g.setColor(Color.WHITE);
-		g.drawRoundRect(100, GameSystem.ABSHEIGHT-50, 200, 20,10,10);
+		g.drawRect(118, GameSystem.ABSHEIGHT-27,120,7);
 	}
 	public void renderSoulGemState(Graphics g){
 		if(1-p.soul/p.maxSoul>=0.25&&1-p.soul/p.maxSoul<0.5){
-			g.drawImage(soulGem1, 0, GameSystem.ABSHEIGHT-p.soulGem.getHeight(),null);
+			g.drawImage(soulGem1, shift, GameSystem.ABSHEIGHT-p.soulGem.getHeight(),null);
 		}
 		else if(1-p.soul/p.maxSoul>=0.5&&1-p.soul/p.maxSoul<0.75){
-			g.drawImage(soulGem2, 0, GameSystem.ABSHEIGHT-p.soulGem.getHeight(),null);
+			g.drawImage(soulGem2, shift, GameSystem.ABSHEIGHT-p.soulGem.getHeight(),null);
 		}
 		else if(1-p.soul/p.maxSoul>=0.75&&1-p.soul/p.maxSoul<1){
-			g.drawImage(soulGem3, 0, GameSystem.ABSHEIGHT-p.soulGem.getHeight(),null);
+			g.drawImage(soulGem3, shift, GameSystem.ABSHEIGHT-p.soulGem.getHeight(),null);
 		}
 		else if(1-p.soul/p.maxSoul==1){
-			g.drawImage(soulGem4, 0, GameSystem.ABSHEIGHT-p.soulGem.getHeight(),null);
+			g.drawImage(soulGem4, shift, GameSystem.ABSHEIGHT-p.soulGem.getHeight(),null);
+		}
+	}
+	public void checkVictoryCondition(){
+		if(enemyCount<=0){
+			victory=true;
 		}
 	}
 }

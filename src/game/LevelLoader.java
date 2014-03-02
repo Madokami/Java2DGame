@@ -17,14 +17,14 @@ public class LevelLoader {
 	private int duration;
 	
 	public LevelLoader(Game game){
-		this.game = game;
+		this.game=game;
 		loader = new BufferedImageLoader();
 		//path = getClass().getResource("/witch1.gif").getFile();
 		//path = URLDecoder.decode(path);
 		//gif = Toolkit.getDefaultToolkit().createImage(path);
 		gif=loader.loadGif("/witch1.gif");
 	}
-	public synchronized void load(Game game){
+	public synchronized void load(){
 		int stage = game.curLevel;
 		if(stage==1){
 			stage1();
@@ -63,6 +63,7 @@ public class LevelLoader {
 		updateList();
 	}
 	public void reset(){
+		game.victory=false;
 		game.c = new Controller();
 		game.e = new Explode(game);
 		game.playerIsAlive=true;

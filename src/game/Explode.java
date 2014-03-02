@@ -1,11 +1,12 @@
 package game;
 
 import java.awt.Graphics;
+import java.io.Serializable;
 import java.util.LinkedList;
 
 public class Explode {
 	public LinkedList<Fire> f;
-	private LinkedList<WallInterface> w = new LinkedList<WallInterface>();
+	public LinkedList<WallInterface> w = new LinkedList<WallInterface>();
 	
 	public Game game;
 	public boolean[][] wallArray;
@@ -17,8 +18,8 @@ public class Explode {
 		this.game=game;
 	}
 	public void createExplosion(int x, int y, int size,int strength){
-		game.musicPlayer.playExplosion();
-		game.explosionPlayed=true;
+		GameSystem.musicPlayer.playExplosion();
+		Game.explosionPlayed=true;
 		f.add(new Fire(x,y,game,strength));
 		for(int i=1;i<=size;i++){
 			if(x-i<1)

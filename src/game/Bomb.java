@@ -3,7 +3,7 @@ package game;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
-public class Bomb extends Object implements FriendlyInterface{
+public class Bomb extends MovableObject implements FriendlyInterface{
 	public long start;
 	public int strength;
 	public int length;

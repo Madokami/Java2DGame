@@ -20,8 +20,7 @@ import java.net.URLDecoder;
 public class Story {
 	BufferedImageLoader loader;
 	BufferedImage sprite;
-	BufferedImage background,mdTextBox;
-	public static Rectangle textBox = new Rectangle(GameSystem.WIDTH*GameSystem.SCALE/10, GameSystem.HEIGHT*GameSystem.SCALE-160,GameSystem.WIDTH*GameSystem.SCALE*4/5,150);
+	BufferedImage background,mdTextBox,textBox,naTextBox,hoTextBox,maTextBox,saTextBox,kyTextBox,qbTextBox;
 	public static Rectangle helpButton = new Rectangle(GameSystem.WIDTH/2 + 120, 250,100,50);
 	public static Rectangle quitButton = new Rectangle(GameSystem.WIDTH/2 + 120, 350,100,50);
 	BufferedReader br;
@@ -30,18 +29,22 @@ public class Story {
 	String path;
 	String[] lines = new String[4];
 	int lineNum;
-	private Music musicPlayer;
-	private boolean musicOn;
-	
-	private String speaker = "";
+	private boolean speaking;
 	
 	@SuppressWarnings("deprecation")
 	public Story(){
 		loader = new BufferedImageLoader();
-		musicPlayer = new Music();
-		sprite = loader.loadImage("/image/mdStand1.png");
-		background = loader.loadImage("/storyBackground.png");
+		//sprite = loader.loadImage("/image/mdStand1.png");
+		sprite = loader.loadImage("/image/talk/mdTalk3.png");
+		background = loader.loadImage("/image/tempBg.png");
 		mdTextBox = loader.loadImage("/image/mdTextBox.png");
+		textBox = loader.loadImage("/image/naTextBox.png");
+		naTextBox = loader.loadImage("/image/naTextBox.png");
+		hoTextBox = loader.loadImage("/image/hoTextBox.png");
+		kyTextBox = loader.loadImage("/image/kyTextBox.png");
+		saTextBox = loader.loadImage("/image/saTextBox.png");
+		maTextBox = loader.loadImage("/image/mdTextBoxDefault.png");
+		speaking = false;
 			path=getClass().getResource("/script.txt").getFile();
 			path = URLDecoder.decode(path);
 			try {
@@ -55,37 +58,28 @@ public class Story {
 			
 	}
 	public void tick() {
-		if(!musicOn){
-			playMusic();
-		}
-		
-	}
-	private void playMusic() {
-		musicPlayer.playMusic("/sound/bgm1.wav");
-		musicOn=true;
-	}
-	private void stopMusic(){
-		musicOn=false;
-		musicPlayer.stopMusic();
+			GameSystem.turnOnBgm("/sound/bgm1.wav");
 	}
 	public void render(Graphics g){
 		Graphics2D g2d = (Graphics2D)g;
-		Font f1 = new Font("arial",Font.PLAIN,25);
+		Font f1 = new Font("arial",Font.PLAIN,22);
 		g.setFont(f1);
-		g.drawImage(background, 0, 0,GameSystem.WIDTH*GameSystem.SCALE,GameSystem.HEIGHT*GameSystem.SCALE, null);
-		g.drawImage(sprite,GameSystem.WIDTH*GameSystem.SCALE-w,GameSystem.HEIGHT*GameSystem.SCALE-h,w,h,null);
-		g.drawImage(mdTextBox,(GameSystem.ABSWIDTH-mdTextBox.getWidth())/2-170,GameSystem.ABSHEIGHT-mdTextBox.getHeight()-90,GameSystem.WIDTH*GameSystem.SCALE*4/5+200,220,null);
+		g.drawImage(background, 0, 0, null);
+		g.drawImage(sprite,GameSystem.ABSWIDTH-sprite.getWidth(),GameSystem.ABSHEIGHT-sprite.getHeight(),null);
 		g2d.setColor(Color.WHITE);
 		//g2d.draw(textBox);
 		//g2d.fill(textBox);
+		//g.drawImage(naTextBox,-90,370,900,225,null);
+		if(speaking){
+			g.drawImage(textBox,-50,300,700,175,null);
+		}
 		g.setColor(Color.BLACK);
 		renderLines(g);
 	}
 	private void renderLines(Graphics g) {
 		try{
-			g.drawString(speaker,(int)textBox.getX()+10, (int)textBox.getY());
 			for(int i=0;i<lineNum;i++){
-				g.drawString(lines[i],(int)textBox.getX()+10, (int)textBox.getY()+20+i*37);
+				g.drawString(lines[i],120, 378+i*20);
 			}
 			//the above forloop is basically a simplification of the following
 			/*
@@ -132,21 +126,7 @@ public class Story {
 		}catch(Exception abc){
 			System.out.println("can't read from line");
 		}
-		if(isEndOfSection(lines[lineNum])){
-			changeToGameState();
-		}
-		else if(isCharacterName(lines[lineNum])){
-			speaker = lines[lineNum];
-			lineNum=0;
-			try {
-				lines[lineNum]=br.readLine();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		else if(isStopSpeaking(lines[lineNum])){
-			speaker="";
+		while(isSpecialString(lines[lineNum])){
 			lineNum=0;
 			try {
 				lines[lineNum]=br.readLine();
@@ -157,9 +137,28 @@ public class Story {
 		}
 		lineNum++;
 	}
-
+	private boolean isSpecialString(String line){
+		if(isEndOfSection(line)){
+			try {
+				br = new BufferedReader(new FileReader(path));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			//changeToGameState();
+			//also should load some file or else get nullpointer
+			return true;
+		}
+		else if(isCharacterName(line)){
+			return true;
+		}
+		else if(isStopSpeaking(lines[lineNum])){
+			return true;
+		}
+		return false;
+	}
 	private void changeToGameState() {
-		stopMusic();
+		GameSystem.turnOffBgm();
 		GameSystem.state=GameSystem.STATE.GAME;
 	}
 
@@ -172,13 +171,41 @@ public class Story {
 
 	private boolean isStopSpeaking(String s) {
 		if(s.equals("STOPSPEAKING")){
+			speaking=false;
 			return true;
 		}
 		return false;
 	}
 
 	private boolean isCharacterName(String s) {
-		if(s.equals("Madoka:")){
+		if(s.equals("MADOKA:")){
+			textBox=mdTextBox;
+			speaking = true;
+			return true;
+		}
+		else if(s.equals("HOMURA:")){
+			textBox=hoTextBox;
+			speaking = true;
+			return true;
+		}
+		else if(s.equals("SAYAKA:")){
+			textBox=saTextBox;
+			speaking = true;
+			return true;
+		}
+		else if(s.equals("KYOUKO:")){
+			textBox=kyTextBox;
+			speaking = true;
+			return true;
+		}
+		else if(s.equals("MAMI:")){
+			textBox=maTextBox;
+			speaking = true;
+			return true;
+		}
+		else if(s.equals("QB:")){
+			textBox=qbTextBox;
+			speaking = true;
 			return true;
 		}
 		return false;
