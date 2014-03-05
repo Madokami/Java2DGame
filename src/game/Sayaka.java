@@ -14,6 +14,9 @@ public class Sayaka extends Player{
 		image=ss.grabImage(ssX, ssY, size, size);	
 		
 		pData.loadPlayerStatus(this);
+		maxHp=hp;
+		maxMp=mp;
+		maxSoul=soul;
 	}
 	public void useUltimate(){
 		game.event1.startEvent(1000, "sayakaCutIn");
@@ -32,5 +35,8 @@ public class Sayaka extends Player{
 		String url = "/sound/saUlt.wav";
 		System.out.println(url);
 		GameSystem.musicPlayer.playVoice(url);
+	}
+	public void updatePlayerData(){
+		pData.upDatePlayerData(this);
 	}
 }

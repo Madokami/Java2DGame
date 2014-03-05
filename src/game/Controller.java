@@ -6,67 +6,77 @@ import java.util.LinkedList;
 import java.util.Random;
 
 public class Controller implements Serializable {
-	private LinkedList<FriendlyInterface> f= new LinkedList<FriendlyInterface>();
-	private LinkedList<EnemyInterface> e= new LinkedList<EnemyInterface>();
-	private LinkedList<PowerUps> p = new LinkedList<PowerUps>();
-	FriendlyInterface fInt;
-	EnemyInterface eInt;
+	private LinkedList<Player> p = new LinkedList<Player>();
+	private LinkedList<Bomb> b= new LinkedList<Bomb>();
+	private LinkedList<Enemy> e= new LinkedList<Enemy>();
+	private LinkedList<PowerUps> pow = new LinkedList<PowerUps>();
 	Random r = new Random();
 	public Controller(){
 		
 	}
 	public void tick(){
-		for(int i=0;i<f.size();i++){
-			fInt=f.get(i);
-			fInt.tick();
-		}
-		for(int i=0;i<e.size();i++){
-			eInt=e.get(i);
-			eInt.tick();
-		}
 		for(int i=0;i<p.size();i++){
 			p.get(i).tick();
+		}
+		for(int i=0;i<b.size();i++){
+			b.get(i).tick();
+		}
+		for(int i=0;i<e.size();i++){
+			e.get(i).tick();
+		}
+		for(int i=0;i<pow.size();i++){
+			pow.get(i).tick();
 		}
 	}
 	public void render(Graphics g){
 		for(int i=0;i<p.size();i++){
 			p.get(i).render(g);
 		}
-		for(int i=0;i<f.size();i++){
-			fInt=f.get(i);
-			fInt.render(g);
+		for(int i=0;i<pow.size();i++){
+			pow.get(i).render(g);
+		}
+		for(int i=0;i<b.size();i++){
+			b.get(i).render(g);
 		}
 		for(int i=0;i<e.size();i++){
-			eInt=e.get(i);
-			eInt.render(g);
+			e.get(i).render(g);
 		}
 	}
-	public void addEntity(PowerUps o){
+	public void createPlayer(Player o){
 		p.add(o);
 	}
-	public void removeEntity(PowerUps o){
-		p.remove(o);
+	public void addEntity(PowerUps o){
+		pow.add(o);
 	}
-	public void addEntity(FriendlyInterface o){
-		f.add(o);
+	public void removeEntity(PowerUps o){
+		pow.remove(o);
+	}
+	public void addEntity(Bomb o){
+		b.add(o);
 	}
 	
-	public void removeEntity(FriendlyInterface o){
-		f.remove(o);
+	public void removeEntity(Bomb o){
+		b.remove(o);
 	}
-	public void addEntity(EnemyInterface o){
+	public void addEntity(Enemy o){
 		e.add(o);
 	}
-	public void removeEntity(EnemyInterface o){
+	public void removeEntity(Enemy o){
 		e.remove(o);
 	}
-	public LinkedList<FriendlyInterface> getFList(){
-		return f;
+	public LinkedList<Bomb> getBList(){
+		return b;
 	}
-	public LinkedList<EnemyInterface> getEList(){
+	public LinkedList<Enemy> getEList(){
 		return e;
 	}
 	public LinkedList<PowerUps> getPList(){
-		return p;
+		return pow;
+	}
+	public Player getPlayer(){
+		return p.get(0);
+	}
+	public void removePlayer(Player o){
+		p.remove(o);
 	}
 }

@@ -8,7 +8,6 @@ import java.io.Serializable;
 import java.util.LinkedList;
 
 public class GameData implements Serializable{
-	public boolean playerIsAlive;
 	/*
 	public LinkedList<FriendlyInterface> fi;
 	public LinkedList<EnemyInterface> ei;
@@ -20,11 +19,6 @@ public class GameData implements Serializable{
 	public int curLevel;
 	public int lastStage;
 	public int enemyCount;
-	public GameState gState;
-	public CHARACTER cChosen;
-	
-	public STATE state;
-	
 	public PlayerData pData;
 	
 	/*
@@ -34,25 +28,15 @@ public class GameData implements Serializable{
 	*/
 	
 	public void updateGameData(Game game){
-		this.playerIsAlive=game.playerIsAlive;
 		this.curLevel = game.curLevel;
 		this.lastStage = game.lastStage;
-		this.enemyCount = game.enemyCount;
-		this.gState = game.gState;
-		this.cChosen = game.cChosen;
-		state = GameSystem.state;
 		this.pData=game.pData;
 
 	}
 
 	public void loadGame(Game game) {
-		game.playerIsAlive=playerIsAlive;
 		game.curLevel = curLevel;
 		game.lastStage = lastStage;
-		game.enemyCount = enemyCount;
-		//Game.gState=gState;
-		Game.cChosen=cChosen;
-		GameSystem.state=state;
 		game.pData=this.pData;
 	}
 }

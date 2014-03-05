@@ -14,6 +14,11 @@ public class Madoka extends Player{
 		
 		status = SpriteData.mdStatus;
 		setStatusImages();
+		
+		pData.loadPlayerStatus(this);
+		maxHp=hp;
+		maxMp=mp;
+		maxSoul=soul;
 		// TODO Auto-generated constructor stub
 	}
 	public void useUltimate(){
@@ -32,5 +37,7 @@ public class Madoka extends Player{
 		System.out.println(url);
 		GameSystem.musicPlayer.playVoice(url);
 	}
-
+	public void updatePlayerData(){
+		pData.upDatePlayerData(this);
+	}
 }

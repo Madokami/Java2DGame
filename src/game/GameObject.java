@@ -18,7 +18,6 @@ public class GameObject{
 		public BufferedImage image;
 		//stores the height and width of the character sprite
 		public int size = 32;
-		public boolean moving=false;
 	
 		//stores the last moved position of the character
 		public double curX;

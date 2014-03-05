@@ -30,6 +30,7 @@ public class Music{
 		
 	}
 	public void playBgm(){
+		
 		music=loader.newClip("/sound/bgm1.wav");
 		music.loop(music.LOOP_CONTINUOUSLY);
 	}
@@ -61,14 +62,9 @@ public class Music{
 		effect.start();
 	}
 	public synchronized void playMusic(String url){
+		music.stop();
 		music = loader.newClip(url);
-		music.start();
 		music.loop(music.LOOP_CONTINUOUSLY);
-		while(!musicIsPlaying()){
-			music.loop(music.LOOP_CONTINUOUSLY);
-			System.out.println("playMusic called");
-		}
-		System.out.println("playMusic called");
 	}
 	public void playVoice(String url){
 		voice = loader.newClip(url);

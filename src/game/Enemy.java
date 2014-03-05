@@ -5,7 +5,9 @@ import game.GameObject.ORIENTATION;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
-public class Enemy extends MovableObject implements EnemyInterface{
+public class Enemy extends MovableObject{
+	
+	public int score, exp;
 	
 	public Enemy(int x,int y, Game game){
 		super(x,y,game);
@@ -15,6 +17,8 @@ public class Enemy extends MovableObject implements EnemyInterface{
 		ss=SpriteData.char2;
 		image = ss.grabImage(ssX, ssY, size, size);
 		moveDown();
+		score = 50;
+		exp = 50;
 	}
 	public void tick(){
 		super.tick();
@@ -27,6 +31,7 @@ public class Enemy extends MovableObject implements EnemyInterface{
 		if(hp<=0){
 			game.enemyCount--;
 			game.c.removeEntity(this);
+			providePoints(game.p);
 		}
 		/*
 		if(super.x<=0)
@@ -43,6 +48,10 @@ public class Enemy extends MovableObject implements EnemyInterface{
 		*/
 		Animate.animate(this);
 	
+	}
+	public void providePoints(Player p){
+		p.expCurrent+=exp;
+		p.score+=score;
 	}
 	
 }

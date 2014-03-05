@@ -19,6 +19,11 @@ public class Homura extends Player{
 		
 		status = SpriteData.hoStatus;
 		setStatusImages();
+		
+		pData.loadPlayerStatus(this);
+		maxHp=hp;
+		maxMp=mp;
+		maxSoul=soul;
 		// TODO Auto-generated constructor stub
 	}
 	public void render(Graphics g){
@@ -52,5 +57,7 @@ public class Homura extends Player{
 	public void playDamagedSound(){
 		
 	}
-	
+	public void updatePlayerData(){
+		pData.upDatePlayerData(this);
+	}
 }

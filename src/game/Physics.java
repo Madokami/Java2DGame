@@ -3,21 +3,25 @@ package game;
 import java.util.LinkedList;
 
 public class Physics {
-	public static boolean collision(FriendlyInterface f,LinkedList<EnemyInterface> ei){
+	public static boolean collision(Player p,LinkedList<Enemy> ei){
 		for(int i=0;i<ei.size();i++){
-			if(f.getBounds(32,32).intersects(ei.get(i).getBounds(32,32))){
+			if(p.getBounds(32,32).intersects(ei.get(i).getBounds(32,32))){
 				return true;
 			}
 		}
 		return false;
 	}
-	public static boolean collision(FriendlyInterface f,EnemyInterface e){
-		if(f.getBounds(32,32).intersects(e.getBounds(32,32))){
-			return true;
+	public static Bomb onTopOfBomb(Player p,LinkedList<Bomb> bList){
+		Bomb ret =null;
+		for(int i=0;i<bList.size();i++){
+			if(p.xGridNearest==bList.get(i).xGridNearest&&p.yGridNearest==bList.get(i).yGridNearest){
+				ret = bList.get(i);
+				return ret;
+			}
 		}
-		return false;
+		return ret;
 	}
-	public static int collision(WallInterface w,LinkedList<EnemyInterface> ei){
+	public static int collision(WallInterface w,LinkedList<Enemy> ei){
 		for(int i=0;i<ei.size();i++){
 			if(w.getBounds(32,32).intersects(ei.get(i).getBounds(32,32))){
 				return i;

@@ -15,4 +15,6 @@ public class SpriteData {
 	public static SpriteSheet maStatus = new SpriteSheet(loader.loadImage("/image/maStatus.png"));
 	public static SpriteSheet kyStatus = new SpriteSheet(loader.loadImage("/image/kyStatus.png"));
 	
+	public static SpriteSheet numSmall =  new SpriteSheet(loader.loadImage("/image/numSmall.png"));
+	
 }

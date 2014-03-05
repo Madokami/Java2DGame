@@ -29,15 +29,19 @@ public class GameSystem extends Canvas implements Runnable{
 	public static final int ABSHEIGHT=HEIGHT*SCALE;
 	public static final int GRIDW=WIDTH*SCALE/SIZE;
 	public static final int GRIDH=HEIGHT*SCALE/SIZE;
-	public static final String TITLE="Sis Puella Magica";
+	public static final String TITLE="Temp Name";
 	public JFrame frame;
 	private boolean running= false;
 	private Thread thread;
 	private BufferedImage image = new BufferedImage(WIDTH*SCALE,HEIGHT*SCALE,BufferedImage.TYPE_INT_RGB);
 	public static Music musicPlayer;
+	
+	
 	public Menu menu;
 	public Story story;
 	public Game game;
+	
+	
 	public static boolean musicOn;
 	
 	public static enum STATE{
@@ -52,9 +56,9 @@ public class GameSystem extends Canvas implements Runnable{
 	public Controller c; 
 	public Explode e;
 	public void init(){
-		menu = new Menu();
-		story = new Story();
 		game = new Game(this);
+		menu = new Menu(game);
+		story = new Story();
 		//m = new Menu2(this);
 		this.requestFocus();
 		//bgmPlayer=new Music();
@@ -196,9 +200,9 @@ public class GameSystem extends Canvas implements Runnable{
 				//String path = getClass().getResource("/save/game.se").toString();
 				//path = URLDecoder.decode(path);
 				//path = path.concat("r");
-				GameData saveData = new GameData();
+				 GameData saveData = game.gData;
+				 saveData.updateGameData(game);
 				//game.p.pData.upDatePlayerData(game.p);
-				saveData.updateGameData(game);
 		         FileOutputStream fileOut = new FileOutputStream("C:/Users/Attack on Majou/workspace/Java2DGame/res/save/game.ser");
 		         ObjectOutputStream out = new ObjectOutputStream(fileOut);
 		         //game.pData.upDatePlayerData(game.p);
@@ -215,12 +219,14 @@ public class GameSystem extends Canvas implements Runnable{
 		      try
 		      {
 		    	  GameData loadData;
-		         FileInputStream fileIn = new FileInputStream("C:/Users/Attack on Majou/workspace/Java2DGame/res/save/game.ser");
-		         ObjectInputStream in = new ObjectInputStream(fileIn);
+		          FileInputStream fileIn = new FileInputStream("C:/Users/Attack on Majou/workspace/Java2DGame/res/save/game.ser");
+		          ObjectInputStream in = new ObjectInputStream(fileIn);
 		          loadData = (GameData) in.readObject();
 		          loadData.loadGame(game);
-		         in.close();
-		         fileIn.close();
+		          menu.mChar.handler=new AttributeHandler(game);
+		          System.out.println("Game loaded");
+		          in.close();
+		          fileIn.close();
 		      }catch(IOException i)
 		      {
 		         i.printStackTrace();
@@ -248,6 +254,7 @@ public class GameSystem extends Canvas implements Runnable{
 				state=STATE.GAME;
 			}
 		}
+		return;
 	
 	}
 	

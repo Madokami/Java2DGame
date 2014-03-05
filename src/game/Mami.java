@@ -11,6 +11,11 @@ public class Mami extends Player{
 		
 		status = SpriteData.maStatus;
 		setStatusImages();
+		
+		pData.loadPlayerStatus(this);
+		maxHp=hp;
+		maxMp=mp;
+		maxSoul=soul;
 	}
 	public void useUltimate(){
 		
@@ -28,5 +33,7 @@ public class Mami extends Player{
 		System.out.println(url);
 		GameSystem.musicPlayer.playVoice(url);
 	}
-
+	public void updatePlayerData(){
+		pData.upDatePlayerData(this);
+	}
 }

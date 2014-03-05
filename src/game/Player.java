@@ -7,7 +7,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
-public abstract class Player extends MovableObject implements FriendlyInterface{
+public abstract class Player extends MovableObject{
 	public int bombStrength;
 	public int bombLength;
 	public BufferedImage soulGem;
@@ -15,6 +15,7 @@ public abstract class Player extends MovableObject implements FriendlyInterface{
 	public double maxSoul;
 	public double soul;
 	public double mp,maxMp,maxHp;
+	public double bombSpd;
 	
 	public SpriteSheet status;
 	public BufferedImage okStatus,midDamageStatus,highDamageStatus,despairStatus,statusBg;
@@ -22,6 +23,13 @@ public abstract class Player extends MovableObject implements FriendlyInterface{
 	public final int H_STATUS = 128;
 	
 	public PlayerData pData;
+	
+	public int level;
+	public int expCurrent;
+	public int BP;
+	public int score;
+	
+	public LevelUp levelUpdater;
 
 	public Player(int x, int y, Game game) {
 		super(x, y, game);
@@ -33,12 +41,14 @@ public abstract class Player extends MovableObject implements FriendlyInterface{
 		maxHp=hp;
 		maxMp=mp;
 		maxSoul=500;
+		bombSpd=10;
 		soul=maxSoul;
 		spd=6;
 		soulGem=loader.loadImage("/image/soulGemRed.png");
 		statusBg=loader.loadImage("/image/statusBg.png");
 		
 		pData = game.pData;
+		levelUpdater = new LevelUp();
 		// TODO Auto-generated constructor stub
 	}
 
@@ -54,17 +64,17 @@ public abstract class Player extends MovableObject implements FriendlyInterface{
 		}
 		if(hp<=0){
 			playDeathSound();
-			game.c.removeEntity(this);
+			game.c.removePlayer(this);
 			game.playerIsAlive=false;
 		}
 		if(soul>0){
-			if(hp<100){
+			if(hp<maxHp){
 				soul--;
 				hp=hp+0.2;
 			}
 		}
 		if(soul>0){
-			if(mp<100){
+			if(mp<maxMp){
 				soul--;
 				mp=mp+0.2;
 			}
@@ -72,6 +82,7 @@ public abstract class Player extends MovableObject implements FriendlyInterface{
 		
 	
 		//changes the player's "playerImage" depending on movement orientation
+		levelUpdater.checkIfLevelUp(this);
 		Animate.animate(this);
 	}
 	
@@ -127,4 +138,29 @@ public abstract class Player extends MovableObject implements FriendlyInterface{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public void kickBomb(){
+		Bomb kicked = Physics.onTopOfBomb(this, game.bList);
+		if(kicked!=null){
+			if(direction.equals("up")){
+				kicked.velY=-1*bombSpd;
+			}
+			else if(direction.equals("down")){
+				kicked.velY=bombSpd;
+			}
+			else if(direction.equals("left")){
+				kicked.velX=-1*bombSpd;
+			}
+			else if(direction.equals("right")){
+				kicked.velX=bombSpd;
+			}
+		}
+	}
+
+
+	public void updatePlayerData() {
+		// will be overwritten
+		
+	}
+	
 }

@@ -1,6 +1,8 @@
 package game;
 
+import game.GameObject.ORIENTATION;
 import game.GameSystem.STATE;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -10,6 +12,8 @@ import java.io.Serializable;
 import java.util.LinkedList;
 
 public class Game {
+	public GameTimer timer;
+	
 	public GameData gData;
 	public Player p;
 	public BufferedImage background;
@@ -23,8 +27,8 @@ public class Game {
 	public BufferedImage hpGauge;
 
 	public boolean playerIsAlive = true;
-	public LinkedList<FriendlyInterface> fi;
-	public LinkedList<EnemyInterface> ei;
+	public LinkedList<Bomb> bList;
+	public LinkedList<Enemy> eList;
 	public LinkedList<WallInterface> wi;
 	public LinkedList<Fire> fireList;
 	public LinkedList<PowerUps> powerUpList;
@@ -77,6 +81,7 @@ public class Game {
 	public static CHARACTER cChosen = CHARACTER.HOMURA;
 	
 	public Game(GameSystem sys){
+		timer = new GameTimer();
 		this.sys = sys;
 		playing = false;
 		loader = new LevelLoader(this);
@@ -97,6 +102,8 @@ public class Game {
 		
 		pData = new PlayerData();
 		pData.loadDefaultValues();
+		gData = new GameData();
+		
 
 	}
 
@@ -120,12 +127,15 @@ public class Game {
 				if(curLevel>lastStage){
 					curLevel=1;
 				}
+				p.updatePlayerData();
+				gData.updateGameData(this);
 				goToScore();
 				return;
 			}
 			
 		}
 		if(Game.gState==Game.GameState.PLAY){
+			timer.tick();
 			event1.tick();
 			event2.tick();
 			GameSystem.turnOnBgm("/sound/delusio_summa.wav");
@@ -142,6 +152,8 @@ public class Game {
 			}
 			c.tick();
 			e.tick();
+			System.out.println(pData.kyBP);
+			//System.out.println(p.BP);
 		}
 		if(explosionPlayed){
 			if(timePastSinceLastExplode<10){
@@ -190,6 +202,7 @@ public class Game {
 			renderPlayerHealth(g);
 			renderPlayerMana(g);
 			renderSoulGemState(g);
+			timer.render(g);
 			}
 		
 	}
@@ -216,30 +229,49 @@ public class Game {
 				c.addEntity(new Bomb(p.xGridNearest,p.yGridNearest,this));
 				
 			}
-		}
-		if(!p.finishingMove){
-			if(key==KeyEvent.VK_RIGHT){
-				p.moveRight();
+			else if(key==KeyEvent.VK_X){
+				p.kickBomb();
 			}
-			else if(key==KeyEvent.VK_LEFT){
-				p.moveLeft();
-			}
-			else if(key==KeyEvent.VK_UP){
-				p.moveUp();
-			}
-			else if(key==KeyEvent.VK_DOWN){
-				p.moveDown();	
-			}
+				if(key==KeyEvent.VK_RIGHT){
+					p.buttonReleased=false;
+					p.moveRight();
+				}
+				else if(key==KeyEvent.VK_LEFT){
+					p.buttonReleased=false;
+					p.moveLeft();
+				}
+				else if(key==KeyEvent.VK_UP){
+					p.buttonReleased=false;
+					p.moveUp();
+				}
+				else if(key==KeyEvent.VK_DOWN){
+					p.buttonReleased=false;
+					p.moveDown();	
+				}
 			
 		}
 		
 	}
 
 	public void keyReleased(int key) {
+	if(key==KeyEvent.VK_RIGHT&&p.orientation==ORIENTATION.RIGHT){
+		p.buttonReleased=true;
+	}
+	else if(key==KeyEvent.VK_LEFT&&p.orientation==ORIENTATION.LEFT){
+		p.buttonReleased=true;
+	}
+	else if(key==KeyEvent.VK_UP&&p.orientation==ORIENTATION.UP){
+		p.buttonReleased=true;
+	}
+	else if(key==KeyEvent.VK_DOWN&&p.orientation==ORIENTATION.DOWN){
+		p.buttonReleased=true;
+	}
+	/*
 	if(gState==GameState.PLAY){
 		if(!p.finishingMove){
 			if(key==KeyEvent.VK_RIGHT){
 				if(p.direction.equals("right")){
+					p.buttonPressed=false;
 					p.moveStop();
 					//game.p.movable=false;
 					//p.moveToNext(p.nextX,p.nextY);
@@ -247,29 +279,34 @@ public class Game {
 			}
 			else if(key==KeyEvent.VK_LEFT){
 				if(p.direction.equals("left")){
-				p.moveStop();
+					p.buttonPressed=false;
+					p.moveStop();
 				//game.p.movable=false;
 				//p.moveToNext(p.nextX,p.nextY);
 				}
 			}
 			else if(key==KeyEvent.VK_UP){
 				if(p.direction.equals("up")){
-				p.moveStop();
+					p.buttonPressed=false;
+					p.moveStop();
 				//game.p.movable=false;
 				//p.moveToNext(p.nextX,p.nextY);
 				}
 			}
 			else if(key==KeyEvent.VK_DOWN){
 				if(p.direction.equals("down")){
-				p.moveStop();
+					p.buttonPressed=false;
+					p.moveStop();
 				//game.p.movable=false;
 				//p.moveToNext(p.nextX,p.nextY);
 				}
 			}
 		}
 		}
-		
+
+		*/
 	}
+	
 	public void goToMenu(){
 		GameSystem.turnOffBgm();
 		Menu.mState=Menu.MENUSTATE.MAIN;

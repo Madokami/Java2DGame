@@ -16,7 +16,6 @@ import java.awt.image.BufferedImage;
 public class Menu {
 	//you can delete these 3 Rectangle objects. They are only used to track the position of text
 	//However, I have changed menu input from mouse to keyboard because keyboard is a lot easier to code.
-	
 	public MenuDeath mDeath;
 	public MenuChar mChar;
 	public MenuScore mScore;
@@ -30,7 +29,7 @@ public class Menu {
 	BufferedImage start;
 	BufferedImage menu;
 	BufferedImage help;
-	Game game;
+	public Game game;
 	Image gif;
 	
 	//enum: only 1 state can be true at a time.
@@ -56,8 +55,10 @@ public class Menu {
 	public static SELECTED selected = SELECTED.STORY;
 	public static MENUSTATE mState = MENUSTATE.MAIN;
 	
-	public Menu(){
-		mChar = new MenuChar();
+	public Menu(Game game){
+		this.game=game;
+		
+		mChar = new MenuChar(game);
 		mDeath = new MenuDeath();
 		mScore = new MenuScore();
 		loader = new BufferedImageLoader();
@@ -81,7 +82,7 @@ public class Menu {
 			mDeath.tick();
 		}
 		else{
-			GameSystem.turnOnBgm();
+			GameSystem.turnOnBgm("/sound/music/theme1.wav");
 		}
 	}
 	
@@ -183,6 +184,8 @@ public class Menu {
 				else if(Menu.selected==Menu.SELECTED.ARCADE){
 					//change Menu state to CHOOSECHAR state.
 					GameSystem.playConfirm();
+					mChar.setChooseChar();
+					mChar.yShift=1;
 					Menu.mState=Menu.MENUSTATE.CHOOSECHAR;
 				}
 			}

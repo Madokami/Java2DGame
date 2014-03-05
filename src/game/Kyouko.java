@@ -11,6 +11,11 @@ public class Kyouko extends Player{
 	
 		status = SpriteData.kyStatus;
 		setStatusImages();
+		
+		pData.loadPlayerStatus(this);
+		maxHp=hp;
+		maxMp=mp;
+		maxSoul=soul;
 	}
 
 	public void useUltimate(){
@@ -29,6 +34,8 @@ public class Kyouko extends Player{
 		System.out.println(url);
 		GameSystem.musicPlayer.playVoice(url);
 	}
-
+	public void updatePlayerData(){
+		pData.upDatePlayerData(this);
+	}
 
 }

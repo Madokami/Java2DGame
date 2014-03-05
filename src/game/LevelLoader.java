@@ -37,14 +37,14 @@ public class LevelLoader {
 		reset();
 		game.background=loader.loadImage("/background.png");
 		//created the player depending on the player chosen state
-		createPlayer(7,15);
+		createPlayer(7,11);
 		for(int i=0;i<GameSystem.GRIDW;i=i+3){
 			game.c.addEntity(new Enemy(i,0,game));
 			game.enemyCount++;
 		}
 		//adding bricks
 		for(int i=2;i<GameSystem.GRIDW-2;i++){
-			for(int j=2;j<14;j++){
+			for(int j=2;j<8;j++){
 			game.e.addEntity(new Brick(i,j,game));
 			}
 		}
@@ -70,8 +70,8 @@ public class LevelLoader {
 		game.enemyCount=0;
 	}
 	public void updateList(){
-		game.fi=game.c.getFList();
-		game.ei=game.c.getEList();
+		game.bList=game.c.getBList();
+		game.eList=game.c.getEList();
 		game.wi=game.e.getWList();
 		game.powerUpList=game.c.getPList();
 		game.fireList=game.e.f;
@@ -94,23 +94,20 @@ public class LevelLoader {
 	}
 	private void createPlayer(int i, int j) {
 		if(game.cChosen==Game.CHARACTER.MADOKA){
-			game.c.addEntity(new Madoka(i,j,game));
+			game.c.createPlayer(new Madoka(i,j,game));
 		}
 		else if(game.cChosen==Game.CHARACTER.HOMURA){
-			game.c.addEntity(new Homura(i,j,game));
+			game.c.createPlayer(new Homura(i,j,game));
 		}
 		else if(game.cChosen==Game.CHARACTER.SAYAKA){
-			game.c.addEntity(new Sayaka(i,j,game));
-			game.p = (Player) game.c.getFList().getLast();
+			game.c.createPlayer(new Sayaka(i,j,game));
 		}
 		else if(game.cChosen==Game.CHARACTER.MAMI){
-			game.c.addEntity(new Mami(i,j,game));
-			game.p = (Player) game.c.getFList().getLast();
+			game.c.createPlayer(new Mami(i,j,game));
 		}
 		else if(game.cChosen==Game.CHARACTER.KYOUKO){
-			game.c.addEntity(new Kyouko(i,j,game));
-			game.p = (Player) game.c.getFList().getLast();
+			game.c.createPlayer(new Kyouko(i,j,game));
 		}
-		game.p = (Player) game.c.getFList().getLast();
+		game.p = game.c.getPlayer();
 	}
 }
