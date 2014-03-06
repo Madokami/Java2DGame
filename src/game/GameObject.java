@@ -25,6 +25,9 @@ public class GameObject{
 		//detects hitting bricks
 		public int ssX=1;
 		public int ssY=1;
+		public int ssWidth=32;
+		public int ssHeight=32;
+		public int frames = 3;
 		
 		int targetX,targetY;
 		
@@ -34,7 +37,7 @@ public class GameObject{
 		Random rand;
 		
 		// MS is how fast the sprite changes pose
-		public final double MS = 0.2;
+		public double MS = 0.2;
 		public double velX = 0;
 		public double velY = 0;
 		public Game game;

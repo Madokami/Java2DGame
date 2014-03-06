@@ -22,6 +22,9 @@ public class Madoka extends Player{
 		// TODO Auto-generated constructor stub
 	}
 	public void useUltimate(){
+		game.c.addEntity(new PinkArrow(xGridNearest,yGridNearest,game,this));
+	}
+	public void useAbility1(){
 		
 	}
 	public void playDeathSound(){

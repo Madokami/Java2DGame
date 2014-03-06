@@ -32,6 +32,8 @@ public class Game {
 	public LinkedList<WallInterface> wi;
 	public LinkedList<Fire> fireList;
 	public LinkedList<PowerUps> powerUpList;
+	public LinkedList<Projectile> projectileList;
+	
 	public Controller c; 
 	public Explode e;
 	public int curLevel;
@@ -152,8 +154,6 @@ public class Game {
 			}
 			c.tick();
 			e.tick();
-			System.out.println(pData.kyBP);
-			//System.out.println(p.BP);
 		}
 		if(explosionPlayed){
 			if(timePastSinceLastExplode<10){

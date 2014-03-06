@@ -75,6 +75,7 @@ public class LevelLoader {
 		game.wi=game.e.getWList();
 		game.powerUpList=game.c.getPList();
 		game.fireList=game.e.f;
+		game.projectileList=game.c.getProjectileList();
 	}
 	
 	public void renderStart(int duration){

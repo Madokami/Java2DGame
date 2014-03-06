@@ -56,7 +56,7 @@ public class PlayerData implements Serializable {
 		//mdMaxHp=100;
 		mdMp=200;
 		//mdMaxMp=200;
-		mdSpd=6;
+		mdSpd=12;
 		mdSoul=500;
 		//mdMaxSoul=500;
 		mdBombStrength = 40;

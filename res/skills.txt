@@ -1,0 +1,31 @@
+md:
+1. charged arrow: straight line penetrating fire, charged;
+2. cluster arrow : aoe some distance ahead of character;
+3. madokami mode;
+4. shooting star : full screen damage;
+
+
+ho:
+1. rpg;
+2. grenade;
+3. speed up;
+4. time stop;
+
+
+sa:
+1. slash;
+2. blink;
+3. heal;
+4. splash stinger: high damage in front;
+
+ma:
+1. tiro;
+2. regare vastaria: aoe slow;
+3. summon guns
+4. tiro finale;
+
+ky:
+1. something meele horizontal aoe;
+2.shield;
+3.rosso phatasma;
+4. self destruct, use hp and mp to cast;

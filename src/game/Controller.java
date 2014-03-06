@@ -10,6 +10,7 @@ public class Controller implements Serializable {
 	private LinkedList<Bomb> b= new LinkedList<Bomb>();
 	private LinkedList<Enemy> e= new LinkedList<Enemy>();
 	private LinkedList<PowerUps> pow = new LinkedList<PowerUps>();
+	private LinkedList<Projectile> projectiles = new LinkedList<Projectile>();
 	Random r = new Random();
 	public Controller(){
 		
@@ -27,6 +28,9 @@ public class Controller implements Serializable {
 		for(int i=0;i<pow.size();i++){
 			pow.get(i).tick();
 		}
+		for(int i=0;i<projectiles.size();i++){
+			projectiles.get(i).tick();
+		}
 	}
 	public void render(Graphics g){
 		for(int i=0;i<p.size();i++){
@@ -41,6 +45,9 @@ public class Controller implements Serializable {
 		for(int i=0;i<e.size();i++){
 			e.get(i).render(g);
 		}
+		for(int i=0;i<projectiles.size();i++){
+			projectiles.get(i).render(g);
+		}
 	}
 	public void createPlayer(Player o){
 		p.add(o);
@@ -50,6 +57,12 @@ public class Controller implements Serializable {
 	}
 	public void removeEntity(PowerUps o){
 		pow.remove(o);
+	}
+	public void addEntity(Projectile o){
+		projectiles.add(o);
+	}
+	public void removeEntity(Projectile o){
+		projectiles.remove(o);
 	}
 	public void addEntity(Bomb o){
 		b.add(o);
@@ -72,6 +85,9 @@ public class Controller implements Serializable {
 	}
 	public LinkedList<PowerUps> getPList(){
 		return pow;
+	}
+	public LinkedList<Projectile> getProjectileList(){
+		return projectiles;
 	}
 	public Player getPlayer(){
 		return p.get(0);

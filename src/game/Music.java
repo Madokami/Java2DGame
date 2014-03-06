@@ -2,6 +2,7 @@ package game;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 
 
 
@@ -13,6 +14,9 @@ public class Music{
     Clip effect;
     Clip explosion;
     Clip sisPuellaMagica;
+    
+    public static int musicVolume,soundVolume,voiceVolume;
+    
     AudioLoader loader;
 	public Music(){
 		//musicFile=new File("/bgm1.wav");
@@ -30,7 +34,6 @@ public class Music{
 		
 	}
 	public void playBgm(){
-		
 		music=loader.newClip("/sound/bgm1.wav");
 		music.loop(music.LOOP_CONTINUOUSLY);
 	}
@@ -64,6 +67,7 @@ public class Music{
 	public synchronized void playMusic(String url){
 		music.stop();
 		music = loader.newClip(url);
+		setMusicVolume(musicVolume);
 		music.loop(music.LOOP_CONTINUOUSLY);
 	}
 	public void playVoice(String url){
@@ -77,5 +81,10 @@ public class Music{
 		if(music.isActive())
 			return true;
 		return false;
+	}
+	
+	public void setMusicVolume(int value){
+		FloatControl volume = (FloatControl) music.getControl(FloatControl.Type.MASTER_GAIN);
+		volume.setValue(value);
 	}
 }

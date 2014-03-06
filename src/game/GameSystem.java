@@ -191,7 +191,8 @@ public class GameSystem extends Canvas implements Runnable{
 	
 	public void keyPressed(KeyEvent e){
 		int key = e.getKeyCode();
-		if(key==KeyEvent.VK_S){
+		int save = KeyEvent.getExtendedKeyCodeForChar('s');
+		if(key==save){
 			try
 		      {
 				//String path = getClass().getResource("/save/game.ser").toString();

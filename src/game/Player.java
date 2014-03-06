@@ -156,7 +156,9 @@ public abstract class Player extends MovableObject{
 			}
 		}
 	}
-
+	public void useAbility1(){
+		
+	}
 
 	public void updatePlayerData() {
 		// will be overwritten
