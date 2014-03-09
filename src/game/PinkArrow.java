@@ -6,25 +6,25 @@ public class PinkArrow extends Projectile{
 		super(x, y, game,o);
 		BufferedImageLoader loader = new BufferedImageLoader();
 		ss = SpriteData.magicalArraw;
-		this.ssX=7;
+		this.ssX=1;
 		this.ssY=1;
 		this.ssWidth=48;
 		this.ssHeight=48;
-		this.MS=1;
+		this.MS=0.6;
 		if(o.orientation==ORIENTATION.RIGHT){
-			velX=40;
+			velX=20;
 			direction="right";
 		}
 		else if(o.orientation==ORIENTATION.LEFT){
-			velX=-1*40;
+			velX=-1*20;
 			direction="left";
 		}
 		if(o.orientation==ORIENTATION.UP){
-			velY=-1*40;
+			velY=-1*20;
 			direction="up";
 		}
 		if(o.orientation==ORIENTATION.DOWN){
-			velY=40;
+			velY=20;
 			direction="down";
 		}
 	}

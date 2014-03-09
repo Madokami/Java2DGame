@@ -3,13 +3,13 @@ package game;
 import java.util.LinkedList;
 
 public class Physics {
-	public static boolean collision(Player p,LinkedList<Enemy> ei){
+	public static int collision(Player p,LinkedList<Enemy> ei){
 		for(int i=0;i<ei.size();i++){
 			if(p.getBounds(32,32).intersects(ei.get(i).getBounds(32,32))){
-				return true;
+				return i;
 			}
 		}
-		return false;
+		return -1;
 	}
 	public static Bomb onTopOfBomb(Player p,LinkedList<Bomb> bList){
 		Bomb ret =null;
@@ -21,7 +21,7 @@ public class Physics {
 		}
 		return ret;
 	}
-	public static int collision(WallInterface w,LinkedList<Enemy> ei){
+	public static int collision(GameObject w,LinkedList<Enemy> ei){
 		for(int i=0;i<ei.size();i++){
 			if(w.getBounds(32,32).intersects(ei.get(i).getBounds(32,32))){
 				return i;
@@ -29,12 +29,12 @@ public class Physics {
 		}
 		return -1;
 	}
-	public static boolean hitWall(GameObject f,LinkedList<WallInterface> wi){
+	public static int hitWall(GameObject f,LinkedList<Brick> wi){
 		for(int i=0;i<wi.size();i++){
 			if(f.getBounds(31, 31).intersects(wi.get(i).getBounds(31, 31)))
-				return true;
+				return i;
 		}
-		return false;
+		return -1;
 	}
 	public static int hitByAttack(GameObject f, LinkedList<Fire> fi){
 		for(int i=0;i<fi.size();i++){

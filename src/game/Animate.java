@@ -1,5 +1,6 @@
 package game;
 
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 public class Animate {
@@ -26,6 +27,30 @@ public class Animate {
 		}
 		else if(o.direction.equals("stand")){
 			return;
+		}
+		
+	}
+
+	public static void animateGem(Player p) {
+		// TODO Auto-generated method stub
+		p.soulGemImage=p.soulGemSprite.grabImage(1, 1, Player.soulGemWidth, Player.soulGemHeight);
+		if(1-p.soul/p.maxSoul>=0.25&&1-p.soul/p.maxSoul<0.5){
+			double count = p.soulGemCounter%8;
+			p.soulGemImage=p.soulGemSprite.grabImage(1,2+(int)count,Player.soulGemWidth, Player.soulGemHeight);
+			p.soulGemCounter+=p.soulGemAnimationSpeed;
+		}
+		else if(1-p.soul/p.maxSoul>=0.5&&1-p.soul/p.maxSoul<0.75){
+			double count = p.soulGemCounter%8;
+			p.soulGemImage=p.soulGemSprite.grabImage(2,2+(int)count,Player.soulGemWidth, Player.soulGemHeight);
+			p.soulGemCounter+=p.soulGemAnimationSpeed;
+		}
+		else if(1-p.soul/p.maxSoul>=0.75&&1-p.soul/p.maxSoul<1){
+			double count = p.soulGemCounter%8;
+			p.soulGemImage=p.soulGemSprite.grabImage(3,2+(int)count,Player.soulGemWidth, Player.soulGemHeight);
+			p.soulGemCounter+=p.soulGemAnimationSpeed;
+		}
+		else if(1-p.soul/p.maxSoul==1){
+			p.soulGemImage=p.soulGemSprite.grabImage(2, 1, Player.soulGemWidth, Player.soulGemHeight);
 		}
 		
 	}

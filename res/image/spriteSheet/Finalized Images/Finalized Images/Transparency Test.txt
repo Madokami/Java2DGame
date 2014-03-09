@@ -1,0 +1,16 @@
+<html>
+<body bgcolor = black>
+<img src = "enemy1B_walk.png">
+<br>
+<br>
+<img src = "enemy1C_walk.png">
+<br>
+<br>
+<img src = "enemy2A_walk.png">
+<br>
+<br>
+<img src = "enemy3A_walk.png">
+<br>
+<br>
+<img src = "enemy13b_walk.png">
+</html>

@@ -35,7 +35,7 @@ public class TimedEvent {
 	private Random rand;
 	
 	public TimedEvent(Game game){
-		this.game = game;
+		this.game=game;
 		loader = new BufferedImageLoader();
 		homuraCutIn = loader.loadImage("/homuraCutIn.png");
 		homuraCutInBg = loader.loadImage("/homuraCutInBg.png");

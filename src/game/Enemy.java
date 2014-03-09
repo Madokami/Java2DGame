@@ -4,10 +4,14 @@ import game.GameObject.ORIENTATION;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 public class Enemy extends MovableObject{
 	
 	public int score, exp;
+	public Random rand;
+	public int counter;
+	public int collisionDamage;
 	
 	public Enemy(int x,int y, Game game){
 		super(x,y,game);
@@ -19,9 +23,21 @@ public class Enemy extends MovableObject{
 		moveDown();
 		score = 50;
 		exp = 50;
+		collisionDamage=20;
+		
+		counter = 0;
+		rand = new Random();
 	}
 	public void tick(){
 		super.tick();
+		
+		if(Physics.collide(game.p, this)) applyDamage(collisionDamage,10,game.p);
+		counter++;
+		if(counter>40){
+			counter=0;
+			moveRandomly();
+		}
+		
 		this.curX=super.curX;
 		this.curY=super.curY;
 		damage=Physics.hitByAttack(this, game.fireList);
@@ -52,6 +68,28 @@ public class Enemy extends MovableObject{
 	public void providePoints(Player p){
 		p.expCurrent+=exp;
 		p.score+=score;
+	}
+	public void moveRandomly(){
+		int temp = rand.nextInt(4);
+		if(temp==0){
+			moveUp();
+		}
+		else if(temp==1){
+			moveDown();
+		}
+		else if(temp==2){
+			moveLeft();
+		}
+		else if(temp==3){
+			moveRight();
+		}
+	}
+	public void applyDamage(int value, int invincibleDuration, GameObject target){
+		if(target.invincible) return;
+		else{
+			target.setInvincible(invincibleDuration);
+			target.takeDamage(value);
+		}
 	}
 	
 }

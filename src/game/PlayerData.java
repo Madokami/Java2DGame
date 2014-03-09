@@ -3,24 +3,24 @@ package game;
 import java.io.Serializable;
 
 public class PlayerData implements Serializable {
-	public double saHp,saMaxHp,saMp,saMaxMp,saSoul,saMaxSoul,saBombSpd;
-	public int saBombStrength,saBombLength,saSpd,saExpCurrent,saLevel,saBP;
+	public double saHp,saMaxHp,saMp,saMaxMp,saSoul,saMaxSoul,saExpCurrent;
+	public int saBombStrength,saBombLength,saSpd,saLevel,saBP;
 	public static int saHpLimit,saMpLimit,saSpdLimit,saSoulLimit,saBombSpdLimit,saBombStrengthLimit,saBombLengthLimit;
 	
-	public double hoHp,hoMaxHp,hoMp,hoMaxMp,hoSoul,hoMaxSoul,hoBombSpd;
-	public int hoBombStrength,hoBombLength,hoSpd,hoExpCurrent,hoLevel,hoBP;
+	public double hoHp,hoMaxHp,hoMp,hoMaxMp,hoSoul,hoMaxSoul,hoExpCurrent;
+	public int hoBombStrength,hoBombLength,hoSpd,hoLevel,hoBP;
 	public static int hoHpLimit,hoMpLimit,hoSpdLimit,hoSoulLimit,hoBombSpdLimit,hoBombStrengthLimit,hoBombLengthLimit;
 	
-	public double mdHp,mdMaxHp,mdMp,mdMaxMp,mdSoul,mdMaxSoul,mdBombSpd;
-	public int mdBombStrength,mdBombLength,mdSpd,mdExpCurrent,mdLevel,mdBP;
+	public double mdHp,mdMaxHp,mdMp,mdMaxMp,mdSoul,mdMaxSoul,mdExpCurrent;
+	public int mdBombStrength,mdBombLength,mdSpd,mdLevel,mdBP;
 	public static int mdHpLimit,mdMpLimit,mdSpdLimit,mdSoulLimit,mdBombSpdLimit,mdBombStrengthLimit,mdBombLengthLimit;
 	
-	public double maHp,maMaxHp,maMp,maMaxMp,maSoul,maMaxSoul,maBombSpd;
-	public int maBombStrength,maBombLength,maSpd,maExpCurrent,maLevel,maBP;
+	public double maHp,maMaxHp,maMp,maMaxMp,maSoul,maMaxSoul,maExpCurrent;
+	public int maBombStrength,maBombLength,maSpd,maLevel,maBP;
 	public static int maHpLimit,maMpLimit,maSpdLimit,maSoulLimit,maBombSpdLimit,maBombStrengthLimit,maBombLengthLimit;
 	
-	public double kyHp,kyMaxHp,kyMp,kyMaxMp,kySoul,kyMaxSoul,kyBombSpd;
-	public int kyBombStrength,kyBombLength,kySpd,kyExpCurrent,kyLevel,kyBP;
+	public double kyHp,kyMaxHp,kyMp,kyMaxMp,kySoul,kyMaxSoul,kyBombSpd,kyExpCurrent;
+	public int kyBombStrength,kyBombLength,kySpd,kyLevel,kyBP;
 	public static int kyHpLimit,kyMpLimit,kySpdLimit,kySoulLimit,kyBombSpdLimit,kyBombStrengthLimit,kyBombLengthLimit;
 	
 	public void loadDefaultValues(){
@@ -36,7 +36,7 @@ public class PlayerData implements Serializable {
 		saExpCurrent = 0;
 		saLevel = 1;
 		saBP=0;
-		saBombSpd=10;
+		
 		
 		hoHp=100;
 		//hoMaxHp=100;
@@ -50,7 +50,6 @@ public class PlayerData implements Serializable {
 		hoExpCurrent = 0;
 		hoLevel=1;
 		hoBP=0;
-		hoBombSpd=10;
 		
 		mdHp=100;
 		//mdMaxHp=100;
@@ -64,7 +63,6 @@ public class PlayerData implements Serializable {
 		mdExpCurrent=0;
 		mdLevel = 1;
 		mdBP=0;
-		mdBombSpd=10;
 		
 		maHp=100;
 		//maMaxHp=100;
@@ -78,7 +76,6 @@ public class PlayerData implements Serializable {
 		maExpCurrent=0;
 		maLevel=1;
 		maBP=0;
-		maBombSpd=10;
 		
 		kyHp=100;
 		//kyMaxHp=100;
@@ -92,7 +89,6 @@ public class PlayerData implements Serializable {
 		kyExpCurrent=0;
 		kyLevel = 1;
 		kyBP=0;
-		kyBombSpd=10;
 	}
 	
 	public void loadPlayerStatus(Sayaka sa){
@@ -108,7 +104,6 @@ public class PlayerData implements Serializable {
 		sa.expCurrent =saExpCurrent;
 		sa.level=saLevel;
 		sa.BP=saBP;
-		sa.bombSpd=saBombSpd;
 	}
 	
 	public void loadPlayerStatus(Homura ho){
@@ -124,7 +119,6 @@ public class PlayerData implements Serializable {
 		ho.expCurrent = hoExpCurrent;
 		ho.level=hoLevel;
 		ho.BP=hoBP;
-		ho.bombSpd=hoBombSpd;
 	}
 	
 	public void loadPlayerStatus(Madoka md){
@@ -140,7 +134,6 @@ public class PlayerData implements Serializable {
 		md.expCurrent =mdExpCurrent;
 		md.level=mdLevel;
 		md.BP=mdBP;
-		md.bombSpd=mdBombSpd;
 	}
 	
 	public void loadPlayerStatus(Mami ma){
@@ -156,7 +149,6 @@ public class PlayerData implements Serializable {
 		ma.expCurrent =maExpCurrent;
 		ma.level=maLevel;
 		ma.BP=maBP;
-		ma.bombSpd=maBombSpd;
 	}
 	
 	public void loadPlayerStatus(Kyouko	ky){
@@ -172,7 +164,6 @@ public class PlayerData implements Serializable {
 		ky.expCurrent =kyExpCurrent;
 		ky.level=kyLevel;
 		ky.BP=kyBP;
-		ky.bombSpd=kyBombSpd;
 	}
 	
 	//these methods will update the PlayerData Class with current values in the Player Class. 

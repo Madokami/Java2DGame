@@ -1,12 +1,10 @@
 package game;
 
-import game.GameSystem.STATE;
-import game.Menu.MENUSTATE;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 public class MenuChar implements GeneralMenu{
 		private BufferedImage mdSelectOn,mdSelectOff,hoSelectOn,hoSelectOff,saSelectOn,saSelectOff,kySelectOn,kySelectOff,maSelectOn,maSelectOff;
@@ -15,6 +13,9 @@ public class MenuChar implements GeneralMenu{
 		
 		private BufferedImage mdStats,hoStats,saStats,maStats,kyStats;
 		private BufferedImage statsSelectionCombinedOff, statsSelectionHpOn,statsSelectionMpOn,statsSelectionSpdOn,statsSelectionSoulOn,statsSelectionDamageOn,statsSelectionRangeOn;
+		
+		private BufferedImage mdPortrait,saPortrait,maPortrait,hoPortrait,kyPortrait;
+		private BufferedImage cursorLeft,cursorRight;
 		
 		private int cSelectIndex;
 		private int cSelectHeight,cSelectWidth;
@@ -29,9 +30,20 @@ public class MenuChar implements GeneralMenu{
 		private static int statsY=140;
 		public static int statsShift=28;
 		
-		public Game game;
+		private SpecialEffects effect;
 		
+		private int selectStyle = 2;
+		
+		public Game game;
 		public AttributeHandler handler;
+		private Random rand = new Random();
+		
+		//helper variables that animate the character choosing screen
+		public double centerShiftX,centerShiftY,centerScale,leftShiftX,leftShiftY,leftScale,rightShiftX,rightShiftY,rightScale,backLeftShiftX,backLeftShiftY,backLeftScale,backRightShiftX,backRightShiftY,backRightScale;
+		public boolean isRotating;
+		public String rotateDirection=null;
+		private double rotationSpeed=3;
+		private BufferedImage bg2;
 		
 		public static enum CHARACTER{
 			MADOKA,
@@ -91,6 +103,15 @@ public class MenuChar implements GeneralMenu{
 			maStats=loader.loadImage("/image/mami_Stats.png");
 			kyStats=loader.loadImage("/image/kyouko_Stats.png");
 			
+			mdPortrait=loader.loadImage("/image/portraits/md.png");
+			maPortrait=loader.loadImage("/image/portraits/ma.png");
+			saPortrait=loader.loadImage("/image/portraits/sa.png");
+			hoPortrait=loader.loadImage("/image/portraits/ho.png");
+			kyPortrait=loader.loadImage("/image/portraits/ky.png");
+			cursorLeft=loader.loadImage("/image/portraits/cursorLeft.png");
+			cursorRight=loader.loadImage("/image/portraits/cursorRight.png");
+			bg2=loader.loadImage("/image/portraits/bg.png");
+			
 			
 			statsSelectionCombinedOff=loader.loadImage("/image/statusSelectionCombinedOff.png");
 			statsSelectionHpOn=loader.loadImage("/image/statsSelectionHpOn.png");
@@ -101,7 +122,7 @@ public class MenuChar implements GeneralMenu{
 			statsSelectionRangeOn=loader.loadImage("/image/statsSelectionRangeOn.png");
 			
 			
-			charSelectBg = loader.loadImage("/image/charSelectBg.png");
+			charSelectBg = loader.loadImage("/image/bg.jpg");
 			
 			
 			cSelectIndex=(GameSystem.ABSWIDTH-5*mdSelectOn.getWidth())/6;
@@ -111,20 +132,41 @@ public class MenuChar implements GeneralMenu{
 			shiftingDown=true;
 			
 			handler = new AttributeHandler(game);
+			effect = new SpecialEffects();
+			
+			resetRotationVariables();
 		}
 		
 		public void tick(){
 			shiftDown();
+			effect.tick();
+			if(this.isRotating ==true){
+				if(rotateDirection.equals("right")){
+					rotateRight();
+				}
+				else if(rotateDirection.equals("left")){
+					rotateLeft();
+				}
+			}
 		}
 		
 		public void render(Graphics g){
 			if(isChooseChar()){
-				g.drawImage(charSelectBg,0,0,GameSystem.ABSWIDTH+10,GameSystem.ABSHEIGHT+10,null);
-				g.drawImage(mdSelectOff,cSelectIndex+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift+32,null);
-				g.drawImage(hoSelectOff,2*cSelectIndex+cSelectWidth+8,(int) yShift+32,null);
-				g.drawImage(saSelectOff,3*cSelectIndex+2*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift+32,null);
-				g.drawImage(maSelectOff,4*cSelectIndex+3*cSelectWidth+8,(int)yShift+32,null);
-				g.drawImage(kySelectOff,5*cSelectIndex+4*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift+32,null);
+				if(selectStyle==1){
+					g.drawImage(charSelectBg,0,0,GameSystem.ABSWIDTH+10,GameSystem.ABSHEIGHT+10,null);
+					
+					g.drawImage(mdSelectOff,cSelectIndex+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift+32,null);
+					g.drawImage(hoSelectOff,2*cSelectIndex+cSelectWidth+8,(int) yShift+32,null);
+					g.drawImage(saSelectOff,3*cSelectIndex+2*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift+32,null);
+					g.drawImage(maSelectOff,4*cSelectIndex+3*cSelectWidth+8,(int)yShift+32,null);
+					g.drawImage(kySelectOff,5*cSelectIndex+4*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift+32,null);
+				}
+				else if(selectStyle==2){
+					g.setColor(Color.WHITE);
+					g.fillRect(0, 0, GameSystem.ABSWIDTH+10, GameSystem.ABSHEIGHT+10);
+					g.drawImage(bg2,0,0,null);
+				}
+				
 			}
 			else if(isDisplayStatus()){
 				if(cSelected == CHARACTER.MADOKA){
@@ -155,32 +197,155 @@ public class MenuChar implements GeneralMenu{
 			yShift=yShift*1.23;
 		
 		}
-		
-		public void renderSelected(Graphics g){
+		public void rotateLeft(){
+			if(centerShiftX>-60) centerShiftX-=4*rotationSpeed;
+			else centerShiftX=-60;
+			
+			if(centerShiftY<70) centerShiftY+=4.66*rotationSpeed;
+			else centerShiftY=70;
+			
+			if(centerScale>0.5) centerScale-=0.035*rotationSpeed;
+			else centerScale=0.5;
+			
+			if(rightShiftX>-340) rightShiftX-=22.66666666*rotationSpeed;
+			else rightShiftX=-340;
+			
+			if(rightShiftY>-70) rightShiftY-=4.66*rotationSpeed;
+			else rightShiftY=-70;
+			
+			if(rightScale<2) rightScale+=0.06666666*rotationSpeed;
+			else rightScale=2;
+			
+			if(backRightShiftX<70) backRightShiftX+=4.66666666*rotationSpeed;
+			else backRightShiftX=70;
+			
+			if(backRightShiftY<50) backRightShiftY+=3.33333333*rotationSpeed;
+			else backRightShiftY=50;
+			
+			if(backRightScale<3.0/2) backRightScale+=0.0333333333*rotationSpeed;
+			else backRightScale=3.0/2;
+			
+			if(backLeftShiftX<200) backLeftShiftX+=13.3333333*rotationSpeed;
+			else backLeftShiftX=200;
+			
+			
+			if(leftShiftX<130) leftShiftX+=8.6666666*rotationSpeed;
+			else leftShiftX=130;
+			
+			if(leftShiftY>-50) leftShiftY-=3.33333333*rotationSpeed;
+			else leftShiftY=-50;
+			
+			if(leftScale>2.0/3) leftScale-=0.03333333*rotationSpeed;
+			else leftScale=2.0/3;
+			
+			if(centerShiftX==-60&&centerShiftY==70&&centerScale==0.5&&
+			   rightShiftX==-340&&rightShiftY==-70&&rightScale==2&&
+			   backRightShiftX==70&&backRightShiftY==50&&backRightScale==3.0/2&&
+			   backLeftShiftX==200&&leftShiftX==130&&leftShiftY==-50&&leftScale==2.0/3){
+				effect.startFadeWhiteReversed();
+				isRotating=false;
+				setNextCycle("left");
+				resetRotationVariables();
+			}
+		}
+		public synchronized void renderSelected(Graphics g){
 			if(isChooseChar()){
 				if(cSelected == CHARACTER.MADOKA){
-					//g.drawImage(mdBg,0,0,GameSystem.ABSWIDTH+10,GameSystem.ABSHEIGHT+10,null);
-					g.drawImage(mdSelectOn,cSelectIndex+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift+32,null);
-					g.drawImage(mdName,cSelectIndex+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift-16,null);
+					if(selectStyle==1){
+						g.drawImage(mdSelectOn,cSelectIndex+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift+32,null);
+						g.drawImage(mdName,cSelectIndex+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift-16,null);
+					}
+					else if(selectStyle==2){
+						g.drawImage(mdBg,0,0,GameSystem.ABSWIDTH+10,GameSystem.GAME_HEIGHT-30,null);
+						
+						g.drawImage(maPortrait, (int)(110+30+backLeftShiftX), (int)(20+backLeftShiftY),(int)(maPortrait.getWidth()/3*backLeftScale),(int)(maPortrait.getHeight()/3*backLeftScale), null);
+						g.drawImage(saPortrait, (int)(110+230+backRightShiftX), (int)(20+backRightShiftY),(int)(saPortrait.getWidth()/3*backRightScale),(int)(saPortrait.getHeight()/3*backRightScale), null);
+						g.drawImage(kyPortrait, (int)(110-100+leftShiftX), (int)(70+leftShiftY),(int)(kyPortrait.getWidth()/2*leftScale),(int)(kyPortrait.getHeight()/2*leftScale), null);
+						g.drawImage(hoPortrait, (int)(110+300+rightShiftX), (int)(70+rightShiftY),(int)(hoPortrait.getWidth()/2*rightScale),(int)(hoPortrait.getHeight()/2*rightScale), null);
+						g.drawImage(mdPortrait, (int)(70+centerShiftX), (int)(centerShiftY),(int)(mdPortrait.getWidth()*centerScale),(int)(mdPortrait.getHeight()*centerScale), null);
+						
+						
+						g.drawImage(mdName,270,15,null);
+						g.drawImage(cursorLeft, 220, 16, null);
+						g.drawImage(cursorRight, 420, 16, null);
+					}
 				}
 				else if(cSelected == CHARACTER.HOMURA){
-					//g.drawImage(hoBg,0,0,GameSystem.ABSWIDTH+10,GameSystem.ABSHEIGHT+10,null);
-					g.drawImage(hoSelectOn,2*cSelectIndex+cSelectWidth+8,(int)yShift+32,null);
-					g.drawImage(hoName,2*cSelectIndex+cSelectWidth+8,(int)yShift-16,null);
+					if(selectStyle==1){
+						g.drawImage(hoSelectOn,2*cSelectIndex+cSelectWidth+8,(int)yShift+32,null);
+						g.drawImage(hoName,2*cSelectIndex+cSelectWidth+8,(int)yShift-16,null);
+					}
+					else if(selectStyle==2){
+						g.drawImage(hoBg,0,0,GameSystem.ABSWIDTH+10,GameSystem.GAME_HEIGHT-30,null);
+						
+						g.drawImage(kyPortrait, (int)(110+30+backLeftShiftX), (int)(20+backLeftShiftY),(int)(kyPortrait.getWidth()/3*backLeftScale),(int)(kyPortrait.getHeight()/3*backLeftScale), null);
+						g.drawImage(maPortrait, (int)(110+230+backRightShiftX), (int)(20+backRightShiftY),(int)(maPortrait.getWidth()/3*backRightScale),(int)(maPortrait.getHeight()/3*backRightScale), null);
+						g.drawImage(mdPortrait, (int)(110-100+leftShiftX), (int)(70+leftShiftY),(int)(mdPortrait.getWidth()/2*leftScale),(int)(mdPortrait.getHeight()/2*leftScale), null);
+						g.drawImage(saPortrait, (int)(110+300+rightShiftX), (int)(70+rightShiftY),(int)(saPortrait.getWidth()/2*rightScale),(int)(saPortrait.getHeight()/2*rightScale), null);
+						g.drawImage(hoPortrait, (int)(70+centerShiftX), (int)(centerShiftY),(int)(hoPortrait.getWidth()*centerScale),(int)(hoPortrait.getHeight()*centerScale), null);
+						
+						g.drawImage(hoName,270,15,null);
+						g.drawImage(cursorLeft, 220, 16, null);
+						g.drawImage(cursorRight, 420, 16, null);
+					}
 				}
 				else if(cSelected == CHARACTER.SAYAKA){
-					//g.drawImage(saBg,0,0,GameSystem.ABSWIDTH+10,GameSystem.ABSHEIGHT+10,null);
-					g.drawImage(saSelectOn,3*cSelectIndex+2*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift+32,null);
-					g.drawImage(saName,3*cSelectIndex+2*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift-16,null);
-					
+					if(selectStyle==1){
+						g.drawImage(saSelectOn,3*cSelectIndex+2*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift+32,null);
+						g.drawImage(saName,3*cSelectIndex+2*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift-16,null);
+					}
+					else if(selectStyle==2){
+						g.drawImage(saBg,0,0,GameSystem.ABSWIDTH+10,GameSystem.GAME_HEIGHT-30,null);
+						
+						g.drawImage(mdPortrait, (int)(110+30+backLeftShiftX), (int)(20+backLeftShiftY),(int)(mdPortrait.getWidth()/3*backLeftScale),(int)(mdPortrait.getHeight()/3*backLeftScale), null);
+						g.drawImage(kyPortrait, (int)(110+230+backRightShiftX), (int)(20+backRightShiftY),(int)(kyPortrait.getWidth()/3*backRightScale),(int)(kyPortrait.getHeight()/3*backRightScale), null);
+						g.drawImage(hoPortrait, (int)(110-100+leftShiftX), (int)(70+leftShiftY),(int)(hoPortrait.getWidth()/2*leftScale),(int)(hoPortrait.getHeight()/2*leftScale), null);
+						g.drawImage(maPortrait, (int)(110+300+rightShiftX), (int)(70+rightShiftY),(int)(maPortrait.getWidth()/2*rightScale),(int)(maPortrait.getHeight()/2*rightScale), null);
+						g.drawImage(saPortrait, (int)(70+centerShiftX), (int)(centerShiftY),(int)(saPortrait.getWidth()*centerScale),(int)(saPortrait.getHeight()*centerScale), null);
+						
+						
+						g.drawImage(saName,270,15,null);
+						g.drawImage(cursorLeft, 220, 16, null);
+						g.drawImage(cursorRight, 420, 16, null);
+					}
 				}
 				else if(cSelected == CHARACTER.MAMI){
-					g.drawImage(maSelectOn,4*cSelectIndex+3*cSelectWidth+8,(int)yShift+32,null);
-					g.drawImage(maName,4*cSelectIndex+3*cSelectWidth+8,(int)yShift-16,null);
+					if(selectStyle==1){
+						g.drawImage(maSelectOn,4*cSelectIndex+3*cSelectWidth+8,(int)yShift+32,null);
+						g.drawImage(maName,4*cSelectIndex+3*cSelectWidth+8,(int)yShift-16,null);
+					}
+					else if(selectStyle==2){
+						g.drawImage(maBg,0,0,GameSystem.ABSWIDTH+10,GameSystem.GAME_HEIGHT-30,null);
+						
+						g.drawImage(hoPortrait, (int)(110+30+backLeftShiftX), (int)(20+backLeftShiftY),(int)(hoPortrait.getWidth()/3*backLeftScale),(int)(hoPortrait.getHeight()/3*backLeftScale), null);
+						g.drawImage(mdPortrait, (int)(110+230+backRightShiftX), (int)(20+backRightShiftY),(int)(mdPortrait.getWidth()/3*backRightScale),(int)(mdPortrait.getHeight()/3*backRightScale), null);
+						g.drawImage(saPortrait, (int)(110-100+leftShiftX), (int)(70+leftShiftY),(int)(saPortrait.getWidth()/2*leftScale),(int)(saPortrait.getHeight()/2*leftScale), null);
+						g.drawImage(kyPortrait, (int)(110+300+rightShiftX), (int)(70+rightShiftY),(int)(kyPortrait.getWidth()/2*rightScale),(int)(kyPortrait.getHeight()/2*rightScale), null);
+						g.drawImage(maPortrait, (int)(70+centerShiftX), (int)(centerShiftY),(int)(maPortrait.getWidth()*centerScale),(int)(maPortrait.getHeight()*centerScale), null);
+						
+						g.drawImage(maName,270,15,null);
+						g.drawImage(cursorLeft, 220, 16, null);
+						g.drawImage(cursorRight, 420, 16, null);
+					}
 				}
 				else if(cSelected == CHARACTER.KYOUKO){
-					g.drawImage(kySelectOn,5*cSelectIndex+4*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift+32,null);
-					g.drawImage(kyName,5*cSelectIndex+4*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift-16,null);
+					if(selectStyle==1){
+						g.drawImage(kySelectOn,5*cSelectIndex+4*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift+32,null);
+						g.drawImage(kyName,5*cSelectIndex+4*cSelectWidth+8,(GameSystem.ABSHEIGHT-cSelectHeight)-(int)yShift-16,null);
+					}
+					else if(selectStyle==2){
+						g.drawImage(kyBg,0,0,GameSystem.ABSWIDTH+10,GameSystem.GAME_HEIGHT-30,null);
+						
+						g.drawImage(saPortrait, (int)(110+30+backLeftShiftX), (int)(20+backLeftShiftY),(int)(saPortrait.getWidth()/3*backLeftScale),(int)(saPortrait.getHeight()/3*backLeftScale), null);
+						g.drawImage(hoPortrait, (int)(110+230+backRightShiftX), (int)(20+backRightShiftY),(int)(hoPortrait.getWidth()/3*backRightScale),(int)(hoPortrait.getHeight()/3*backRightScale), null);
+						g.drawImage(maPortrait, (int)(110-100+leftShiftX), (int)(70+leftShiftY),(int)(maPortrait.getWidth()/2*leftScale),(int)(maPortrait.getHeight()/2*leftScale), null);
+						g.drawImage(mdPortrait, (int)(110+300+rightShiftX), (int)(70+rightShiftY),(int)(mdPortrait.getWidth()/2*rightScale),(int)(mdPortrait.getHeight()/2*rightScale), null);
+						g.drawImage(kyPortrait, (int)(70+centerShiftX), (int)(centerShiftY),(int)(kyPortrait.getWidth()*centerScale),(int)(kyPortrait.getHeight()*centerScale), null);
+
+						g.drawImage(kyName,270,15,null);
+						g.drawImage(cursorLeft, 220, 16, null);
+						g.drawImage(cursorRight, 420, 16, null);
+					}
 				}
 			}
 			else if(isDisplayStatus()){
@@ -205,6 +370,7 @@ public class MenuChar implements GeneralMenu{
 				//handler will render the attribute values in form of images
 				handler.render(g);
 			}
+			effect.render(g);
 		}
 
 		public void keyPressed(int key) {
@@ -213,47 +379,21 @@ public class MenuChar implements GeneralMenu{
 					yShift=1;
 					GameSystem.playCancel();
 					Menu.mState=Menu.MENUSTATE.MAIN;
+					effect.startFadeWhiteReversed();
 				}
-				else if(key==KeyEvent.VK_RIGHT){				
-					if(cSelected == CHARACTER.MADOKA){
-							cSelected=CHARACTER.HOMURA;
-					}
-					else if(cSelected == CHARACTER.HOMURA){
-						cSelected=CHARACTER.SAYAKA;
-					}
-					else if(cSelected == CHARACTER.SAYAKA){
-						cSelected=CHARACTER.MAMI;
-					}
-					else if(cSelected == CHARACTER.MAMI){
-						cSelected=CHARACTER.KYOUKO;
-					}
-					else if(cSelected == CHARACTER.KYOUKO){
-						cSelected=CHARACTER.MADOKA;
-					}
+				else if(key==KeyEvent.VK_LEFT){				
+					startRotateLeft();
 					GameSystem.playSwitch();
 				}
-				else if(key==KeyEvent.VK_LEFT){
-					if(cSelected == CHARACTER.HOMURA){
-						cSelected=CHARACTER.MADOKA;
-					}
-					else if(cSelected == CHARACTER.SAYAKA){
-						cSelected=CHARACTER.HOMURA;
-					}
-					else if(cSelected == CHARACTER.MAMI){
-						cSelected=CHARACTER.SAYAKA;
-					}
-					else if(cSelected == CHARACTER.KYOUKO){
-						cSelected=CHARACTER.MAMI;
-					}
-					else if(cSelected == CHARACTER.MADOKA){
-						cSelected=CHARACTER.KYOUKO;
-					}
+				else if(key==KeyEvent.VK_RIGHT){
+					startRotateRight();
 					GameSystem.playSwitch();
 				}
 				else if(key==KeyEvent.VK_Z){
 					handler.refreshAll();
 					this.setDisplayStatus();
 					GameSystem.playConfirm();
+					effect.startFadeWhiteReversed();
 				}
 				
 			}
@@ -341,7 +481,7 @@ public class MenuChar implements GeneralMenu{
 							handler.refreshImage();
 						}
 						else{
-							GameSystem.playCancel();
+							GameSystem.playError();
 						}
 					}
 					else if(cAttribute == SELECTED_ATTRIBUTE.MP){
@@ -352,7 +492,7 @@ public class MenuChar implements GeneralMenu{
 							handler.refreshImage();
 						}
 						else{
-							GameSystem.playCancel();
+							GameSystem.playError();
 						}
 					}
 					else if(cAttribute == SELECTED_ATTRIBUTE.SOUL){
@@ -363,7 +503,7 @@ public class MenuChar implements GeneralMenu{
 							handler.refreshImage();
 						}
 						else{
-							GameSystem.playCancel();
+							GameSystem.playError();
 						}
 					}
 					else if(cAttribute == SELECTED_ATTRIBUTE.SPEED){
@@ -374,7 +514,7 @@ public class MenuChar implements GeneralMenu{
 							handler.refreshImage();
 						}
 						else{
-							GameSystem.playCancel();
+							GameSystem.playError();
 						}
 					}
 					else if(cAttribute == SELECTED_ATTRIBUTE.DAMAGE){
@@ -385,7 +525,7 @@ public class MenuChar implements GeneralMenu{
 							handler.refreshImage();
 						}
 						else{
-							GameSystem.playCancel();
+							GameSystem.playError();
 						}
 					}
 					else if(cAttribute == SELECTED_ATTRIBUTE.RANGE){
@@ -396,7 +536,7 @@ public class MenuChar implements GeneralMenu{
 							handler.refreshImage();
 						}
 						else{
-							GameSystem.playCancel();
+							GameSystem.playError();
 						}
 					}
 				}
@@ -410,7 +550,7 @@ public class MenuChar implements GeneralMenu{
 							handler.refreshImage();
 						}
 						else{
-							GameSystem.playCancel();
+							GameSystem.playError();
 						}
 					}
 					else if(cAttribute == SELECTED_ATTRIBUTE.MP){
@@ -421,7 +561,7 @@ public class MenuChar implements GeneralMenu{
 							handler.refreshImage();
 						}
 						else{
-							GameSystem.playCancel();
+							GameSystem.playError();
 						}
 					}
 					else if(cAttribute == SELECTED_ATTRIBUTE.SOUL){
@@ -432,7 +572,7 @@ public class MenuChar implements GeneralMenu{
 							handler.refreshImage();
 						}
 						else{
-							GameSystem.playCancel();
+							GameSystem.playError();
 						}
 					}
 					else if(cAttribute == SELECTED_ATTRIBUTE.SPEED){
@@ -443,7 +583,7 @@ public class MenuChar implements GeneralMenu{
 							handler.refreshImage();
 						}
 						else{
-							GameSystem.playCancel();
+							GameSystem.playError();
 						}
 					}
 					else if(cAttribute == SELECTED_ATTRIBUTE.DAMAGE){
@@ -454,7 +594,7 @@ public class MenuChar implements GeneralMenu{
 							handler.refreshImage();
 						}
 						else{
-							GameSystem.playCancel();
+							GameSystem.playError();
 						}
 					}
 					else if(cAttribute == SELECTED_ATTRIBUTE.RANGE){
@@ -465,7 +605,7 @@ public class MenuChar implements GeneralMenu{
 							handler.refreshImage();
 						}
 						else{
-							GameSystem.playCancel();
+							GameSystem.playError();
 						}
 					}
 				}
@@ -511,5 +651,106 @@ public class MenuChar implements GeneralMenu{
 		public void setDisplayStatus(){
 			cState = CHAR_MENU_STATE.DISPLAYING_STATUS;
 		}
-	
+		
+		public void startRotateRight(){
+			rotateDirection="right";
+			isRotating=true;
+		}
+		public void startRotateLeft(){
+			rotateDirection="left";
+			isRotating=true;
+		}
+		
+		public void setNextCycle(String s){
+			if(s.equals("right")){
+				if(cSelected == CHARACTER.HOMURA){
+					cSelected=CHARACTER.MADOKA;
+				}
+				else if(cSelected == CHARACTER.SAYAKA){
+					cSelected=CHARACTER.HOMURA;
+				}
+				else if(cSelected == CHARACTER.MAMI){
+					cSelected=CHARACTER.SAYAKA;
+				}
+				else if(cSelected == CHARACTER.KYOUKO){
+					cSelected=CHARACTER.MAMI;
+				}
+				else if(cSelected == CHARACTER.MADOKA){
+					cSelected=CHARACTER.KYOUKO;
+				}
+			}
+			else if(s.equals("left")){
+				if(cSelected == CHARACTER.MADOKA){
+					cSelected=CHARACTER.HOMURA;
+				}
+				else if(cSelected == CHARACTER.HOMURA){
+					cSelected=CHARACTER.SAYAKA;
+				}
+				else if(cSelected == CHARACTER.SAYAKA){
+					cSelected=CHARACTER.MAMI;
+				}
+				else if(cSelected == CHARACTER.MAMI){
+					cSelected=CHARACTER.KYOUKO;
+				}
+				else if(cSelected == CHARACTER.KYOUKO){
+					cSelected=CHARACTER.MADOKA;
+				}
+			}
+		}
+		public void resetRotationVariables(){
+			centerShiftX=centerShiftY=leftShiftX=leftShiftY=rightShiftX=rightShiftY=backLeftShiftX=backRightShiftX=backRightShiftY=backLeftShiftY=0;
+			centerScale=leftScale=rightScale=backRightScale=backLeftScale=1;
+		}
+		public void rotateRight(){
+			if(centerShiftX<290) centerShiftX+=28.6666666*rotationSpeed;
+			else if(centerShiftX>290&&centerShiftX<340) centerShiftX+=8*rotationSpeed;
+			else centerShiftX=340;
+			
+			if(centerShiftY<70) centerShiftY+=4.66*rotationSpeed;
+			else centerShiftY=70;
+			
+			if(centerScale>0.5) centerScale-=0.035*rotationSpeed;
+			else centerScale=0.5;
+			
+			if(rightShiftX>-70) rightShiftX-=4.66*rotationSpeed;
+			else rightShiftX=-70;
+			
+			if(rightShiftY>-50) rightShiftY-=3.3333*rotationSpeed;
+			else rightShiftY=-50;
+			
+			if(rightScale>2.0/3) rightScale-=0.02*rotationSpeed;
+			else rightScale=2.0/3;
+			
+			if(backRightShiftX>-200) backRightShiftX-=13.3333333*rotationSpeed;
+			else backRightShiftX=-200;
+			
+			if(backLeftShiftX>-130) backLeftShiftX-=8.6666666*rotationSpeed;
+			else backLeftShiftX=-130;
+			
+			if(backLeftShiftY<50) backLeftShiftY+=3.33333333*rotationSpeed;
+			else backLeftShiftY=50;
+			
+			if(backLeftScale<3.0/2) backLeftScale+=0.03333333*rotationSpeed;
+			else backLeftScale=3.0/2;
+			
+			if(leftShiftX<60) leftShiftX+=4*rotationSpeed;
+			else leftShiftX=60;
+			
+			if(leftShiftY>-70) leftShiftY-=4.66666666*rotationSpeed;
+			else leftShiftY=-70;
+			
+			if(leftScale<2) leftScale+=0.0666666*rotationSpeed;
+			else leftScale=2;
+			
+			if(centerShiftX==340&&centerShiftY==70&&centerScale==0.5&&
+			   rightShiftX==-70&&rightShiftY==-50&&rightScale==2.0/3&&
+			   backRightShiftX==-200&&backLeftShiftX==-130&&backLeftShiftY==50&&
+			   backLeftScale==3.0/2&&leftShiftX==60&&leftShiftY==-70&&leftScale==2){
+				effect.startFadeWhiteReversed();
+				isRotating=false;
+				setNextCycle("right");
+				resetRotationVariables();
+			}
+		}
+		
 }

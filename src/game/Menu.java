@@ -81,9 +81,6 @@ public class Menu {
 		else if(mState==MENUSTATE.DEATH){
 			mDeath.tick();
 		}
-		else{
-			GameSystem.turnOnBgm("/sound/music/theme1.wav");
-		}
 	}
 	
 	//this method draws stuff. this method will only activate when GameSystem.state is set to MENU
@@ -195,11 +192,13 @@ public class Menu {
 	}
 	public static void toStoryMode() {
 		GameSystem.turnOffBgm();
+		GameSystem.turnOnBgm("/sound/bgm1.wav");
 		GameSystem.state=STATE.STORY;
 	}
 
 	public static void toGameMode() {
 		GameSystem.turnOffBgm();
+		GameSystem.turnOnBgm("/sound/delusio_summa.wav");
 		Game.gState=GameState.WAIT;
 		GameSystem.state=STATE.GAME;
 	}
@@ -207,6 +206,7 @@ public class Menu {
 	//first one plays the default bgm
 	public static void backToMenu() {
 		GameSystem.turnOffBgm();
+		GameSystem.turnOnBgm("/sound/music/theme1.wav");
 		Menu.mState=MENUSTATE.MAIN;
 	}
 }

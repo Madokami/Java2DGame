@@ -44,8 +44,11 @@ public class GameObject{
 		public String direction;
 		public double i=0;
 		public boolean blocked;
-		public boolean invulnerable = false;
-		public int timer;
+		
+		public boolean invincible = false;
+		public int invincibleTimer;
+		public int invincibleTime;
+	
 		
 		public enum ORIENTATION{
 			DOWN,
@@ -55,6 +58,7 @@ public class GameObject{
 			STAND
 		};
 		public ORIENTATION orientation = ORIENTATION.STAND;
+		public double hp;
 		
 		
 		public GameObject(int x, int y,Game game){
@@ -75,7 +79,13 @@ public class GameObject{
 		public void tick(){
 			//updates position of char
 			//maps the position to the closest "grid"
-		
+			if(invincible){
+				invincibleTimer++;
+				if(invincibleTimer>invincibleTime){
+					invincibleTimer=0;
+					invincible=false;
+				}
+			}
 		}
 		
 
@@ -113,6 +123,14 @@ public class GameObject{
 		}
 		public void playDeathSound(){
 			
+		}
+		public void setInvincible(int time){
+			invincibleTime=time;
+			invincibleTimer=0;
+			invincible=true;
+		}
+		public void takeDamage(int damage){
+			this.hp-=damage;
 		}
 		
 		

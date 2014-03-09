@@ -6,14 +6,21 @@ import java.util.LinkedList;
 import java.util.Random;
 
 public class Controller implements Serializable {
+	public Game game;
+	
 	private LinkedList<Player> p = new LinkedList<Player>();
 	private LinkedList<Bomb> b= new LinkedList<Bomb>();
 	private LinkedList<Enemy> e= new LinkedList<Enemy>();
 	private LinkedList<PowerUps> pow = new LinkedList<PowerUps>();
 	private LinkedList<Projectile> projectiles = new LinkedList<Projectile>();
+	public LinkedList<Fire> fireList = new LinkedList<Fire>();
+	public LinkedList<Brick> brickList = new LinkedList<Brick>();
+	public boolean[][] wallArray;
+	
 	Random r = new Random();
-	public Controller(){
-		
+	public Controller(Game game){
+		this.game=game;
+		wallArray = new boolean[GameSystem.GRIDW+3][GameSystem.GRIDH+3];
 	}
 	public void tick(){
 		for(int i=0;i<p.size();i++){
@@ -31,6 +38,13 @@ public class Controller implements Serializable {
 		for(int i=0;i<projectiles.size();i++){
 			projectiles.get(i).tick();
 		}
+		
+		for(int i=0;i<fireList.size();i++){
+			fireList.get(i).tick();
+		}
+		for(int i=0;i<brickList.size();i++){
+			brickList.get(i).tick();
+		}
 	}
 	public void render(Graphics g){
 		for(int i=0;i<p.size();i++){
@@ -47,6 +61,13 @@ public class Controller implements Serializable {
 		}
 		for(int i=0;i<projectiles.size();i++){
 			projectiles.get(i).render(g);
+		}
+		
+		for(int i=0;i<fireList.size();i++){
+			fireList.get(i).render(g);
+		}
+		for(int i=0;i<brickList.size();i++){
+			brickList.get(i).render(g);
 		}
 	}
 	public void createPlayer(Player o){
@@ -94,5 +115,62 @@ public class Controller implements Serializable {
 	}
 	public void removePlayer(Player o){
 		p.remove(o);
+	}
+	
+	public void removeFire(Fire fire){
+		fireList.remove(fire);
+	}
+	public void addEntity(Brick o){
+		brickList.add(o);
+		wallArray[o.xGridNearest][o.yGridNearest]=true;
+	}
+	public void removeEntity(Brick o){
+		wallArray[o.xGridNearest][o.yGridNearest]=false;
+		brickList.remove(o);
+	}
+	public LinkedList<Brick> getBrickList(){
+		return brickList;
+	}
+	
+	public void createExplosion(int x, int y, int size,int strength){
+		GameSystem.musicPlayer.playExplosion();
+		Game.explosionPlayed=true;
+		fireList.add(new Fire(x,y,game,strength));
+		for(int i=1;i<=size;i++){
+			if(x-i<1)
+				break;
+			if(wallArray[x-i][y]==true){
+				fireList.add(new Fire(x-i,y,game,strength));
+				break;
+			}
+			fireList.add(new Fire(x-i,y,game,strength));
+		}
+		for(int i=1;i<=size;i++){
+			if(x+i>GameSystem.GRIDW)
+				break;
+			if(wallArray[x+i][y]==true){
+				fireList.add(new Fire(x+i,y,game,strength));
+				break;
+			}
+			fireList.add(new Fire(x+i,y,game,strength));
+		}
+		for(int j=1;j<=size;j++){
+			if(y+j>GameSystem.GRIDH)
+				break;
+			if(wallArray[x][y+j]==true){
+				fireList.add(new Fire(x,y+j,game,strength));
+				break;
+			}
+			fireList.add(new Fire(x,y+j,game,strength));
+		}
+		for(int j=1;j<=size;j++){
+			if(y-j<1)
+				break;
+			if(wallArray[x][y-j]==true){
+				fireList.add(new Fire(x,y-j,game,strength));
+				break;
+			}
+			fireList.add(new Fire(x,y-j,game,strength));
+		}
 	}
 }

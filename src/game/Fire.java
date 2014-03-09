@@ -24,7 +24,7 @@ BufferedImage image;
 	}
 	public void tick(){
 		if(System.currentTimeMillis()-start>500){
-			game.e.removeFire(this);
+			game.c.removeFire(this);
 		}
 	}
 	public void render(Graphics g){

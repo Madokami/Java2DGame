@@ -1,0 +1,19 @@
+Direction doesn't matter for the following:
+effect_hanabi
+effect_ring
+effect_tame
+madoka_magic_fire
+bom_kemuri
+
+so you only need to make 1 row of Images for the above as opposed to the usual 4 rows.
+
+The rest are all projectiles, make it so the directions are:
+
+down
+left
+right
+up
+
+For all projectiles the default direction you're seeing from the image is the "right" direction in case you're confused for some of them.
+
+*Keep the original image size and remove all background.

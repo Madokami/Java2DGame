@@ -3,6 +3,9 @@ package game;
 
 
 
+import game.GameSystem.STATE;
+import game.Menu.MENUSTATE;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -58,7 +61,7 @@ public class Story {
 			
 	}
 	public void tick() {
-			GameSystem.turnOnBgm("/sound/bgm1.wav");
+			
 	}
 	public void render(Graphics g){
 		Graphics2D g2d = (Graphics2D)g;
@@ -113,6 +116,9 @@ public class Story {
 		int key = e.getKeyCode();
 		if(key==KeyEvent.VK_ENTER||key==KeyEvent.VK_Z){
 			readNextLine();
+		}
+		else if(key==KeyEvent.VK_X){
+			toMenu();
 		}
 		
 	}
@@ -209,5 +215,11 @@ public class Story {
 			return true;
 		}
 		return false;
+	}
+	
+	public void toMenu(){
+		GameSystem.state=STATE.MENU;
+		Menu.mState=MENUSTATE.MAIN;
+		
 	}
 }

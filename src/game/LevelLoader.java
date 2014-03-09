@@ -35,17 +35,17 @@ public class LevelLoader {
 	}
 	public void stage1(){
 		reset();
-		game.background=loader.loadImage("/background.png");
+		game.background=loader.loadImage("/image/stage/wall1.png");
 		//created the player depending on the player chosen state
 		createPlayer(7,11);
 		for(int i=0;i<GameSystem.GRIDW;i=i+3){
-			game.c.addEntity(new Enemy(i,0,game));
+			game.c.addEntity(new MrPringles(i,0,game));
 			game.enemyCount++;
 		}
 		//adding bricks
 		for(int i=2;i<GameSystem.GRIDW-2;i++){
 			for(int j=2;j<8;j++){
-			game.e.addEntity(new Brick(i,j,game));
+			game.c.addEntity(new Brick(i,j,game));
 			}
 		}
 		updateList();
@@ -54,27 +54,27 @@ public class LevelLoader {
 	
 	public void stage2(){
 		reset();
+		game.background=loader.loadImage("/image/stage/wall1.png");
 		createPlayer(1,2);
 		for(int i=4;i<GameSystem.GRIDW-4;i++){
-			game.c.addEntity(new Enemy(i,3,game));
+			game.c.addEntity(new AdelbertMini(i,3,game));
 			game.enemyCount++;
-			game.e.addEntity(new Brick(i,GameSystem.GRIDH-2,game));
+			game.c.addEntity(new Brick(i,GameSystem.GRIDH-2,game));
 		}
 		updateList();
 	}
 	public void reset(){
 		game.victory=false;
-		game.c = new Controller();
-		game.e = new Explode(game);
+		game.c = new Controller(game);
 		game.playerIsAlive=true;
 		game.enemyCount=0;
 	}
 	public void updateList(){
 		game.bList=game.c.getBList();
 		game.eList=game.c.getEList();
-		game.wi=game.e.getWList();
+		game.brickList=game.c.getBrickList();
 		game.powerUpList=game.c.getPList();
-		game.fireList=game.e.f;
+		game.fireList=game.c.fireList;
 		game.projectileList=game.c.getProjectileList();
 	}
 	

@@ -4,8 +4,10 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 public class SpecialEffects {
-	private int fadeWhite;
+	private int fadeWhite,fadeWhiteReversed;
 	private boolean isFadeWhite=false;
+	private boolean isFadeWhiteReversed=false;
+	
 	private BufferedImage[] white; //white0,white1,white2,white3,white4,white5,white6,white7,white8,white9;
 	private BufferedImageLoader loader;
 	
@@ -34,9 +36,13 @@ public class SpecialEffects {
 	public void tick(){
 		if(fadeWhite>=10){
 			isFadeWhite=false;
-			return;
 		}
 		fadeWhite++;
+		if(fadeWhiteReversed>=10){
+			isFadeWhiteReversed=false;
+		}
+		fadeWhiteReversed++;
+		
 		
 	}
 	
@@ -60,6 +66,26 @@ public class SpecialEffects {
 	}
 	public void render(Graphics g) {
 		fadeWhite(g);
+		fadeWhiteReversed(g);
+	}
+	
+	private void fadeWhiteReversed(Graphics g){
+		if(!isFadeWhiteReversed){
+			return;
+		}
+		else if(fadeWhiteReversed>=10){
+			return;
+		}
+		//do stuff
+		g.drawImage(white[9-fadeWhiteReversed], 0, 0,800,600,null);
+			
+	}
+	public void startFadeWhiteReversed() {
+		if(isFadeWhiteReversed){
+			return;
+		}
+		fadeWhiteReversed=0;
+		isFadeWhiteReversed=true;
 		
 	}
 }

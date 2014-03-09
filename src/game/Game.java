@@ -8,6 +8,9 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.LinkedList;
 
@@ -19,23 +22,18 @@ public class Game {
 	public BufferedImage background;
 	public boolean playing;
 	public boolean musicOn;
-	public int duration = 4000;
-	public BufferedImage soulGem1;
-	public BufferedImage soulGem2;
-	public BufferedImage soulGem3;
-	public BufferedImage soulGem4;
+	public int duration = 3000;
 	public BufferedImage hpGauge;
 
 	public boolean playerIsAlive = true;
 	public LinkedList<Bomb> bList;
 	public LinkedList<Enemy> eList;
-	public LinkedList<WallInterface> wi;
+	public LinkedList<Brick> brickList;
 	public LinkedList<Fire> fireList;
 	public LinkedList<PowerUps> powerUpList;
 	public LinkedList<Projectile> projectileList;
 	
 	public Controller c; 
-	public Explode e;
 	public int curLevel;
 	public LevelLoader loader;
 	public int lastStage=2;
@@ -87,8 +85,7 @@ public class Game {
 		this.sys = sys;
 		playing = false;
 		loader = new LevelLoader(this);
-		c = new Controller();
-		e = new Explode(this);
+		c = new Controller(this);
 		curLevel=1;
 		musicOn=false;
 		event1 = new TimedEvent(this);
@@ -96,10 +93,6 @@ public class Game {
 		l = new BufferedImageLoader();
 		//car = l.loadImage("/car.gif");
 		cutIn = l.loadImage("/homuraCutIn.png");
-		soulGem1= l.loadImage("/image/soulGemQuaterDark.png");
-		soulGem2= l.loadImage("/image/soulGemHalfDark.png");
-		soulGem3= l.loadImage("/image/soulGemThreeQuaterDark.png");
-		soulGem4= l.loadImage("/image/soulGemFullDark.png");
 		hpGauge = l.loadImage("/image/hpGauge.png");
 		
 		pData = new PlayerData();
@@ -132,6 +125,7 @@ public class Game {
 				p.updatePlayerData();
 				gData.updateGameData(this);
 				goToScore();
+				saveGame();
 				return;
 			}
 			
@@ -140,7 +134,6 @@ public class Game {
 			timer.tick();
 			event1.tick();
 			event2.tick();
-			GameSystem.turnOnBgm("/sound/delusio_summa.wav");
 			checkVictoryCondition();
 			if(stopTick){
 				return;
@@ -153,7 +146,6 @@ public class Game {
 				return;
 			}
 			c.tick();
-			e.tick();
 		}
 		if(explosionPlayed){
 			if(timePastSinceLastExplode<10){
@@ -193,15 +185,19 @@ public class Game {
 				loader.render(g);
 			}
 			else if(Game.gState==Game.GameState.PLAY){
-			g.drawImage(background, 0, 0,GameSystem.ABSWIDTH+10,GameSystem.ABSHEIGHT-96, null);
+			g.drawImage(background, 0, 0,GameSystem.GAME_WIDTH+10,GameSystem.GAME_HEIGHT, null);
 			c.render(g);
-			e.render(g);
+			g.setColor(Color.DARK_GRAY);
+			g.fillRect(0, GameSystem.GAME_HEIGHT, GameSystem.GAME_WIDTH+10, 106);
 			event1.render(g);
 			event2.render(g);
-			renderPlayerSoul(g);
 			renderPlayerHealth(g);
 			renderPlayerMana(g);
-			renderSoulGemState(g);
+			p.renderExp(g);;
+			p.renderPlayerStatus(g);
+			p.renderPlayerLevel(g);
+			p.renderSoulGem(g);
+			
 			timer.render(g);
 			}
 		
@@ -309,58 +305,64 @@ public class Game {
 	
 	public void goToMenu(){
 		GameSystem.turnOffBgm();
+		GameSystem.turnOnBgm("/sound/music/theme1.wav");	
 		Menu.mState=Menu.MENUSTATE.MAIN;
 		GameSystem.state=GameSystem.STATE.MENU;
 	}
 	public void goToDeath(){
 		GameSystem.turnOffBgm();
+		GameSystem.turnOnBgm("/sound/music/theme2.wav");
 		Menu.mState=Menu.MENUSTATE.DEATH;
 		GameSystem.state=GameSystem.STATE.MENU;
 	}
 	public void goToScore(){
 		GameSystem.turnOffBgm();
+		GameSystem.turnOnBgm("/sound/music/theme1.wav");	
 		Menu.mState=Menu.MENUSTATE.SCORE;
 		GameSystem.state=GameSystem.STATE.MENU;
 	}
-	public void renderPlayerSoul(Graphics g){
-		g.drawImage(p.soulGem,shift,GameSystem.ABSHEIGHT-p.soulGem.getHeight(),null);
-		g.setFont(new Font("arial",Font.PLAIN,15));
-		g.drawString((Integer.toString((int)p.soul)), 30+shift, GameSystem.ABSHEIGHT-p.soulGem.getHeight()+50);
-	}
 	public void renderPlayerHealth(Graphics g){
 		g.drawImage(hpGauge, 90, GameSystem.ABSHEIGHT-75, null);
-		g.setColor(Color.GRAY);
-		//g.fillRoundRect(100, GameSystem.ABSHEIGHT-80, 200, 10,10,10);
 		g.setColor(Color.GREEN);
 		g.fillRect(138, GameSystem.ABSHEIGHT-62, (int) (p.hp/p.maxHp*120), 7);
 		g.setColor(Color.WHITE);
 		g.drawRect(138, GameSystem.ABSHEIGHT-62, 120,7);
 	}
 	public void renderPlayerMana(Graphics g){
-		g.setColor(Color.GRAY);
-		g.fillRoundRect(100+shift, GameSystem.ABSHEIGHT-50, 200, 20,10,10);
 		g.setColor(Color.BLUE);
 		g.fillRect(118, GameSystem.ABSHEIGHT-27, (int) (p.mp/p.maxMp*120), 7);
 		g.setColor(Color.WHITE);
 		g.drawRect(118, GameSystem.ABSHEIGHT-27,120,7);
 	}
-	public void renderSoulGemState(Graphics g){
-		if(1-p.soul/p.maxSoul>=0.25&&1-p.soul/p.maxSoul<0.5){
-			g.drawImage(soulGem1, shift, GameSystem.ABSHEIGHT-p.soulGem.getHeight(),null);
-		}
-		else if(1-p.soul/p.maxSoul>=0.5&&1-p.soul/p.maxSoul<0.75){
-			g.drawImage(soulGem2, shift, GameSystem.ABSHEIGHT-p.soulGem.getHeight(),null);
-		}
-		else if(1-p.soul/p.maxSoul>=0.75&&1-p.soul/p.maxSoul<1){
-			g.drawImage(soulGem3, shift, GameSystem.ABSHEIGHT-p.soulGem.getHeight(),null);
-		}
-		else if(1-p.soul/p.maxSoul==1){
-			g.drawImage(soulGem4, shift, GameSystem.ABSHEIGHT-p.soulGem.getHeight(),null);
-		}
-	}
+	
 	public void checkVictoryCondition(){
 		if(enemyCount<=0){
 			victory=true;
 		}
+	}
+	
+	public void saveGame(){
+		try
+	      {
+			//String path = getClass().getResource("/save/game.ser").toString();
+			//path = URLDecoder.decode(path);
+			//File newFile = new File(path);
+			//String path = getClass().getResource("/save/game.se").toString();
+			//path = URLDecoder.decode(path);
+			//path = path.concat("r");
+			 GameData saveData = gData;
+			 saveData.updateGameData(this);
+			//game.p.pData.upDatePlayerData(game.p);
+	         FileOutputStream fileOut = new FileOutputStream("C:/Users/Attack on Majou/workspace/Java2DGame/res/save/game.ser");
+	         ObjectOutputStream out = new ObjectOutputStream(fileOut);
+	         //game.pData.upDatePlayerData(game.p);
+	         out.writeObject(saveData);
+	         out.close();
+	         fileOut.close();
+	         System.out.printf("Serialized data is saved in /tmp/game.ser");
+	      }catch(IOException i)
+	      {
+	          i.printStackTrace();
+	      }
 	}
 }

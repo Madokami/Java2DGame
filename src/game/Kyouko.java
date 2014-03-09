@@ -9,10 +9,15 @@ public class Kyouko extends Player{
 		ss=SpriteData.char3;
 		image=ss.grabImage(ssX, ssY, size, size);
 	
+		soulGemSprite=SpriteData.gem_kyouko;
+		soulGemImage=soulGemSprite.grabImage(1, 1, soulGemWidth, soulGemHeight);
+		
 		status = SpriteData.kyStatus;
 		setStatusImages();
 		
 		pData.loadPlayerStatus(this);
+		levelImage=IntToImage.toImageSmall(level);
+		soulGemValueImage=IntToImage.toImageGriefSyndrome((int)soul);
 		maxHp=hp;
 		maxMp=mp;
 		maxSoul=soul;
@@ -36,6 +41,12 @@ public class Kyouko extends Player{
 	}
 	public void updatePlayerData(){
 		pData.upDatePlayerData(this);
+	}
+	public void playLevelUpSound(){
+		GameSystem.musicPlayer.playVoice("/sound/kyLevel.wav");
+	}
+	public void playItemFoundSound(){
+		GameSystem.musicPlayer.playVoice("/sound/kyItem.wav");
 	}
 
 }

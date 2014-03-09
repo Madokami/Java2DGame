@@ -27,8 +27,10 @@ public class GameSystem extends Canvas implements Runnable{
 	public static final int SCALE=2;
 	public static final int ABSWIDTH=WIDTH*SCALE;
 	public static final int ABSHEIGHT=HEIGHT*SCALE;
-	public static final int GRIDW=WIDTH*SCALE/SIZE;
-	public static final int GRIDH=HEIGHT*SCALE/SIZE;
+	public static final int GAME_WIDTH=ABSWIDTH;
+	public static final int GAME_HEIGHT=ABSHEIGHT-96;
+	public static final int GRIDW=GAME_WIDTH/SIZE;
+	public static final int GRIDH=GAME_HEIGHT/SIZE;
 	public static final String TITLE="Temp Name";
 	public JFrame frame;
 	private boolean running= false;
@@ -53,8 +55,6 @@ public class GameSystem extends Canvas implements Runnable{
 	};
 	
 	public static STATE state = STATE.MENU;
-	public Controller c; 
-	public Explode e;
 	public void init(){
 		game = new Game(this);
 		menu = new Menu(game);
@@ -66,6 +66,8 @@ public class GameSystem extends Canvas implements Runnable{
 		//event listeners
 		//this.addKeyListener(new Input(this));
 		this.addKeyListener(new Input(this));
+		loadGame();
+		GameSystem.turnOnBgm("/sound/music/theme1.wav");	
 	}
 	
 	public static void main(String[] args){
@@ -191,54 +193,7 @@ public class GameSystem extends Canvas implements Runnable{
 	
 	public void keyPressed(KeyEvent e){
 		int key = e.getKeyCode();
-		int save = KeyEvent.getExtendedKeyCodeForChar('s');
-		if(key==save){
-			try
-		      {
-				//String path = getClass().getResource("/save/game.ser").toString();
-				//path = URLDecoder.decode(path);
-				//File newFile = new File(path);
-				//String path = getClass().getResource("/save/game.se").toString();
-				//path = URLDecoder.decode(path);
-				//path = path.concat("r");
-				 GameData saveData = game.gData;
-				 saveData.updateGameData(game);
-				//game.p.pData.upDatePlayerData(game.p);
-		         FileOutputStream fileOut = new FileOutputStream("C:/Users/Attack on Majou/workspace/Java2DGame/res/save/game.ser");
-		         ObjectOutputStream out = new ObjectOutputStream(fileOut);
-		         //game.pData.upDatePlayerData(game.p);
-		         out.writeObject(saveData);
-		         out.close();
-		         fileOut.close();
-		         System.out.printf("Serialized data is saved in /tmp/game.ser");
-		      }catch(IOException i)
-		      {
-		          i.printStackTrace();
-		      }
-		}
-		else if(key==KeyEvent.VK_L){
-		      try
-		      {
-		    	  GameData loadData;
-		          FileInputStream fileIn = new FileInputStream("C:/Users/Attack on Majou/workspace/Java2DGame/res/save/game.ser");
-		          ObjectInputStream in = new ObjectInputStream(fileIn);
-		          loadData = (GameData) in.readObject();
-		          loadData.loadGame(game);
-		          menu.mChar.handler=new AttributeHandler(game);
-		          System.out.println("Game loaded");
-		          in.close();
-		          fileIn.close();
-		      }catch(IOException i)
-		      {
-		         i.printStackTrace();
-		         return;
-		      }catch(ClassNotFoundException c)
-		      {
-		         System.out.println("Employee class not found");
-		         c.printStackTrace();
-		         return;
-		      }
-		}
+		//int save = KeyEvent.getExtendedKeyCodeForChar('s');
 		if(state==STATE.MENU){
 			menu.keyPressed(key);
 		}
@@ -267,31 +222,78 @@ public class GameSystem extends Canvas implements Runnable{
 	}
 	
 	public static void turnOnBgm(){
-		if(musicOn)
-			return;
+		
 		musicPlayer.playMusic("/sound/sisPuellaMagica.wav");
 		musicOn=true;
 	}
 	//this will play the .wav file idicated given the url
 	public static void turnOnBgm(String url){
-		if(musicOn)
-			return;
-		musicOn=true;
+		
 		System.out.println("turnOnBgm Called");
 		musicPlayer.playMusic(url);
 	}
 	public static void turnOffBgm(){
-		musicOn=false;
+	
 		musicPlayer.stopMusic();
 	}
 	public static void playSwitch(){
-		musicPlayer.playVoice("/sound/switch1.wav");
+		musicPlayer.playSound("/sound/switch1.wav");
 	}
 	public static void playConfirm(){
-		musicPlayer.playVoice("/sound/choice2.wav");
+		musicPlayer.playSound("/sound/choice2.wav");
 	}
 	public static void playCancel(){
-		musicPlayer.playVoice("/sound/cancel2.wav");
+		musicPlayer.playSound("/sound/cancel2.wav");
+	}
+	public static void playError(){
+		musicPlayer.playSound("/sound/failure1.wav");
+	}
+	public void saveGame(){
+		try
+	      {
+			//String path = getClass().getResource("/save/game.ser").toString();
+			//path = URLDecoder.decode(path);
+			//File newFile = new File(path);
+			//String path = getClass().getResource("/save/game.se").toString();
+			//path = URLDecoder.decode(path);
+			//path = path.concat("r");
+			 GameData saveData = game.gData;
+			 saveData.updateGameData(game);
+			//game.p.pData.upDatePlayerData(game.p);
+	         FileOutputStream fileOut = new FileOutputStream("C:/Users/Attack on Majou/workspace/Java2DGame/res/save/game.ser");
+	         ObjectOutputStream out = new ObjectOutputStream(fileOut);
+	         //game.pData.upDatePlayerData(game.p);
+	         out.writeObject(saveData);
+	         out.close();
+	         fileOut.close();
+	         System.out.printf("Serialized data is saved in /tmp/game.ser");
+	      }catch(IOException i)
+	      {
+	          i.printStackTrace();
+	      }
+	}
+	public void loadGame(){
+		 try
+	      {
+	    	  GameData loadData;
+	          FileInputStream fileIn = new FileInputStream("C:/Users/Attack on Majou/workspace/Java2DGame/res/save/game.ser");
+	          ObjectInputStream in = new ObjectInputStream(fileIn);
+	          loadData = (GameData) in.readObject();
+	          loadData.loadGame(game);
+	          menu.mChar.handler=new AttributeHandler(game);
+	          System.out.println("Game loaded");
+	          in.close();
+	          fileIn.close();
+	      }catch(IOException i)
+	      {
+	         i.printStackTrace();
+	         return;
+	      }catch(ClassNotFoundException c)
+	      {
+	         System.out.println("Employee class not found");
+	         c.printStackTrace();
+	         return;
+	      }
 	}
 	
 }

@@ -14,13 +14,16 @@ public class Homura extends Player{
 		ssY=1;
 		ss=SpriteData.char2;
 		image=ss.grabImage(ssX, ssY, size, size);
-
-		soulGem=loader.loadImage("/image/soulGemRed.png");
+		
+		soulGemSprite=SpriteData.gem_homura;
+		soulGemImage=soulGemSprite.grabImage(1, 1, soulGemWidth, soulGemHeight);
 		
 		status = SpriteData.hoStatus;
 		setStatusImages();
 		
 		pData.loadPlayerStatus(this);
+		levelImage=IntToImage.toImageSmall(level);
+		soulGemValueImage=IntToImage.toImageGriefSyndrome((int)soul);
 		maxHp=hp;
 		maxMp=mp;
 		maxSoul=soul;
@@ -53,6 +56,12 @@ public class Homura extends Player{
 		url=url.concat(Integer.toString(x)).concat(".wav");
 		System.out.println(url);
 		GameSystem.musicPlayer.playVoice(url);
+	}
+	public void playLevelUpSound(){
+		GameSystem.musicPlayer.playVoice("/sound/hoLevel0.wav");
+	}
+	public void playItemFoundSound(){
+		GameSystem.musicPlayer.playVoice("/sound/hoItem.wav");
 	}
 	public void playDamagedSound(){
 		

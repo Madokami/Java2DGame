@@ -5,7 +5,6 @@ import game.GameObject.ORIENTATION;
 public abstract class MovableObject extends GameObject{
 	public double xTemp,yTemp;
 	public int spd=4;
-	public double hp=100;
 	public int damage;
 	public boolean nextLocationSet;
 	public boolean moving=false;
@@ -19,8 +18,14 @@ public abstract class MovableObject extends GameObject{
 	
 	public int buttonPressed;
 	
+	//starting from here is some special variables for active abilities
+	public int chargeSpeed;
+	public int chargeDuration;
+	public int chargeDurationTimer;
+	
 	public MovableObject(int x, int y, Game game) {
 		super(x, y, game);
+		hp=100;
 		xTemp=this.x;
 		yTemp=this.y;
 		buttonPressed=0;
@@ -32,14 +37,7 @@ public abstract class MovableObject extends GameObject{
 	}
 	public void tick(){
 		//first check if blocked
-		if(invulnerable){
-			timer++;
-			if(timer>60){
-				timer=0;
-				invulnerable=false;
-			}
-		}
-		
+		super.tick();
 		
 		if(checkIfBlocked()){
 			//checks the orientation
@@ -100,6 +98,9 @@ public abstract class MovableObject extends GameObject{
 				this.moveToLastAcceptableLocation();
 			}
 		}
+		
+	
+		
 		if(buttonReleased){
 			if(targetPositionReached()){
 				velX=0;
@@ -107,6 +108,12 @@ public abstract class MovableObject extends GameObject{
 				moving=false;
 			}
 		}
+		
+		if(chargeDurationTimer<chargeDuration) {
+			chargeDurationTimer++;
+			charge();
+		}
+		
 		x+=velX;
 		y+=velY;
 		updatePosition();
@@ -286,7 +293,7 @@ public abstract class MovableObject extends GameObject{
 	}
 	public boolean checkIfBlocked(int lastX,int lastY,int nextX, int nextY){
 		try{
-			if(game.e.wallArray[lastX][lastY]||game.e.wallArray[nextX][nextY]){
+			if(game.c.wallArray[lastX][lastY]||game.c.wallArray[nextX][nextY]){
 				return true;
 			}	
 		}catch(IndexOutOfBoundsException x){
@@ -306,7 +313,7 @@ public abstract class MovableObject extends GameObject{
 		*/
 		
 		try{
-			if(game.e.wallArray[lastX][lastY]||game.e.wallArray[nextX][nextY]){
+			if(game.c.wallArray[lastX][lastY]||game.c.wallArray[nextX][nextY]){
 				return true;
 			}	
 		}catch(IndexOutOfBoundsException x){
@@ -316,20 +323,9 @@ public abstract class MovableObject extends GameObject{
 		return false;
 		
 	}
-	public boolean checkIfBlockedAgain(){
-		setNextXYCrude();
-		try{
-			if(game.e.wallArray[xGridNearest][yGridNearest]||game.e.wallArray[nextXCrude][nextYCrude]){
-				return true;
-			}
-		}catch(IndexOutOfBoundsException x){
-			
-		
-		}
-		return false;
-	}
+	
 	public boolean checkWallCollision(){
-		if(Physics.hitWall(this, game.wi)){
+		if(Physics.hitWall(this, game.brickList)!=-1){
 			return true;
 		}
 		return false;
@@ -341,18 +337,18 @@ public abstract class MovableObject extends GameObject{
 			atEdge=true;
 			moving=false;
 		}
-		else if(y<=0){
+		if(y<=0){
 			y=1;
 			atEdge=true;
 			moving=false;
 		}
-		else if(x>=GameSystem.WIDTH*GameSystem.SCALE-32){
-			x=GameSystem.WIDTH*GameSystem.SCALE-33;
+		if(x>=GameSystem.GAME_WIDTH-32){
+			x=GameSystem.GAME_WIDTH-32;
 			atEdge=true;
 			moving=false;
 		}
-		else if(y>=GameSystem.HEIGHT*GameSystem.SCALE-32-96){
-			y=GameSystem.HEIGHT*GameSystem.SCALE-33-96;
+		if(y>=GameSystem.GAME_HEIGHT-32){
+			y=GameSystem.GAME_HEIGHT-32;
 			atEdge=true;
 			moving=false;
 		}
@@ -378,5 +374,35 @@ public abstract class MovableObject extends GameObject{
 		else if(nextMove.equals("down")){
 			moveDown();
 		}
+	}
+	
+	public void startCharge(int value, int duration){
+		chargeSpeed=value;
+		chargeDuration=duration;
+		chargeDurationTimer=0;
+	}
+	private void charge(){
+		if(orientation==ORIENTATION.LEFT){
+			velX=-chargeSpeed;
+			velY=0;
+		}
+		else if(orientation==ORIENTATION.RIGHT){
+			velX=chargeSpeed;
+			velY=0;
+		}
+		else if(orientation==ORIENTATION.UP){
+			velX=0;
+			velY=-chargeSpeed;
+		}
+		else if(orientation==ORIENTATION.DOWN){
+			velX=0;
+			velY=chargeSpeed;
+		}
+	}
+	public void refreshMovementSpeed(){
+		if(orientation==ORIENTATION.RIGHT) moveRight();
+		else if(orientation==ORIENTATION.LEFT) moveLeft();
+		else if(orientation==ORIENTATION.UP) moveUp();
+		else if(orientation==ORIENTATION.DOWN) moveDown();
 	}
 }

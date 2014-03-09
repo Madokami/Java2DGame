@@ -3,6 +3,7 @@ package game;
 
 import game.GameObject.ORIENTATION;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -10,7 +11,15 @@ import java.awt.image.BufferedImage;
 public abstract class Player extends MovableObject{
 	public int bombStrength;
 	public int bombLength;
-	public BufferedImage soulGem;
+	public BufferedImage soulGemImage;
+	public SpriteSheet soulGemSprite;
+	public static final int soulGemWidth=64;
+	public static final int soulGemHeight=96;
+	public double soulGemCounter=0;
+	public final double soulGemAnimationSpeed = 0.3;
+	
+	public BufferedImage expBar;
+	
 	public BufferedImageLoader loader;
 	public double maxSoul;
 	public double soul;
@@ -22,14 +31,22 @@ public abstract class Player extends MovableObject{
 	public final int W_STATUS = 128;
 	public final int H_STATUS = 128;
 	
+	
 	public PlayerData pData;
 	
 	public int level;
-	public int expCurrent;
+	public BufferedImage[] levelImage;
+	public BufferedImage[] soulGemValueImage;
+	
+	public double expCurrent;
 	public int BP;
 	public int score;
 	
 	public LevelUp levelUpdater;
+	
+	public int speedChangeDuration;
+	public int speedChangeTimer;
+	public int spdOriginal;
 
 	public Player(int x, int y, Game game) {
 		super(x, y, game);
@@ -44,7 +61,11 @@ public abstract class Player extends MovableObject{
 		bombSpd=10;
 		soul=maxSoul;
 		spd=6;
-		soulGem=loader.loadImage("/image/soulGemRed.png");
+		spdOriginal=spd;
+		
+		
+		expBar=loader.loadImage("/image/expBar.png");
+		
 		statusBg=loader.loadImage("/image/statusBg.png");
 		
 		pData = game.pData;
@@ -58,9 +79,9 @@ public abstract class Player extends MovableObject{
 		this.curX=super.curX;
 		this.curY=super.curY;
 		damage=Physics.hitByAttack(this, game.fireList);
-		if(damage!=-1){
-			takeDamage();
-			setInvulnerable();			
+		if(damage!=-1&&!invincible){
+			takeDamage(damage);		
+			setInvincible(10);
 		}
 		if(hp<=0){
 			playDeathSound();
@@ -71,24 +92,32 @@ public abstract class Player extends MovableObject{
 			if(hp<maxHp){
 				soul--;
 				hp=hp+0.2;
+				soulGemValueImage=IntToImage.toImageGriefSyndrome((int)soul);
 			}
 		}
 		if(soul>0){
 			if(mp<maxMp){
 				soul--;
 				mp=mp+0.2;
+				soulGemValueImage=IntToImage.toImageGriefSyndrome((int)soul);
 			}
+		}
+		if(speedChangeTimer<speedChangeDuration){
+			speedChangeTimer++;
+		}
+		else{
+			restoreSpeed();
 		}
 		
 	
 		//changes the player's "playerImage" depending on movement orientation
 		levelUpdater.checkIfLevelUp(this);
 		Animate.animate(this);
+		Animate.animateGem(this);
 	}
 	
 	public void render(Graphics g){
 		super.render(g);
-		renderPlayerStatus(g);
 	}
 	public void playDamagedSound() {
 		
@@ -96,16 +125,14 @@ public abstract class Player extends MovableObject{
 	public void playDeathSound(){
 		
 	}
-	public void takeDamage(){
-		if(!invulnerable){
-			hp=hp-damage;
-			System.out.println("you've taken "+damage+" damage");
-			playDamagedSound();
-		}
+	public void playLevelUpSound(){
+		
 	}
-	public void setInvulnerable(){
-		invulnerable=true;
+	public void playItemFoundSound(){
+		
 	}
+
+	
 
 	public void useUltimate(){
 		
@@ -136,9 +163,24 @@ public abstract class Player extends MovableObject{
 	}
 	public void renderPlayerHp(Graphics g) {
 		// TODO Auto-generated method stub
-		
 	}
-	
+	public void renderSoulGem(Graphics g){
+		g.drawImage(soulGemImage,GameSystem.GAME_WIDTH/2-60,GameSystem.GAME_HEIGHT,null);
+		for(int i=0;i<soulGemValueImage.length;i++){
+			g.drawImage(soulGemValueImage[i],GameSystem.GAME_WIDTH/2-60+i*20,GameSystem.GAME_HEIGHT+70,null);
+		}
+	}
+	public void renderExp(Graphics g){
+		g.drawImage(expBar, 115, GameSystem.GAME_HEIGHT+83, null);
+		double ratio = this.expCurrent/this.levelUpdater.expRequired;
+		g.setColor(Color.YELLOW);
+		g.fillRect(120, GameSystem.GAME_HEIGHT+86, (int)(ratio*67), 4);
+	}
+	public void renderPlayerLevel(Graphics g){
+		for(int i=0;i<levelImage.length;i++){
+			g.drawImage(levelImage[i],85+i*12,GameSystem.GAME_HEIGHT+82,null);
+		}
+	}
 	public void kickBomb(){
 		Bomb kicked = Physics.onTopOfBomb(this, game.bList);
 		if(kicked!=null){
@@ -159,10 +201,21 @@ public abstract class Player extends MovableObject{
 	public void useAbility1(){
 		
 	}
-
+	
 	public void updatePlayerData() {
 		// will be overwritten
 		
 	}
+	public void changeSpeed(int value, int duration){
+		speedChangeDuration=duration;
+		speedChangeTimer=0;
+		spdOriginal=spd;
+		this.spd=value;
+		refreshMovementSpeed();
+	}
+	public void restoreSpeed(){
+		spd=spdOriginal;
+	}
+	
 	
 }

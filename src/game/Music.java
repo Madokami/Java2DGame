@@ -11,7 +11,7 @@ public class Music{
 	AudioInputStream in;
     Clip music;
     Clip voice;
-    Clip effect;
+    Clip sound;
     Clip explosion;
     Clip sisPuellaMagica;
     
@@ -23,14 +23,14 @@ public class Music{
 		loader = new AudioLoader();
 		try {
 			music = AudioSystem.getClip();
-			effect = AudioSystem.getClip();
+			sound = AudioSystem.getClip();
 			sisPuellaMagica = AudioSystem.getClip();
 			explosion = loader.newClip("/sound/expl1.wav");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		loader.loadAudio("/sound/expl1.wav", effect);
+		loader.loadAudio("/sound/expl1.wav", sound);
 		
 	}
 	public void playBgm(){
@@ -61,8 +61,8 @@ public class Music{
 		}
 	}
 	public void playSwoosh() {
-		effect = loader.newClip("/sound/soundEffect1.wav");
-		effect.start();
+		sound = loader.newClip("/sound/soundEffect1.wav");
+		sound.start();
 	}
 	public synchronized void playMusic(String url){
 		music.stop();
@@ -71,8 +71,13 @@ public class Music{
 		music.loop(music.LOOP_CONTINUOUSLY);
 	}
 	public void playVoice(String url){
+		if(voice!=null) voice.stop();
 		voice = loader.newClip(url);
 		voice.start();
+	}
+	public void playSound(String url){
+		sound=loader.newClip(url);
+		sound.start();
 	}
 	public void reloadExplosion(){
 		explosion = loader.newClip("/sound/expl1.wav");

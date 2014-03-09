@@ -10,12 +10,19 @@ public class Madoka extends Player{
 		ssX=7;
 		ssY=1;
 		ss=SpriteData.char1;
+		
+		
 		image=ss.grabImage(ssX, ssY, size, size);
+		
+		soulGemSprite=SpriteData.gem_madoka;
+		soulGemImage=soulGemSprite.grabImage(1, 1, soulGemWidth, soulGemHeight);
 		
 		status = SpriteData.mdStatus;
 		setStatusImages();
 		
 		pData.loadPlayerStatus(this);
+		levelImage=IntToImage.toImageSmall(level);
+		soulGemValueImage=IntToImage.toImageGriefSyndrome((int)soul);
 		maxHp=hp;
 		maxMp=mp;
 		maxSoul=soul;
@@ -39,6 +46,12 @@ public class Madoka extends Player{
 		url=url.concat(Integer.toString(x)).concat(".wav");
 		System.out.println(url);
 		GameSystem.musicPlayer.playVoice(url);
+	}
+	public void playLevelUpSound(){
+		GameSystem.musicPlayer.playVoice("/sound/mdLevel.wav");
+	}
+	public void playItemFoundSound(){
+		GameSystem.musicPlayer.playVoice("/sound/mdItem.wav");
 	}
 	public void updatePlayerData(){
 		pData.upDatePlayerData(this);

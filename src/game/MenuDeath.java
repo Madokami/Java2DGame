@@ -25,7 +25,7 @@ public class MenuDeath{
 		dText = loader.loadImage("/image/gameOverText.png");
 	}
 	public void tick(){
-		GameSystem.turnOnBgm("/sound/music/theme2.wav");	
+		
 	}
 	public void render(Graphics g){
 		g.setColor(Color.WHITE);

@@ -1,0 +1,4 @@
+For the bazooka fire, combine the fire with the bazooka first and then make it into a sprite sheet.
+
+For the bomb cloud effect, see if you can somehow make all the images the same size and then combined it into a single spriteSheet. 
+If it doesn't work then make 2 spritesheets, one for the first half one for the second half.

@@ -11,6 +11,8 @@ public class SpeedUp extends PowerUps{
 		if(Physics.collide(this,game.p)){
 			game.c.removeEntity(this);
 			game.p.spd=game.p.spd+1;
+			game.p.spdOriginal++;
+			game.p.playItemFoundSound();
 			//game.p.pData.saSpd++;
 		}
 	}

@@ -7,6 +7,6 @@ public class PowerUps extends GameObject{
 		// TODO Auto-generated constructor stub
 	}
 	public void tick(){
-		return;
+		
 	}
 }

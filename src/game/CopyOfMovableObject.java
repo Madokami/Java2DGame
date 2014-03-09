@@ -21,13 +21,7 @@ public abstract class CopyOfMovableObject extends GameObject{
 	public void tick(){
 		//updates position of char
 		//maps the position to the closest "grid"
-		if(invulnerable){
-			timer++;
-			if(timer>60){
-				timer=0;
-				invulnerable=false;
-			}
-		}
+		
 		checkIfBlocked();
 		if(blocked){
 			return;
@@ -74,7 +68,7 @@ public abstract class CopyOfMovableObject extends GameObject{
 			nextY=lastY;
 		}
 		try{
-			if(game.e.wallArray[lastX][lastY]||game.e.wallArray[nextX][nextY]){
+			if(game.c.wallArray[lastX][lastY]||game.c.wallArray[nextX][nextY]){
 				blocked=true;
 			}
 			else{
