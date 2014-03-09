@@ -48,6 +48,9 @@ public class GameObject{
 		public boolean invincible = false;
 		public int invincibleTimer;
 		public int invincibleTime;
+		
+		public int collisionWidth;
+		public int collisionHeight;
 	
 		
 		public enum ORIENTATION{
@@ -75,6 +78,8 @@ public class GameObject{
 			curY=this.y;
 			direction = "stand";
 			rand = new Random();
+			collisionWidth=32;
+			collisionHeight=32;
 		}
 		public void tick(){
 			//updates position of char
@@ -131,6 +136,13 @@ public class GameObject{
 		}
 		public void takeDamage(int damage){
 			this.hp-=damage;
+		}
+		public void applyDamage(int value, int invincibleDuration, GameObject target){
+			if(target.invincible) return;
+			else{
+				target.setInvincible(invincibleDuration);
+				target.takeDamage(value);
+			}
 		}
 		
 		

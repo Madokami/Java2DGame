@@ -5,7 +5,7 @@ import java.util.LinkedList;
 public class Physics {
 	public static int collision(Player p,LinkedList<Enemy> ei){
 		for(int i=0;i<ei.size();i++){
-			if(p.getBounds(32,32).intersects(ei.get(i).getBounds(32,32))){
+			if(p.getBounds(p.collisionWidth,p.collisionHeight).intersects(ei.get(i).getBounds(ei.get(i).collisionWidth,ei.get(i).collisionHeight))){
 				return i;
 			}
 		}
@@ -23,29 +23,32 @@ public class Physics {
 	}
 	public static int collision(GameObject w,LinkedList<Enemy> ei){
 		for(int i=0;i<ei.size();i++){
-			if(w.getBounds(32,32).intersects(ei.get(i).getBounds(32,32))){
+			if(w.getBounds(w.collisionWidth,w.collisionHeight).intersects(ei.get(i).getBounds(ei.get(i).collisionWidth,ei.get(i).collisionHeight))){
 				return i;
 			}
 		}
 		return -1;
 	}
+	
+	public static int hitBomb(GameObject w,LinkedList<Bomb> list){
+		for(int i=0;i<list.size();i++){
+			if(w.getBounds(w.collisionWidth,w.collisionHeight).intersects(list.get(i).getBounds(list.get(i).collisionWidth,list.get(i).collisionHeight))){
+				return i;
+			}
+		}
+		return -1;
+	}
+	
 	public static int hitWall(GameObject f,LinkedList<Brick> wi){
 		for(int i=0;i<wi.size();i++){
-			if(f.getBounds(31, 31).intersects(wi.get(i).getBounds(31, 31)))
+			if(f.getBounds(f.collisionWidth-1, f.collisionHeight-1).intersects(wi.get(i).getBounds(31, 31)))
 				return i;
 		}
 		return -1;
 	}
-	public static int hitByAttack(GameObject f, LinkedList<Fire> fi){
-		for(int i=0;i<fi.size();i++){
-			if(f.getBounds(GameSystem.SIZE-5, GameSystem.SIZE-5).intersects(fi.get(i).getBounds(GameSystem.SIZE-5, GameSystem.SIZE-5)))
-				//return fi.get(i).game.p.bombStrength;
-				return fi.get(i).getStrength();
-		}
-		return -1;
-	}
+	
 	public static boolean collide(GameObject x,GameObject y){
-		if(x.getBounds(GameSystem.SIZE-2, GameSystem.SIZE-2).intersects(y.getBounds(GameSystem.SIZE-2,GameSystem.SIZE-2))){
+		if(x.getBounds(x.collisionWidth, x.collisionHeight).intersects(y.getBounds(y.collisionWidth,y.collisionHeight))){
 			return true;
 		}
 		return false;

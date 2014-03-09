@@ -20,17 +20,18 @@ public class Bomb extends MovableObject{
 		image = ss.grabImage(1, 1, 32, 32);
 		counter = 0;
 		direction=game.p.direction;
+		hp=1;
 		//fireBomb();
 		
 	}
 	public void tick(){
 		super.tick();
 		counter++;
-		if(Physics.hitByAttack(this, game.fireList)!=-1){
+		if(counter>explodeTime){
 			game.c.createExplosion((int)super.xGridNearest, (int)super.yGridNearest, length, strength);
 			game.c.removeEntity(this);
 		}
-		if(counter>explodeTime){
+		else if(hp<=0){
 			game.c.createExplosion((int)super.xGridNearest, (int)super.yGridNearest, length, strength);
 			game.c.removeEntity(this);
 		}

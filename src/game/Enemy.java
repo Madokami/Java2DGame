@@ -40,10 +40,7 @@ public class Enemy extends MovableObject{
 		
 		this.curX=super.curX;
 		this.curY=super.curY;
-		damage=Physics.hitByAttack(this, game.fireList);
-		if(damage!=-1){
-			hp=hp-damage;
-		}
+		
 		if(hp<=0){
 			game.enemyCount--;
 			game.c.removeEntity(this);
@@ -62,7 +59,6 @@ public class Enemy extends MovableObject{
 			//game.c.removeEntity(this);
 		}
 		*/
-		Animate.animate(this);
 	
 	}
 	public void providePoints(Player p){
@@ -84,12 +80,6 @@ public class Enemy extends MovableObject{
 			moveRight();
 		}
 	}
-	public void applyDamage(int value, int invincibleDuration, GameObject target){
-		if(target.invincible) return;
-		else{
-			target.setInvincible(invincibleDuration);
-			target.takeDamage(value);
-		}
-	}
+	
 	
 }

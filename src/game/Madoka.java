@@ -53,6 +53,15 @@ public class Madoka extends Player{
 	public void playItemFoundSound(){
 		GameSystem.musicPlayer.playVoice("/sound/mdItem.wav");
 	}
+	public void playDamagedMediumSound(){
+		GameSystem.musicPlayer.playVoice("/sound/mdDamage0.wav");
+	}
+	public void playDamagedHeavySound(){
+		GameSystem.musicPlayer.playVoice("/sound/mdDamage1.wav");
+	}
+	public void playSoulGemDarkSound(){
+		GameSystem.musicPlayer.playVoice("/sound/mdSoul1.wav");
+	}
 	public void updatePlayerData(){
 		pData.upDatePlayerData(this);
 	}

@@ -17,7 +17,6 @@ public class GameData implements Serializable{
 	public Controller c; 
 	*/
 	public int curLevel;
-	public int lastStage;
 	public int enemyCount;
 	public PlayerData pData;
 	
@@ -29,14 +28,12 @@ public class GameData implements Serializable{
 	
 	public void updateGameData(Game game){
 		this.curLevel = game.curLevel;
-		this.lastStage = game.lastStage;
 		this.pData=game.pData;
 
 	}
 
 	public void loadGame(Game game) {
 		game.curLevel = curLevel;
-		game.lastStage = lastStage;
 		game.pData=this.pData;
 	}
 }

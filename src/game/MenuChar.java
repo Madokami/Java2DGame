@@ -381,15 +381,18 @@ public class MenuChar implements GeneralMenu{
 					Menu.mState=Menu.MENUSTATE.MAIN;
 					effect.startFadeWhiteReversed();
 				}
-				else if(key==KeyEvent.VK_LEFT){				
+				else if(key==KeyEvent.VK_LEFT){		
+					if(isRotating) return;
 					startRotateLeft();
 					GameSystem.playSwitch();
 				}
 				else if(key==KeyEvent.VK_RIGHT){
+					if(isRotating) return;
 					startRotateRight();
 					GameSystem.playSwitch();
 				}
 				else if(key==KeyEvent.VK_Z){
+					if(isRotating) return;
 					handler.refreshAll();
 					this.setDisplayStatus();
 					GameSystem.playConfirm();

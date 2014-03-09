@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.URLDecoder;
 import java.util.LinkedList;
 
 public class Game {
@@ -36,7 +37,7 @@ public class Game {
 	public Controller c; 
 	public int curLevel;
 	public LevelLoader loader;
-	public int lastStage=2;
+	public int lastStage=3;
 	public int enemyCount;
 	public boolean victory;
 	
@@ -344,22 +345,19 @@ public class Game {
 	public void saveGame(){
 		try
 	      {
-			//String path = getClass().getResource("/save/game.ser").toString();
+			//String path = getClass().getResource("bin/save/game.ser").toString();
 			//path = URLDecoder.decode(path);
-			//File newFile = new File(path);
-			//String path = getClass().getResource("/save/game.se").toString();
-			//path = URLDecoder.decode(path);
-			//path = path.concat("r");
+			//File newFile = new File(path);"C:/Users/Attack on Majou/workspace/Java2DGame/res/save/game.ser"
 			 GameData saveData = gData;
 			 saveData.updateGameData(this);
 			//game.p.pData.upDatePlayerData(game.p);
-	         FileOutputStream fileOut = new FileOutputStream("C:/Users/Attack on Majou/workspace/Java2DGame/res/save/game.ser");
+	         FileOutputStream fileOut = new FileOutputStream("system/save/game.ser");
 	         ObjectOutputStream out = new ObjectOutputStream(fileOut);
 	         //game.pData.upDatePlayerData(game.p);
 	         out.writeObject(saveData);
 	         out.close();
 	         fileOut.close();
-	         System.out.printf("Serialized data is saved in /tmp/game.ser");
+	         System.out.printf("Serialized data is saved in /save/game.ser");
 	      }catch(IOException i)
 	      {
 	          i.printStackTrace();

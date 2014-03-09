@@ -47,6 +47,8 @@ public abstract class Player extends MovableObject{
 	public int speedChangeDuration;
 	public int speedChangeTimer;
 	public int spdOriginal;
+	
+	public boolean damageMediumPlayed,damageHeavyPlayed,soulGemDarkSoundPlayed;
 
 	public Player(int x, int y, Game game) {
 		super(x, y, game);
@@ -78,11 +80,7 @@ public abstract class Player extends MovableObject{
 		super.tick();
 		this.curX=super.curX;
 		this.curY=super.curY;
-		damage=Physics.hitByAttack(this, game.fireList);
-		if(damage!=-1&&!invincible){
-			takeDamage(damage);		
-			setInvincible(10);
-		}
+		
 		if(hp<=0){
 			playDeathSound();
 			game.c.removePlayer(this);
@@ -102,12 +100,7 @@ public abstract class Player extends MovableObject{
 				soulGemValueImage=IntToImage.toImageGriefSyndrome((int)soul);
 			}
 		}
-		if(speedChangeTimer<speedChangeDuration){
-			speedChangeTimer++;
-		}
-		else{
-			restoreSpeed();
-		}
+		
 		
 	
 		//changes the player's "playerImage" depending on movement orientation
@@ -131,6 +124,15 @@ public abstract class Player extends MovableObject{
 	public void playItemFoundSound(){
 		
 	}
+	public void playDamagedMediumSound(){
+		
+	}
+	public void playDamagedHeavySound(){
+		
+	}
+	public void playSoulGemDarkSound(){
+		
+	}
 
 	
 
@@ -148,22 +150,29 @@ public abstract class Player extends MovableObject{
 	public void renderPlayerStatus(Graphics g){
 		//g.drawImage(statusBg,0, GameSystem.ABSHEIGHT-H_STATUS+28,null);
 	if(soul==0){
+		if(!soulGemDarkSoundPlayed) playSoulGemDarkSound();
+		soulGemDarkSoundPlayed=true;
 			g.drawImage(despairStatus,0, GameSystem.ABSHEIGHT-H_STATUS+14,null);
 			return;
 	}
 	if(hp/maxHp>0.6){
+		damageMediumPlayed=false;
+		damageHeavyPlayed=false;
 		g.drawImage(okStatus,0, GameSystem.ABSHEIGHT-H_STATUS+14,null);
 	}
 	else if(hp/maxHp<=0.6&&hp/maxHp>0.3){
+		damageHeavyPlayed=false;
+		if(!damageMediumPlayed) playDamagedMediumSound();
+		damageMediumPlayed=true;
 		g.drawImage(midDamageStatus,0, GameSystem.ABSHEIGHT-H_STATUS+14,null);
 	}
 	else if(hp/maxHp<=0.3){
+		if(!damageHeavyPlayed) playDamagedHeavySound();
+		damageHeavyPlayed=true;
 		g.drawImage(highDamageStatus,0, GameSystem.ABSHEIGHT-H_STATUS+14,null);
 	}
 	}
-	public void renderPlayerHp(Graphics g) {
-		// TODO Auto-generated method stub
-	}
+	
 	public void renderSoulGem(Graphics g){
 		g.drawImage(soulGemImage,GameSystem.GAME_WIDTH/2-60,GameSystem.GAME_HEIGHT,null);
 		for(int i=0;i<soulGemValueImage.length;i++){

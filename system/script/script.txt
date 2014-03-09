@@ -1,0 +1,56 @@
+﻿// 这里介绍一下剧本写法。
+// 首先，系统会自动跳过 “//” 开始的行跟完全空白的行。
+// 每一排最开始全大写再加上":"都是系统命令，比如“MADOKA:"就会把对话框调成小圆的。
+// "NARRATOR:" 是调成旁白对话框。
+// "SP_R:NULL" 把右边的立绘取消， "SP_M:NULL"取消中间， "SP_L:NULL"取消左边。。。
+// "SP_R:路径" 会把右边的图片调成路径里的图片。注意所有立绘都是放在"/image/talk"里面的。
+// 在 "/image/talk" 里面再加几个文件夹来分辨角色也无所谓。
+// "BG:路径" 换背景。 "AUDIO:BGM:路径" 换音乐， "AUDIO:BGM_NULL" 停止音乐。
+//"AUDIO_VOICE:路径" 放人物语言（恩没有好的语音就算了，有的话随便塞几个都可以）， "AUDIO_SOUND:路径" 放其他音效，比如砍人。
+
+// 解释就此结束
+// 以下是使用列子
+
+MADOKA:
+AUDIO_BGM:/sound/music/bgm1.wav
+I have commented the Menu class so it
+should be readible now.
+I have changed user inputs.
+
+HOMURA:
+SP_L:/image/talk/ho_ms.png
+Menu control is now done by the keyboard
+
+KYOUKO:
+story mode is not finished yet
+
+MAMI:
+AUDIO_BGM:/sound/music/theme2.wav
+BG:/image/stage/ma_noHead.png
+I have no head
+.
+.
+.
+.
+.
+.
+
+SAYAKA:
+AUDIO_VOICE:/sound/saLevel.wav
+too bad
+
+MADOKA:
+AUDIO_VOICE:/sound/mdLevel.wav
+Also, "z" confirms in menu
+
+SP_R:NULL
+"x" cancels in menu
+"z" places bombs in game
+"p" pauses
+"c" activate special ability
+
+NARRATOR:
+but special abilities are still buggy
+press "x" to return to main menu...
+
+END

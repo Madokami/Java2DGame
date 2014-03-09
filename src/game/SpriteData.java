@@ -33,6 +33,7 @@ public class SpriteData {
 	public static SpriteSheet mrPringles = new SpriteSheet(loader.loadImage("/image/spriteSheet/mr_pringles.png"));
 	public static SpriteSheet mrPringles2 = new SpriteSheet(loader.loadImage("/image/spriteSheet/mr_pringlesRetarded.png"));
 	public static SpriteSheet adelbertMini = new SpriteSheet(loader.loadImage("/image/spriteSheet/adelbertMini.png"));
+	public static SpriteSheet gertrud = new SpriteSheet(loader.loadImage("/image/spriteSheet/gertrud.png"));
 	
 	
 	public static SpriteSheet mdRunning = new SpriteSheet(loader.loadImage("/image/spriteSheet/mdRunning.png"));

@@ -45,6 +45,15 @@ public class Mami extends Player{
 	public void playItemFoundSound(){
 		GameSystem.musicPlayer.playVoice("/sound/maItem.wav");
 	}
+	public void playDamagedMediumSound(){
+		GameSystem.musicPlayer.playVoice("/sound/maDamage0.wav");
+	}
+	public void playDamagedHeavySound(){
+		GameSystem.musicPlayer.playVoice("/sound/maDamage1.wav");
+	}
+	public void playSoulGemDarkSound(){
+		GameSystem.musicPlayer.playVoice("/sound/maSoul1.wav");
+	}
 	public void updatePlayerData(){
 		pData.upDatePlayerData(this);
 	}

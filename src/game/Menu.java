@@ -192,7 +192,6 @@ public class Menu {
 	}
 	public static void toStoryMode() {
 		GameSystem.turnOffBgm();
-		GameSystem.turnOnBgm("/sound/bgm1.wav");
 		GameSystem.state=STATE.STORY;
 	}
 

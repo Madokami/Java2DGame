@@ -15,6 +15,10 @@ public class MrPringles extends Enemy{
 		
 		// TODO Auto-generated constructor stub
 	}
+	public void tick(){
+		super.tick();
+		Animate.animate(this);
+	}
 	public void render(Graphics g){
 		g.drawImage(image,(int)(x-8),(int)(y-8),null);
 	}

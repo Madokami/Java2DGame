@@ -114,6 +114,7 @@ public abstract class MovableObject extends GameObject{
 			charge();
 		}
 		
+		
 		x+=velX;
 		y+=velY;
 		updatePosition();
@@ -342,13 +343,13 @@ public abstract class MovableObject extends GameObject{
 			atEdge=true;
 			moving=false;
 		}
-		if(x>=GameSystem.GAME_WIDTH-32){
-			x=GameSystem.GAME_WIDTH-32;
+		if(x>=GameSystem.GAME_WIDTH-ssWidth){
+			x=GameSystem.GAME_WIDTH-ssWidth;
 			atEdge=true;
 			moving=false;
 		}
-		if(y>=GameSystem.GAME_HEIGHT-32){
-			y=GameSystem.GAME_HEIGHT-32;
+		if(y>=GameSystem.GAME_HEIGHT-ssHeight){
+			y=GameSystem.GAME_HEIGHT-ssHeight;
 			atEdge=true;
 			moving=false;
 		}
@@ -361,20 +362,7 @@ public abstract class MovableObject extends GameObject{
 		this.x=this.xTemp;
 		this.y=this.yTemp;
 	}
-	public void applyNextMove(){
-		if(nextMove.equals("right")){
-			moveRight();
-		}
-		else if(nextMove.equals("left")){
-			moveLeft();
-		}
-		else if(nextMove.equals("up")){
-			moveUp();
-		}
-		else if(nextMove.equals("down")){
-			moveDown();
-		}
-	}
+	
 	
 	public void startCharge(int value, int duration){
 		chargeSpeed=value;

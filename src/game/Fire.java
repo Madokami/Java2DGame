@@ -4,35 +4,41 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
-public class Fire{
+public class Fire extends GameObject{
 int strength;
-long start;
-SpriteSheet ss;
-double x;
-double y;
+private int counter;
 
-Game game;
-BufferedImage image;
 	public Fire(int x, int y, Game game,int Strength) {
-		this.game = game;
-		this.x=(x-1)*GameSystem.SIZE;
-		this.y=(y-1)*GameSystem.SIZE;
+		super(x,y,game);
 		ss=SpriteData.bricks;
 		image=ss.grabImage(5, 15, 32, 32);
 		this.strength = Strength;
-		start = System.currentTimeMillis();
+		counter=0;
 	}
 	public void tick(){
-		if(System.currentTimeMillis()-start>500){
+		counter++;
+		if(counter>5){
 			game.c.removeFire(this);
 		}
+		if(Physics.collide(this, game.p)){
+			applyDamage(strength,15,game.p);
+		}
+		int enemyHit=Physics.collision(this, game.eList);
+		if(enemyHit!=-1){
+			applyDamage(strength,10,game.eList.get(enemyHit));
+		}
+		int wallHit=Physics.hitWall(this, game.brickList);
+		if(wallHit!=-1){
+			applyDamage(strength,10,game.brickList.get(wallHit));
+		}
+		int bombHit=Physics.hitBomb(this, game.bList);
+		if(bombHit!=-1){
+			applyDamage(strength,10,game.bList.get(bombHit));
+		}
 	}
-	public void render(Graphics g){
-		g.drawImage(image, (int)x,(int)y,null);
-	}
-	public Rectangle getBounds(int width, int height){
-		return new Rectangle((int)x,(int)y,width,height);
-	}
+
+	
+	
 	public int getStrength(){
 		return strength;
 	}

@@ -12,7 +12,7 @@ public class AudioLoader {
 	AudioInputStream a;
 	public void loadAudio(String path,Clip c){
 		try {
-			a = AudioSystem.getAudioInputStream(getClass().getResource(path));
+			a = AudioSystem.getAudioInputStream(getClass().getResourceAsStream(path));
 			try {
 				c.open(a);
 			} catch (LineUnavailableException e) {

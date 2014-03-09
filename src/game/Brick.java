@@ -9,12 +9,10 @@ public class Brick extends GameObject{
 		super.image=ss.grabImage(1,1,32,32);
 	}
 	public void tick(){
-		if(Physics.hitByAttack(this, game.fireList)!=-1){
+		super.tick();
+		if(hp<=0){
 			game.c.removeEntity(this);
-			game.c.addEntity(new SpeedUp(xGridNearest,yGridNearest,game));
-		}
-		else if(hp<=0){
-			game.c.removeEntity(this);
+			game.c.addEntity(new SpeedUp(this.xGridNearest,yGridNearest,game));
 		}
 	}
 }

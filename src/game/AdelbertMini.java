@@ -27,6 +27,7 @@ public class AdelbertMini extends Enemy{
 			setTime();
 			startCharge(10,12);
 		}
+		Animate.animate(this);
 		
 	}
 	public void render(Graphics g){

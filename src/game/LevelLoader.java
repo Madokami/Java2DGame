@@ -32,6 +32,9 @@ public class LevelLoader {
 		else if(stage==2){
 			stage2();
 		}
+		else if(stage==3){
+			stage3();
+		}
 	}
 	public void stage1(){
 		reset();
@@ -63,6 +66,19 @@ public class LevelLoader {
 		}
 		updateList();
 	}
+	public void stage3(){
+		reset();
+		game.background=loader.loadImage("/image/stage/wall1.png");
+		createPlayer(10,12);
+		game.c.addEntity(new Boss_Gertrud(10,2,game));
+		game.enemyCount++;
+		for(int i=4;i<GameSystem.GRIDW-4;i++){
+			game.c.addEntity(new AdelbertMini(i,3,game));
+			game.enemyCount++;
+		}
+		updateList();
+	}
+	
 	public void reset(){
 		game.victory=false;
 		game.c = new Controller(game);

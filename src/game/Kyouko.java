@@ -48,5 +48,14 @@ public class Kyouko extends Player{
 	public void playItemFoundSound(){
 		GameSystem.musicPlayer.playVoice("/sound/kyItem.wav");
 	}
+	public void playDamagedMediumSound(){
+		GameSystem.musicPlayer.playVoice("/sound/kyDamage0.wav");
+	}
+	public void playDamagedHeavySound(){
+		GameSystem.musicPlayer.playVoice("/sound/kyDamage1.wav");
+	}
+	public void playSoulGemDarkSound(){
+		GameSystem.musicPlayer.playVoice("/sound/kySoul1.wav");
+	}
 
 }

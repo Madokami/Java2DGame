@@ -194,6 +194,9 @@ public class GameSystem extends Canvas implements Runnable{
 	public void keyPressed(KeyEvent e){
 		int key = e.getKeyCode();
 		//int save = KeyEvent.getExtendedKeyCodeForChar('s');
+		if(key==KeyEvent.VK_S){
+			game.saveGame();
+		}
 		if(state==STATE.MENU){
 			menu.keyPressed(key);
 		}
@@ -233,8 +236,13 @@ public class GameSystem extends Canvas implements Runnable{
 		musicPlayer.playMusic(url);
 	}
 	public static void turnOffBgm(){
-	
 		musicPlayer.stopMusic();
+	}
+	public static void playVoice(String path){
+		musicPlayer.playVoice(path);
+	}
+	public static void playSound(String path){
+		musicPlayer.playSound(path);
 	}
 	public static void playSwitch(){
 		musicPlayer.playSound("/sound/switch1.wav");
@@ -248,35 +256,12 @@ public class GameSystem extends Canvas implements Runnable{
 	public static void playError(){
 		musicPlayer.playSound("/sound/failure1.wav");
 	}
-	public void saveGame(){
-		try
-	      {
-			//String path = getClass().getResource("/save/game.ser").toString();
-			//path = URLDecoder.decode(path);
-			//File newFile = new File(path);
-			//String path = getClass().getResource("/save/game.se").toString();
-			//path = URLDecoder.decode(path);
-			//path = path.concat("r");
-			 GameData saveData = game.gData;
-			 saveData.updateGameData(game);
-			//game.p.pData.upDatePlayerData(game.p);
-	         FileOutputStream fileOut = new FileOutputStream("C:/Users/Attack on Majou/workspace/Java2DGame/res/save/game.ser");
-	         ObjectOutputStream out = new ObjectOutputStream(fileOut);
-	         //game.pData.upDatePlayerData(game.p);
-	         out.writeObject(saveData);
-	         out.close();
-	         fileOut.close();
-	         System.out.printf("Serialized data is saved in /tmp/game.ser");
-	      }catch(IOException i)
-	      {
-	          i.printStackTrace();
-	      }
-	}
+	
 	public void loadGame(){
 		 try
 	      {
 	    	  GameData loadData;
-	          FileInputStream fileIn = new FileInputStream("C:/Users/Attack on Majou/workspace/Java2DGame/res/save/game.ser");
+	          FileInputStream fileIn = new FileInputStream("system/save/game.ser");
 	          ObjectInputStream in = new ObjectInputStream(fileIn);
 	          loadData = (GameData) in.readObject();
 	          loadData.loadGame(game);
