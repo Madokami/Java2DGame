@@ -1,0 +1,1 @@
+all bg images should be 512x304
