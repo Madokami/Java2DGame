@@ -8,6 +8,10 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
+import system.BufferedImageLoader;
+import system.GameSystem;
+import system.SpecialEffects;
+
 public class TimedEvent {
 	private long startTime;
 	private long duration;

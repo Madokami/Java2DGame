@@ -1,7 +1,14 @@
 package game;
 
-import game.GameObject.ORIENTATION;
-import game.GameSystem.STATE;
+import gameObject.Bomb;
+import gameObject.Brick;
+import gameObject.Controller;
+import gameObject.Enemy;
+import gameObject.Fire;
+import gameObject.Player;
+import gameObject.PowerUps;
+import gameObject.Projectile;
+import gameObject.GameObject.ORIENTATION;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -15,39 +22,49 @@ import java.io.Serializable;
 import java.net.URLDecoder;
 import java.util.LinkedList;
 
+import system.BufferedImageLoader;
+import system.GameData;
+import system.GameSystem;
+import system.GameTimer;
+import system.GameSystem.STATE;
+import menu.Menu;
+
 public class Game {
 	public GameTimer timer;
 	
-	public GameData gData;
-	public Player p;
-	public BufferedImage background;
-	public boolean playing;
-	public boolean musicOn;
-	public int duration = 3000;
-	public BufferedImage hpGauge;
+	private GameData gameData;
+	private Player player;
+	private BufferedImage background;
+	private boolean playing;
+	private boolean musicOn;
+	private int duration = 3000;
+	private BufferedImage hpGauge;
 
-	public boolean playerIsAlive = true;
-	public LinkedList<Bomb> bList;
-	public LinkedList<Enemy> eList;
-	public LinkedList<Brick> brickList;
-	public LinkedList<Fire> fireList;
-	public LinkedList<PowerUps> powerUpList;
-	public LinkedList<Projectile> projectileList;
+	private boolean playerIsAlive = true;
+	private LinkedList<Bomb> bombList;
+	private LinkedList<Enemy> enemyList;
+	private LinkedList<Brick> brickList;
+	private LinkedList<Fire> fireList;
+	private LinkedList<PowerUps> powerUpList;
+	private LinkedList<Projectile> projectileList;
+	private boolean[][] wallArray;
+	private boolean[][] bombArray;
 	
-	public Controller c; 
-	public int curLevel;
-	public LevelLoader loader;
-	public int lastStage=3;
-	public int enemyCount;
-	public boolean victory;
+	private Controller controller; 
+	private int curLevel;
+	private LevelLoader levelLoader;
+	public BufferedImageLoader loader;
+	private int lastStage=3;
+	private int enemyCount;
+	private boolean victory;
 	
 	private int shift = 428;
 	
-	public PlayerData pData;
+	private PlayerData playerData;
 	
 	
 	//handles ticking problems with respect to bomb explosion sound.
-	//"time stop" ability + mass bombing leads to serious lag
+	//else "time stop" ability + mass bombing leads to serious lag
 	public int timePastSinceLastExplode=0;
 	public static boolean explosionPlayed;
 	
@@ -71,7 +88,6 @@ public class Game {
 		KYOUKO,
 	};
 	
-	public BufferedImageLoader l;
 	
 	public static enum GameState{
 		PLAY,
@@ -85,26 +101,26 @@ public class Game {
 		timer = new GameTimer();
 		this.sys = sys;
 		playing = false;
-		loader = new LevelLoader(this);
-		c = new Controller(this);
+		levelLoader = new LevelLoader(this);
+		controller = new Controller(this);
 		curLevel=1;
 		musicOn=false;
 		event1 = new TimedEvent(this);
 		event2= new TimedEvent(this);
-		l = new BufferedImageLoader();
+		loader = new BufferedImageLoader();
 		//car = l.loadImage("/car.gif");
-		cutIn = l.loadImage("/homuraCutIn.png");
-		hpGauge = l.loadImage("/image/hpGauge.png");
+		cutIn = loader.loadImage("/homuraCutIn.png");
+		hpGauge = loader.loadImage("/image/hpGauge.png");
 		
-		pData = new PlayerData();
-		pData.loadDefaultValues();
-		gData = new GameData();
+		playerData = new PlayerData();
+		playerData.loadDefaultValues();
+		gameData = new GameData();
 		
 
 	}
 
 	public void loadLevel(){
-		loader.load();
+		levelLoader.load();
 	}
 	public void tick(){
 		if(isWaiting()){
@@ -123,8 +139,8 @@ public class Game {
 				if(curLevel>lastStage){
 					curLevel=1;
 				}
-				p.updatePlayerData();
-				gData.updateGameData(this);
+				player.updatePlayerData();
+				gameData.updateGameData(this);
 				goToScore();
 				saveGame();
 				return;
@@ -140,13 +156,10 @@ public class Game {
 				return;
 			}
 			if(timeStop){
-				if(stopTick){
-					return;
-				}
-				p.tick();
+				player.tick();
 				return;
 			}
-			c.tick();
+			controller.tick();
 		}
 		if(explosionPlayed){
 			if(timePastSinceLastExplode<10){
@@ -163,7 +176,7 @@ public class Game {
 		
 	}
 	public void renderStageTitle(int duration){
-		loader.renderStart(duration);
+		levelLoader.renderStart(duration);
 		gState=GameState.LOAD;
 	}
 	public void updatePlaying(){
@@ -183,23 +196,31 @@ public class Game {
 	public void render(Graphics g){
 	
 			if(Game.gState==Game.GameState.LOAD){
-				loader.render(g);
+				levelLoader.render(g);
 			}
 			else if(Game.gState==Game.GameState.PLAY){
-			g.drawImage(background, 0, 0,GameSystem.GAME_WIDTH+10,GameSystem.GAME_HEIGHT, null);
-			c.render(g);
-			g.setColor(Color.DARK_GRAY);
-			g.fillRect(0, GameSystem.GAME_HEIGHT, GameSystem.GAME_WIDTH+10, 106);
-			event1.render(g);
-			event2.render(g);
-			renderPlayerHealth(g);
-			renderPlayerMana(g);
-			p.renderExp(g);;
-			p.renderPlayerStatus(g);
-			p.renderPlayerLevel(g);
-			p.renderSoulGem(g);
-			
-			timer.render(g);
+				g.drawImage(background, 0, 0,GameSystem.GAME_WIDTH+10,GameSystem.GAME_HEIGHT, null);
+				g.setColor(Color.WHITE);
+				for(int i=0;i<GameSystem.GAME_WIDTH;i+=GameSystem.GRID_SIZE){
+					g.drawLine(i, 0, i, GameSystem.GAME_HEIGHT);
+				}
+				for(int i=0;i<GameSystem.GAME_HEIGHT;i+=GameSystem.GRID_SIZE){
+					g.drawLine(0, i, GameSystem.GAME_WIDTH, i);
+				}
+				
+				controller.render(g);
+				g.setColor(Color.DARK_GRAY);
+				g.fillRect(0, GameSystem.GAME_HEIGHT, GameSystem.GAME_WIDTH+10, 106);
+				event1.render(g);
+				event2.render(g);
+				renderPlayerHealth(g);
+				renderPlayerMana(g);
+				player.renderExp(g);;
+				player.renderPlayerStatus(g);
+				player.renderPlayerLevel(g);
+				player.renderSoulGem(g);
+				
+				timer.render(g);
 			}
 		
 	}
@@ -220,30 +241,30 @@ public class Game {
 		}
 	if(gState==GameState.PLAY){
 			if(key==KeyEvent.VK_C){
-				p.useUltimate();
+				player.useUltimate();
 			}
 			else if(key==KeyEvent.VK_Z){
-				c.addEntity(new Bomb(p.xGridNearest,p.yGridNearest,this));
+				player.placeBomb(player.bombStrength,player.bombLength,45);
 				
 			}
 			else if(key==KeyEvent.VK_X){
-				p.kickBomb();
+				player.kickBomb();
 			}
 				if(key==KeyEvent.VK_RIGHT){
-					p.buttonReleased=false;
-					p.moveRight();
+					player.buttonReleased=false;
+					player.moveRight();
 				}
 				else if(key==KeyEvent.VK_LEFT){
-					p.buttonReleased=false;
-					p.moveLeft();
+					player.buttonReleased=false;
+					player.moveLeft();
 				}
 				else if(key==KeyEvent.VK_UP){
-					p.buttonReleased=false;
-					p.moveUp();
+					player.buttonReleased=false;
+					player.moveUp();
 				}
 				else if(key==KeyEvent.VK_DOWN){
-					p.buttonReleased=false;
-					p.moveDown();	
+					player.buttonReleased=false;
+					player.moveDown();	
 				}
 			
 		}
@@ -251,17 +272,17 @@ public class Game {
 	}
 
 	public void keyReleased(int key) {
-	if(key==KeyEvent.VK_RIGHT&&p.orientation==ORIENTATION.RIGHT){
-		p.buttonReleased=true;
+	if(key==KeyEvent.VK_RIGHT&&player.orientation==ORIENTATION.RIGHT){
+		player.buttonReleased=true;
 	}
-	else if(key==KeyEvent.VK_LEFT&&p.orientation==ORIENTATION.LEFT){
-		p.buttonReleased=true;
+	else if(key==KeyEvent.VK_LEFT&&player.orientation==ORIENTATION.LEFT){
+		player.buttonReleased=true;
 	}
-	else if(key==KeyEvent.VK_UP&&p.orientation==ORIENTATION.UP){
-		p.buttonReleased=true;
+	else if(key==KeyEvent.VK_UP&&player.orientation==ORIENTATION.UP){
+		player.buttonReleased=true;
 	}
-	else if(key==KeyEvent.VK_DOWN&&p.orientation==ORIENTATION.DOWN){
-		p.buttonReleased=true;
+	else if(key==KeyEvent.VK_DOWN&&player.orientation==ORIENTATION.DOWN){
+		player.buttonReleased=true;
 	}
 	/*
 	if(gState==GameState.PLAY){
@@ -303,6 +324,10 @@ public class Game {
 
 		*/
 	}
+	public void decreaseEnemyCount() {
+		enemyCount--;
+		
+	}
 	
 	public void goToMenu(){
 		GameSystem.turnOffBgm();
@@ -325,13 +350,13 @@ public class Game {
 	public void renderPlayerHealth(Graphics g){
 		g.drawImage(hpGauge, 90, GameSystem.ABSHEIGHT-75, null);
 		g.setColor(Color.GREEN);
-		g.fillRect(138, GameSystem.ABSHEIGHT-62, (int) (p.hp/p.maxHp*120), 7);
+		g.fillRect(138, GameSystem.ABSHEIGHT-62, (int) (player.hp/player.maxHp*120), 7);
 		g.setColor(Color.WHITE);
 		g.drawRect(138, GameSystem.ABSHEIGHT-62, 120,7);
 	}
 	public void renderPlayerMana(Graphics g){
 		g.setColor(Color.BLUE);
-		g.fillRect(118, GameSystem.ABSHEIGHT-27, (int) (p.mp/p.maxMp*120), 7);
+		g.fillRect(118, GameSystem.ABSHEIGHT-27, (int) (player.mp/player.maxMp*120), 7);
 		g.setColor(Color.WHITE);
 		g.drawRect(118, GameSystem.ABSHEIGHT-27,120,7);
 	}
@@ -348,7 +373,7 @@ public class Game {
 			//String path = getClass().getResource("bin/save/game.ser").toString();
 			//path = URLDecoder.decode(path);
 			//File newFile = new File(path);"C:/Users/Attack on Majou/workspace/Java2DGame/res/save/game.ser"
-			 GameData saveData = gData;
+			 GameData saveData = gameData;
 			 saveData.updateGameData(this);
 			//game.p.pData.upDatePlayerData(game.p);
 	         FileOutputStream fileOut = new FileOutputStream("system/save/game.ser");
@@ -363,4 +388,282 @@ public class Game {
 	          i.printStackTrace();
 	      }
 	}
+
+	//getters and setters
+
+	public GameData getGameData() {
+		return gameData;
+	}
+
+	public void setGameData(GameData gData) {
+		this.gameData = gData;
+	}
+
+	public Player getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(Player p) {
+		this.player = p;
+	}
+
+	public BufferedImage getBackground() {
+		return background;
+	}
+
+	public void setBackground(BufferedImage background) {
+		this.background = background;
+	}
+
+	public boolean isPlaying() {
+		return playing;
+	}
+
+	public void setPlaying(boolean playing) {
+		this.playing = playing;
+	}
+
+	public boolean isMusicOn() {
+		return musicOn;
+	}
+
+	public void setMusicOn(boolean musicOn) {
+		this.musicOn = musicOn;
+	}
+
+	public int getDuration() {
+		return duration;
+	}
+
+	public void setDuration(int duration) {
+		this.duration = duration;
+	}
+
+	public BufferedImage getHpGauge() {
+		return hpGauge;
+	}
+
+	public void setHpGauge(BufferedImage hpGauge) {
+		this.hpGauge = hpGauge;
+	}
+
+	public boolean isPlayerIsAlive() {
+		return playerIsAlive;
+	}
+
+	public void setPlayerIsAlive(boolean playerIsAlive) {
+		this.playerIsAlive = playerIsAlive;
+	}
+
+	public LinkedList<Bomb> getBombList() {
+		return bombList;
+	}
+
+	public void setBombList(LinkedList<Bomb> bombList) {
+		this.bombList = bombList;
+	}
+
+	public LinkedList<Enemy> getEnemyList() {
+		return enemyList;
+	}
+
+	public void setEnemyList(LinkedList<Enemy> eList) {
+		this.enemyList = eList;
+	}
+
+	public LinkedList<Brick> getBrickList() {
+		return brickList;
+	}
+
+	public void setBrickList(LinkedList<Brick> brickList) {
+		this.brickList = brickList;
+	}
+
+	public LinkedList<Fire> getFireList() {
+		return fireList;
+	}
+
+	public void setFireList(LinkedList<Fire> fireList) {
+		this.fireList = fireList;
+	}
+
+	public LinkedList<PowerUps> getPowerUpList() {
+		return powerUpList;
+	}
+
+	public void setPowerUpList(LinkedList<PowerUps> powerUpList) {
+		this.powerUpList = powerUpList;
+	}
+
+	public LinkedList<Projectile> getProjectileList() {
+		return projectileList;
+	}
+
+	public void setProjectileList(LinkedList<Projectile> projectileList) {
+		this.projectileList = projectileList;
+	}
+
+	public boolean[][] getWallArray() {
+		return wallArray;
+	}
+
+	public void setWallArray(boolean[][] wallArray) {
+		this.wallArray = wallArray;
+	}
+
+	public boolean[][] getBombArray() {
+		return bombArray;
+	}
+
+	public void setBombArray(boolean[][] bombArray) {
+		this.bombArray = bombArray;
+	}
+
+	public Controller getController() {
+		return controller;
+	}
+
+	public void setController(Controller c) {
+		this.controller = c;
+	}
+
+	public int getCurLevel() {
+		return curLevel;
+	}
+
+	public void setCurLevel(int curLevel) {
+		this.curLevel = curLevel;
+	}
+
+	
+
+	public int getLastStage() {
+		return lastStage;
+	}
+
+	public void setLastStage(int lastStage) {
+		this.lastStage = lastStage;
+	}
+
+	public int getEnemyCount() {
+		return enemyCount;
+	}
+
+	public void setEnemyCount(int enemyCount) {
+		this.enemyCount = enemyCount;
+	}
+
+	public boolean isVictory() {
+		return victory;
+	}
+
+	public void setVictory(boolean victory) {
+		this.victory = victory;
+	}
+
+	public int getShift() {
+		return shift;
+	}
+
+	public void setShift(int shift) {
+		this.shift = shift;
+	}
+
+	public PlayerData getPlayerData() {
+		return playerData;
+	}
+
+	public void setPlayerData(PlayerData pData) {
+		this.playerData = pData;
+	}
+
+	public int getTimePastSinceLastExplode() {
+		return timePastSinceLastExplode;
+	}
+
+	public void setTimePastSinceLastExplode(int timePastSinceLastExplode) {
+		this.timePastSinceLastExplode = timePastSinceLastExplode;
+	}
+
+	public static boolean isExplosionPlayed() {
+		return explosionPlayed;
+	}
+
+	public static void setExplosionPlayed(boolean explosionPlayed) {
+		Game.explosionPlayed = explosionPlayed;
+	}
+
+	public long getRenderStageStart() {
+		return renderStageStart;
+	}
+
+	public void setRenderStageStart(long renderStageStart) {
+		this.renderStageStart = renderStageStart;
+	}
+
+	public boolean isTimeStop() {
+		return timeStop;
+	}
+
+	public void setTimeStop(boolean timeStop) {
+		this.timeStop = timeStop;
+	}
+
+	public boolean isStopTick() {
+		return stopTick;
+	}
+
+	public void setStopTick(boolean stopTick) {
+		this.stopTick = stopTick;
+	}
+
+	public TimedEvent getEvent1() {
+		return event1;
+	}
+
+	public void setEvent1(TimedEvent event1) {
+		this.event1 = event1;
+	}
+
+	public TimedEvent getEvent2() {
+		return event2;
+	}
+
+	public void setEvent2(TimedEvent event2) {
+		this.event2 = event2;
+	}
+
+	public GameSystem getSys() {
+		return sys;
+	}
+
+	public void setSys(GameSystem sys) {
+		this.sys = sys;
+	}
+
+	public BufferedImage getCutIn() {
+		return cutIn;
+	}
+
+	public void setCutIn(BufferedImage cutIn) {
+		this.cutIn = cutIn;
+	}
+
+	public static GameState getgState() {
+		return gState;
+	}
+
+	public static void setgState(GameState gState) {
+		Game.gState = gState;
+	}
+
+	public static CHARACTER getcChosen() {
+		return cChosen;
+	}
+
+	public static void setcChosen(CHARACTER cChosen) {
+		Game.cChosen = cChosen;
+	}
+
+	
 }

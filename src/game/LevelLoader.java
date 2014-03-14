@@ -1,11 +1,26 @@
 package game;
 
+import gameObject.Brick;
+import gameObject.Controller;
+import gameObject.Enemy;
+import gameObject.Enemy_1_1;
+import gameObject.Enemy_1_2;
+import gameObject.Enemy_Boss_1;
+import gameObject.Player_Homura;
+import gameObject.Player_Kyouko;
+import gameObject.Player_Madoka;
+import gameObject.Player_Mami;
+import gameObject.Player_Sayaka;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.net.URLDecoder;
+
+import system.BufferedImageLoader;
+import system.GameSystem;
 
 public class LevelLoader {
 	Game game;
@@ -25,7 +40,8 @@ public class LevelLoader {
 		gif=loader.loadGif("/witch1.gif");
 	}
 	public synchronized void load(){
-		int stage = game.curLevel;
+		int stage = game.getCurLevel();
+		reset();
 		if(stage==1){
 			stage1();
 		}
@@ -35,63 +51,74 @@ public class LevelLoader {
 		else if(stage==3){
 			stage3();
 		}
+		updateList();
 	}
 	public void stage1(){
-		reset();
-		game.background=loader.loadImage("/image/stage/wall1.png");
+		game.setBackground(loader.loadImage("/image/stage/ch1Bg.jpg"));
 		//created the player depending on the player chosen state
 		createPlayer(7,11);
 		for(int i=0;i<GameSystem.GRIDW;i=i+3){
-			game.c.addEntity(new MrPringles(i,0,game));
-			game.enemyCount++;
+			game.getController().addEntity(new Enemy_1_1(i,0,game));
+			game.setEnemyCount(game.getEnemyCount() + 1);
 		}
 		//adding bricks
 		for(int i=2;i<GameSystem.GRIDW-2;i++){
 			for(int j=2;j<8;j++){
-			game.c.addEntity(new Brick(i,j,game));
+			game.getController().addEntity(new Brick(i,j,game));
 			}
 		}
-		updateList();
 	}
 	
 	
 	public void stage2(){
-		reset();
-		game.background=loader.loadImage("/image/stage/wall1.png");
+		game.setBackground(loader.loadImage("/image/stage/ch1Bg.jpg"));
+		/*
 		createPlayer(1,2);
 		for(int i=4;i<GameSystem.GRIDW-4;i++){
 			game.c.addEntity(new AdelbertMini(i,3,game));
 			game.enemyCount++;
 			game.c.addEntity(new Brick(i,GameSystem.GRIDH-2,game));
 		}
-		updateList();
+		*/
+		int[][] data = new int[][]{
+				{2,1,2,2,2,2,2,2,2,2},
+				{2,0,0,0,0,0,0,0,0,2},
+				{2,0,0,0,0,0,0,0,0,2},
+				{2,0,0,0,0,0,0,0,0,2},
+				{2,2,11,11,12,11,12,2},
+				{2,10}
+		};
+		this.loadFromArray(data);
 	}
 	public void stage3(){
-		reset();
-		game.background=loader.loadImage("/image/stage/wall1.png");
+		game.setBackground(loader.loadImage("/image/stage/ch1Bg.jpg"));
 		createPlayer(10,12);
-		game.c.addEntity(new Boss_Gertrud(10,2,game));
-		game.enemyCount++;
+		game.getController().addEntity(new Enemy_Boss_1(10,2,game));
+		game.setEnemyCount(game.getEnemyCount() + 1);
+		/*
 		for(int i=4;i<GameSystem.GRIDW-4;i++){
 			game.c.addEntity(new AdelbertMini(i,3,game));
 			game.enemyCount++;
 		}
-		updateList();
+		*/
 	}
 	
 	public void reset(){
-		game.victory=false;
-		game.c = new Controller(game);
-		game.playerIsAlive=true;
-		game.enemyCount=0;
+		game.setVictory(false);
+		game.setController(new Controller(game));
+		game.setPlayerIsAlive(true);
+		game.setEnemyCount(0);
 	}
 	public void updateList(){
-		game.bList=game.c.getBList();
-		game.eList=game.c.getEList();
-		game.brickList=game.c.getBrickList();
-		game.powerUpList=game.c.getPList();
-		game.fireList=game.c.fireList;
-		game.projectileList=game.c.getProjectileList();
+		game.setBombList(game.getController().getBList());
+		game.setEnemyList(game.getController().getEList());
+		game.setBrickList(game.getController().getBrickList());
+		game.setPowerUpList(game.getController().getPList());
+		game.setFireList(game.getController().fireList);
+		game.setProjectileList(game.getController().getProjectileList());
+		
+		game.setWallArray(game.getController().getWallArray());
+		game.setBombArray(game.getController().getBombArray());
 	}
 	
 	public void renderStart(int duration){
@@ -100,7 +127,7 @@ public class LevelLoader {
 	}
 	
 	public void render(Graphics g){
-		title = "Stage".concat(" ").concat(Integer.toString(game.curLevel));
+		title = "Stage".concat(" ").concat(Integer.toString(game.getCurLevel()));
 		g.drawImage(gif, 100, 100, null);
 		g.setFont(new Font("arial",Font.BOLD,32));
 		g.setColor(Color.RED);
@@ -111,20 +138,49 @@ public class LevelLoader {
 	}
 	private void createPlayer(int i, int j) {
 		if(game.cChosen==Game.CHARACTER.MADOKA){
-			game.c.createPlayer(new Madoka(i,j,game));
+			game.getController().createPlayer(new Player_Madoka(i,j,game));
 		}
 		else if(game.cChosen==Game.CHARACTER.HOMURA){
-			game.c.createPlayer(new Homura(i,j,game));
+			game.getController().createPlayer(new Player_Homura(i,j,game));
 		}
 		else if(game.cChosen==Game.CHARACTER.SAYAKA){
-			game.c.createPlayer(new Sayaka(i,j,game));
+			game.getController().createPlayer(new Player_Sayaka(i,j,game));
 		}
 		else if(game.cChosen==Game.CHARACTER.MAMI){
-			game.c.createPlayer(new Mami(i,j,game));
+			game.getController().createPlayer(new Player_Mami(i,j,game));
 		}
 		else if(game.cChosen==Game.CHARACTER.KYOUKO){
-			game.c.createPlayer(new Kyouko(i,j,game));
+			game.getController().createPlayer(new Player_Kyouko(i,j,game));
 		}
-		game.p = game.c.getPlayer();
+		game.setPlayer(game.getController().getPlayer());
+	}
+	private void loadFromArray(int[][] mapData){
+		for(int i=0;i<mapData.length;i++){
+			for(int j=0;j<mapData[i].length;j++){
+				if(mapData[i][j]==1){
+					createPlayer(j+1,i+1);
+				}
+				else if(mapData[i][j]==11){
+					addEnemy(new Enemy_1_1(j+1,i+1,game));
+				}
+				else if(mapData[i][j]==12){
+					addEnemy(new Enemy_1_2(j+1,i+1,game));
+					
+				}
+				else if(mapData[i][j]==10){
+					addEnemy(new Enemy_Boss_1(j+1,i+1,game));
+				}
+				else if(mapData[i][j]==2){
+					addBrick(new Brick(j+1,i+1,game));
+				}
+			}
+		}
+	}
+	private void addEnemy(Enemy e){
+		game.getController().addEntity(e);
+		game.setEnemyCount(game.getEnemyCount() + 1);
+	}
+	private void addBrick(Brick b){
+		game.getController().addEntity(b);
 	}
 }

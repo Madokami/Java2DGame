@@ -3,6 +3,8 @@ package game;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+import system.GameSystem;
+
 public class Input extends KeyAdapter{
 	GameSystem sys;
 	

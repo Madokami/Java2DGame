@@ -1,5 +1,11 @@
 package game;
 
+import gameObject.Player_Homura;
+import gameObject.Player_Kyouko;
+import gameObject.Player_Madoka;
+import gameObject.Player_Mami;
+import gameObject.Player_Sayaka;
+
 import java.io.Serializable;
 
 public class PlayerData implements Serializable {
@@ -91,7 +97,7 @@ public class PlayerData implements Serializable {
 		kyBP=0;
 	}
 	
-	public void loadPlayerStatus(Sayaka sa){
+	public void loadPlayerStatus(Player_Sayaka sa){
 		sa.hp=saHp;
 		//sa.maxHp=saMaxHp;
 		sa.mp=saMp;
@@ -106,7 +112,7 @@ public class PlayerData implements Serializable {
 		sa.BP=saBP;
 	}
 	
-	public void loadPlayerStatus(Homura ho){
+	public void loadPlayerStatus(Player_Homura ho){
 		ho.hp=hoHp;
 		//ho.maxHp=hoMaxHp;
 		ho.mp=hoMp;
@@ -121,7 +127,7 @@ public class PlayerData implements Serializable {
 		ho.BP=hoBP;
 	}
 	
-	public void loadPlayerStatus(Madoka md){
+	public void loadPlayerStatus(Player_Madoka md){
 		md.hp=mdHp;
 		//md.maxHp=mdMaxHp;
 		md.mp=mdMp;
@@ -136,7 +142,7 @@ public class PlayerData implements Serializable {
 		md.BP=mdBP;
 	}
 	
-	public void loadPlayerStatus(Mami ma){
+	public void loadPlayerStatus(Player_Mami ma){
 		ma.hp=maHp;
 		//ma.maxHp=maMaxHp;
 		ma.mp=maMp;
@@ -151,7 +157,7 @@ public class PlayerData implements Serializable {
 		ma.BP=maBP;
 	}
 	
-	public void loadPlayerStatus(Kyouko	ky){
+	public void loadPlayerStatus(Player_Kyouko	ky){
 		ky.hp=kyHp;
 		//ky.maxHp=kyMaxHp;
 		ky.mp=kyMp;
@@ -169,7 +175,7 @@ public class PlayerData implements Serializable {
 	//these methods will update the PlayerData Class with current values in the Player Class. 
 	//This could doing so could result in the player getting permanently buffed with temp bonus.
 	
-	public void upDatePlayerData(Sayaka sa){
+	public void upDatePlayerData(Player_Sayaka sa){
 		/*
 		saHp=sa.hp;
 		saMaxHp=sa.maxHp;
@@ -186,7 +192,7 @@ public class PlayerData implements Serializable {
 		saBP=sa.BP;
 	}
 	
-	public void upDatePlayerData(Homura ho){
+	public void upDatePlayerData(Player_Homura ho){
 		/*
 		hoHp=ho.hp;
 		hoMaxHp=ho.maxHp;
@@ -203,7 +209,7 @@ public class PlayerData implements Serializable {
 		hoBP=ho.BP;
 	}
 	
-	public void upDatePlayerData(Madoka md){
+	public void upDatePlayerData(Player_Madoka md){
 		/*
 		mdHp=md.hp;
 		mdMaxHp=md.maxHp;
@@ -220,7 +226,7 @@ public class PlayerData implements Serializable {
 		mdBP=md.BP;
 	}
 	
-	public void upDatePlayerData(Mami ma){
+	public void upDatePlayerData(Player_Mami ma){
 		/*
 		maHp=ma.hp;
 		maMaxHp=ma.maxHp;
@@ -237,7 +243,7 @@ public class PlayerData implements Serializable {
 		maBP=ma.BP;
 	}
 	
-	public void upDatePlayerData(Kyouko ky){
+	public void upDatePlayerData(Player_Kyouko ky){
 		/*
 		kyHp=ky.hp;
 		kyMaxHp=ky.maxHp;
