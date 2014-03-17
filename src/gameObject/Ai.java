@@ -1,7 +1,8 @@
 package gameObject;
 
-public class shortestPath
+public class Ai
 {
+	//for make step, written by Liu Ge
 	boolean[][] map;
 	boolean[][] checkPoint=new boolean[500][500];
 	int[][] pathx=new int[500][500];
@@ -15,6 +16,49 @@ public class shortestPath
 	int boundx;
 	int boundy;
 	String d;
+	
+	//for other AI stuff, written by Xu Zhi Shu
+	
+	public Ai(){
+		
+	}
+	
+	public String isValidStraightLine(boolean[][] m,int pX,int pY,int aiX,int aiY){
+		if(pX==aiX&&pY==aiY) return "stop";
+		if(pX==aiX||pY==aiY){
+			if(pX==aiX){
+				if(aiY<pY){
+					for(int i=aiY;i<pY;i++){
+						if(m[pX][i]) return "stop";
+					}
+					return "down";
+				}
+				else if(aiY>pY){
+					for(int i=aiY;i>pY;i--){
+						if(m[pX][i]) return "stop";
+					}
+					return "up";
+				}
+			}
+			else if(pY==aiY){
+				if(aiX<pX){
+					for(int i=aiX;i<pX;i++){
+						if(m[i][pY]) return "stop";
+					}
+					return "right";
+				}
+				else if(aiX>pX){
+					for(int i=aiX;i>pX;i--){
+						if(m[i][pY]) return "stop";
+					}
+					return "left";
+				}
+			}
+		}
+		return "stop";
+		
+		
+	}
 	public String makeStep(boolean[][] m,int playerx,int playery,int aix,int aiy)
 	{
 		this.playerx=playerx;
@@ -39,7 +83,7 @@ public class shortestPath
 		search(1,1);
 		return(d);
 	}
-	public void search(int a, int n)
+	private void search(int a, int n)
 	{
 		int k=0;
 		int x;

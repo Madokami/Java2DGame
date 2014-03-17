@@ -1,5 +1,7 @@
 package gameObject;
 
+import gameObject.MovableObject.ANIMATION;
+
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
@@ -55,5 +57,80 @@ public class Animate {
 			p.soulGemImage=p.soulGemSprite.grabImage(2, 1, Player.soulGemWidth, Player.soulGemHeight);
 		}
 		
+	}
+	public static void animateWithGif(MovableObject o){
+		if(o.animation==ANIMATION.MOVELEFT) o.image=o.moveLeftGif;
+		else if(o.animation==ANIMATION.MOVERIGHT) o.image=o.moveRightGif;
+		else if(o.animation==ANIMATION.MOVEUP) {
+			if(o.getVelX()>0){
+				o.image=o.moveRightGif;
+			}
+			else if(o.getVelX()<0){
+				o.image=o.moveLeftGif;
+			}
+		}
+		else if(o.animation==ANIMATION.MOVEDOWN) {
+			if(o.getVelX()>0){
+				o.image=o.moveRightGif;
+			}
+			else if(o.getVelX()<0){
+				o.image=o.moveLeftGif;
+			}
+		}
+		else if(o.animation==ANIMATION.JUMPRIGHT) o.image=o.jumpRightGif;
+		else if(o.animation==ANIMATION.JUMPLEFT) o.image=o.jumpLeftGif;
+		else if(o.animation==ANIMATION.JUMPUP) o.image=o.jumpUpGif;
+		else if(o.animation==ANIMATION.JUMPDOWN) o.image=o.jumpDownGif;
+		else if(o.animation==ANIMATION.UPATTACK) o.image=o.upAttackGif;
+	}
+	public static void animateWithGif(Player_Kyouko o){
+		if(o.animation==ANIMATION.MOVELEFT) {
+			o.image=o.moveLeftGif;
+			o.imageWidth=120;
+			o.imageHeight=60;
+			o.renderXShift=-40;
+			o.renderYShift=-20;
+		}
+		else if(o.animation==ANIMATION.MOVERIGHT) {
+			o.image=o.moveRightGif;
+			o.imageWidth=120;
+			o.imageHeight=60;
+			o.renderXShift=-40;
+			o.renderYShift=-20;
+		}
+		//else if(o.animation==ANIMATION.STAND) o.image=o.standGif;
+		else if(o.animation==ANIMATION.JUMPRIGHT) o.image=o.jumpRightGif;
+		else if(o.animation==ANIMATION.JUMPLEFT) o.image=o.jumpLeftGif;
+		else if(o.animation==ANIMATION.JUMPUP) o.image=o.jumpUpGif;
+		else if(o.animation==ANIMATION.JUMPDOWN) o.image=o.jumpDownGif;
+		else if(o.animation==ANIMATION.UPATTACK) o.image=o.upAttackGif;
+	}
+	public static void animateWithGif(Player_Homura o){
+		if(o.animation==ANIMATION.MOVELEFT) {
+			o.image=o.moveLeftGif;
+			o.imageWidth=120;
+			o.imageHeight=60;
+			o.renderXShift=-40;
+			o.renderYShift=-20;
+		}
+		else if(o.animation==ANIMATION.MOVERIGHT) {
+			o.image=o.moveRightGif;
+			o.imageWidth=120;
+			o.imageHeight=60;
+			o.renderXShift=-40;
+			o.renderYShift=-20;
+		}
+		else if(o.animation==ANIMATION.STAND) {
+			o.image=o.standGif;
+			o.imageWidth=46;
+			o.imageHeight=86;
+			o.renderXShift=0;
+			o.renderYShift=35;
+		}
+		else if(o.animation==ANIMATION.JUMPRIGHT) o.image=o.jumpRightGif;
+		else if(o.animation==ANIMATION.JUMPLEFT) o.image=o.jumpLeftGif;
+		else if(o.animation==ANIMATION.JUMPUP) o.image=o.jumpUpGif;
+		else if(o.animation==ANIMATION.JUMPDOWN) o.image=o.jumpDownGif;
+		else if(o.animation==ANIMATION.UPATTACK) o.image=o.upAttackGif;
 	}
 }

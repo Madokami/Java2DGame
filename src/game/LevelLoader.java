@@ -85,9 +85,10 @@ public class LevelLoader {
 				{2,0,0,0,0,0,0,0,0,2},
 				{2,0,0,0,0,0,0,0,0,2},
 				{2,0,0,0,0,0,0,0,0,2},
-				{2,2,11,11,12,11,12,2},
-				{2,10}
+				{2,2,0,0,0,0,0,2},
+				{2,0}
 		};
+		game.setEnemyCount(1);
 		this.loadFromArray(data);
 	}
 	public void stage3(){

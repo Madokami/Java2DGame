@@ -12,7 +12,7 @@ public class Enemy extends MovableObject{
 	public Random rand;
 	public int counter;
 	public int collisionDamage;
-	protected shortestPath ai;
+	protected Ai ai;
 	
 	public Enemy(int x,int y, Game game){
 		super(x,y,game);
@@ -28,23 +28,17 @@ public class Enemy extends MovableObject{
 		
 		counter = 0;
 		rand = new Random();
-		ai=new shortestPath();
+		ai=new Ai();
 	}
 	public void tick(){
 		super.tick();
 		
 		if(Physics.collide(game.getPlayer(), this)) applyDamage(collisionDamage,10,game.getPlayer());
 		counter++;
-		if(counter>15){
+		if(counter>10){
 			counter=0;
 			//if(rand.nextInt(10)>4){
-				String s;
-				s=ai.makeStep(game.getWallArray(), game.getPlayer().xGridNearest, game.getPlayer().yGridNearest, lastX, lastY);
-				if(s.equals("up")) moveUp();
-				else if(s.equals("down")) moveDown();
-				else if(s.equals("left")) moveLeft();
-				else if(s.equals("right")) moveRight();
-				else if(s.equals("stop")) moveStop();
+			chasePlayer();
 			//}
 			//else{
 			//	moveRandomly();
@@ -103,6 +97,38 @@ public class Enemy extends MovableObject{
 			moveRight();
 		}
 	}
-	
+	public void chasePlayer(){
+		String s;
+		s=ai.makeStep(game.getWallArray(), game.getPlayer().xGridNearest, game.getPlayer().yGridNearest, lastX, lastY);
+		if(s.equals("up")) moveUp();
+		else if(s.equals("down")) moveDown();
+		else if(s.equals("left")) moveLeft();
+		else if(s.equals("right")) moveRight();
+		else if(s.equals("stop")) moveRandomly();
+	}
+	public void chargeAtPlayer(int speed,int duration){
+		String direction=ai.isValidStraightLine(game.getWallArray(), game.getPlayer().xGridNearest, game.getPlayer().yGridNearest, xGridNearest, yGridNearest);
+		if(direction.equals("stop")){
+			return;
+		}
+		else if(direction.equals("right")){
+			moveRight();
+			startCharge(speed,duration);
+		}
+		else if(direction.equals("left")){
+			moveLeft();
+			startCharge(speed,duration);
+		}
+		else if(direction.equals("up")){
+			moveUp();
+			startCharge(speed,duration);
+		}
+		else if(direction.equals("down")){
+			moveDown();
+			startCharge(speed,duration);
+		}
+		
+		
+	}
 	
 }

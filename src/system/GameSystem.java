@@ -3,6 +3,7 @@ package system;
 
 import game.Game;
 import game.Input;
+import gameObject.SpriteData;
 
 import java.awt.BorderLayout;
 import java.awt.Canvas;
@@ -27,24 +28,25 @@ import menu.Menu;
 public class GameSystem extends Canvas implements Runnable{
 	
 	
-	public static final int SIZE = 32;
-	public static final int WIDTH=320;
+	public static final int GRID_SIZE=56;
+	public static final int WIDTH=300;
 	public static final int HEIGHT=WIDTH*9/12;
-	public static final int SCALE=2;
+	public static final int SCALE=3;
 	public static final int ABSWIDTH=WIDTH*SCALE;
 	public static final int ABSHEIGHT=HEIGHT*SCALE;
 	public static final int GAME_WIDTH=ABSWIDTH;
 	public static final int GAME_HEIGHT=ABSHEIGHT-96;
-	public static final int GRIDW=GAME_WIDTH/SIZE;
-	public static final int GRIDH=GAME_HEIGHT/SIZE;
+	public static final int GRIDW=GAME_WIDTH/GRID_SIZE;
+	public static final int GRIDH=GAME_HEIGHT/GRID_SIZE;
 	public static final String TITLE="Temp Name";
-	public static final int GRID_SIZE=32;
+	
 	
 	private JFrame frame;
 	private boolean running= false;
 	private Thread thread;
 	private BufferedImage image = new BufferedImage(WIDTH*SCALE,HEIGHT*SCALE,BufferedImage.TYPE_INT_RGB);
 	public static Music musicPlayer;
+	public static SpriteData spriteData;
 	
 	
 	private Menu menu;
@@ -64,6 +66,7 @@ public class GameSystem extends Canvas implements Runnable{
 	
 	public static STATE state = STATE.MENU;
 	public void init(){
+		spriteData=new SpriteData();
 		game = new Game(this);
 		menu = new Menu(game);
 		story = new Story();

@@ -50,8 +50,20 @@ public class MenuChar implements GeneralMenu{
 		public double centerShiftX,centerShiftY,centerScale,leftShiftX,leftShiftY,leftScale,rightShiftX,rightShiftY,rightScale,backLeftShiftX,backLeftShiftY,backLeftScale,backRightShiftX,backRightShiftY,backRightScale;
 		public boolean isRotating;
 		public String rotateDirection=null;
-		private double rotationSpeed=3;
+		private double rotationSpeed=2;
 		private BufferedImage bg2;
+		private int adjustmentX=130;
+		private int adjustmentY=110;
+		private int backLeftPosX=140+adjustmentX-40;
+		private int backLeftPosY=20+adjustmentY-60;
+		private int backRightPosX=340+adjustmentX+40;
+		private int backRightPosY=20+adjustmentY-60;
+		private int leftPosX=10+adjustmentX-70;
+		private int leftPosY=70+adjustmentY+20;
+		private int rightPosX=410+adjustmentX+70;
+		private int rightPosY=70+adjustmentY+20;
+		private int centerPosX=70+adjustmentX;
+		private int centerPosY=0+adjustmentY;
 		
 		public static enum CHARACTER{
 			MADOKA,
@@ -206,6 +218,8 @@ public class MenuChar implements GeneralMenu{
 		
 		}
 		
+		
+		
 		public synchronized void renderSelected(Graphics g){
 			if(isChooseChar()){
 				if(cSelected == CHARACTER.MADOKA){
@@ -216,16 +230,16 @@ public class MenuChar implements GeneralMenu{
 					else if(selectStyle==2){
 						g.drawImage(mdBg,0,0,GameSystem.ABSWIDTH+10,GameSystem.GAME_HEIGHT-30,null);
 						
-						g.drawImage(maPortrait, (int)(110+30+backLeftShiftX), (int)(20+backLeftShiftY),(int)(maPortrait.getWidth()/3*backLeftScale),(int)(maPortrait.getHeight()/3*backLeftScale), null);
-						g.drawImage(saPortrait, (int)(110+230+backRightShiftX), (int)(20+backRightShiftY),(int)(saPortrait.getWidth()/3*backRightScale),(int)(saPortrait.getHeight()/3*backRightScale), null);
-						g.drawImage(kyPortrait, (int)(110-100+leftShiftX), (int)(70+leftShiftY),(int)(kyPortrait.getWidth()/2*leftScale),(int)(kyPortrait.getHeight()/2*leftScale), null);
-						g.drawImage(hoPortrait, (int)(110+300+rightShiftX), (int)(70+rightShiftY),(int)(hoPortrait.getWidth()/2*rightScale),(int)(hoPortrait.getHeight()/2*rightScale), null);
-						g.drawImage(mdPortrait, (int)(70+centerShiftX), (int)(centerShiftY),(int)(mdPortrait.getWidth()*centerScale),(int)(mdPortrait.getHeight()*centerScale), null);
+						g.drawImage(maPortrait, (int)(backLeftPosX+backLeftShiftX), (int)(backLeftPosY+backLeftShiftY),(int)(maPortrait.getWidth()/3*backLeftScale),(int)(maPortrait.getHeight()/3*backLeftScale), null);
+						g.drawImage(saPortrait, (int)(backRightPosX+backRightShiftX), (int)(backRightPosY+backRightShiftY),(int)(saPortrait.getWidth()/3*backRightScale),(int)(saPortrait.getHeight()/3*backRightScale), null);
+						g.drawImage(kyPortrait, (int)(leftPosX+leftShiftX), (int)(leftPosY+leftShiftY),(int)(kyPortrait.getWidth()/2*leftScale),(int)(kyPortrait.getHeight()/2*leftScale), null);
+						g.drawImage(hoPortrait, (int)(rightPosX+rightShiftX), (int)(rightPosY+rightShiftY),(int)(hoPortrait.getWidth()/2*rightScale),(int)(hoPortrait.getHeight()/2*rightScale), null);
+						g.drawImage(mdPortrait, (int)(centerPosX+centerShiftX), centerPosY+(int)(centerShiftY),(int)(mdPortrait.getWidth()*centerScale),(int)(mdPortrait.getHeight()*centerScale), null);
 						
 						
-						g.drawImage(mdName,270,15,null);
-						g.drawImage(cursorLeft, 220, 16, null);
-						g.drawImage(cursorRight, 420, 16, null);
+						g.drawImage(mdName,400,15,null);
+						g.drawImage(cursorLeft, 400-50, 16, null);
+						g.drawImage(cursorRight, 400+150, 16, null);
 					}
 				}
 				else if(cSelected == CHARACTER.HOMURA){
@@ -236,15 +250,15 @@ public class MenuChar implements GeneralMenu{
 					else if(selectStyle==2){
 						g.drawImage(hoBg,0,0,GameSystem.ABSWIDTH+10,GameSystem.GAME_HEIGHT-30,null);
 						
-						g.drawImage(kyPortrait, (int)(110+30+backLeftShiftX), (int)(20+backLeftShiftY),(int)(kyPortrait.getWidth()/3*backLeftScale),(int)(kyPortrait.getHeight()/3*backLeftScale), null);
-						g.drawImage(maPortrait, (int)(110+230+backRightShiftX), (int)(20+backRightShiftY),(int)(maPortrait.getWidth()/3*backRightScale),(int)(maPortrait.getHeight()/3*backRightScale), null);
-						g.drawImage(mdPortrait, (int)(110-100+leftShiftX), (int)(70+leftShiftY),(int)(mdPortrait.getWidth()/2*leftScale),(int)(mdPortrait.getHeight()/2*leftScale), null);
-						g.drawImage(saPortrait, (int)(110+300+rightShiftX), (int)(70+rightShiftY),(int)(saPortrait.getWidth()/2*rightScale),(int)(saPortrait.getHeight()/2*rightScale), null);
-						g.drawImage(hoPortrait, (int)(70+centerShiftX), (int)(centerShiftY),(int)(hoPortrait.getWidth()*centerScale),(int)(hoPortrait.getHeight()*centerScale), null);
+						g.drawImage(kyPortrait, (int)(backLeftPosX+backLeftShiftX), (int)(backLeftPosY+backLeftShiftY),(int)(kyPortrait.getWidth()/3*backLeftScale),(int)(kyPortrait.getHeight()/3*backLeftScale), null);
+						g.drawImage(maPortrait, (int)(backRightPosX+backRightShiftX), (int)(backRightPosY+backRightShiftY),(int)(maPortrait.getWidth()/3*backRightScale),(int)(maPortrait.getHeight()/3*backRightScale), null);
+						g.drawImage(mdPortrait, (int)(leftPosX+leftShiftX), (int)(leftPosY+leftShiftY),(int)(mdPortrait.getWidth()/2*leftScale),(int)(mdPortrait.getHeight()/2*leftScale), null);
+						g.drawImage(saPortrait, (int)(rightPosX+rightShiftX), (int)(rightPosY+rightShiftY),(int)(saPortrait.getWidth()/2*rightScale),(int)(saPortrait.getHeight()/2*rightScale), null);
+						g.drawImage(hoPortrait, (int)(centerPosX+centerShiftX), centerPosY+(int)(centerShiftY),(int)(hoPortrait.getWidth()*centerScale),(int)(hoPortrait.getHeight()*centerScale), null);
 						
-						g.drawImage(hoName,270,15,null);
-						g.drawImage(cursorLeft, 220, 16, null);
-						g.drawImage(cursorRight, 420, 16, null);
+						g.drawImage(hoName,400,15,null);
+						g.drawImage(cursorLeft, 400-50, 16, null);
+						g.drawImage(cursorRight, 400+150, 16, null);
 					}
 				}
 				else if(cSelected == CHARACTER.SAYAKA){
@@ -255,16 +269,16 @@ public class MenuChar implements GeneralMenu{
 					else if(selectStyle==2){
 						g.drawImage(saBg,0,0,GameSystem.ABSWIDTH+10,GameSystem.GAME_HEIGHT-30,null);
 						
-						g.drawImage(mdPortrait, (int)(110+30+backLeftShiftX), (int)(20+backLeftShiftY),(int)(mdPortrait.getWidth()/3*backLeftScale),(int)(mdPortrait.getHeight()/3*backLeftScale), null);
-						g.drawImage(kyPortrait, (int)(110+230+backRightShiftX), (int)(20+backRightShiftY),(int)(kyPortrait.getWidth()/3*backRightScale),(int)(kyPortrait.getHeight()/3*backRightScale), null);
-						g.drawImage(hoPortrait, (int)(110-100+leftShiftX), (int)(70+leftShiftY),(int)(hoPortrait.getWidth()/2*leftScale),(int)(hoPortrait.getHeight()/2*leftScale), null);
-						g.drawImage(maPortrait, (int)(110+300+rightShiftX), (int)(70+rightShiftY),(int)(maPortrait.getWidth()/2*rightScale),(int)(maPortrait.getHeight()/2*rightScale), null);
-						g.drawImage(saPortrait, (int)(70+centerShiftX), (int)(centerShiftY),(int)(saPortrait.getWidth()*centerScale),(int)(saPortrait.getHeight()*centerScale), null);
+						g.drawImage(mdPortrait, (int)(backLeftPosX+backLeftShiftX), (int)(backLeftPosY+backLeftShiftY),(int)(mdPortrait.getWidth()/3*backLeftScale),(int)(mdPortrait.getHeight()/3*backLeftScale), null);
+						g.drawImage(kyPortrait, (int)(backRightPosX+backRightShiftX), (int)(backRightPosY+backRightShiftY),(int)(kyPortrait.getWidth()/3*backRightScale),(int)(kyPortrait.getHeight()/3*backRightScale), null);
+						g.drawImage(hoPortrait, (int)(leftPosX+leftShiftX), (int)(leftPosY+leftShiftY),(int)(hoPortrait.getWidth()/2*leftScale),(int)(hoPortrait.getHeight()/2*leftScale), null);
+						g.drawImage(maPortrait, (int)(rightPosX+rightShiftX), (int)(rightPosY+rightShiftY),(int)(maPortrait.getWidth()/2*rightScale),(int)(maPortrait.getHeight()/2*rightScale), null);
+						g.drawImage(saPortrait, (int)(centerPosX+centerShiftX), centerPosY+(int)(centerShiftY),(int)(saPortrait.getWidth()*centerScale),(int)(saPortrait.getHeight()*centerScale), null);
 						
 						
-						g.drawImage(saName,270,15,null);
-						g.drawImage(cursorLeft, 220, 16, null);
-						g.drawImage(cursorRight, 420, 16, null);
+						g.drawImage(saName,400,15,null);
+						g.drawImage(cursorLeft, 400-50, 16, null);
+						g.drawImage(cursorRight, 400+150, 16, null);
 					}
 				}
 				else if(cSelected == CHARACTER.MAMI){
@@ -275,15 +289,15 @@ public class MenuChar implements GeneralMenu{
 					else if(selectStyle==2){
 						g.drawImage(maBg,0,0,GameSystem.ABSWIDTH+10,GameSystem.GAME_HEIGHT-30,null);
 						
-						g.drawImage(hoPortrait, (int)(110+30+backLeftShiftX), (int)(20+backLeftShiftY),(int)(hoPortrait.getWidth()/3*backLeftScale),(int)(hoPortrait.getHeight()/3*backLeftScale), null);
-						g.drawImage(mdPortrait, (int)(110+230+backRightShiftX), (int)(20+backRightShiftY),(int)(mdPortrait.getWidth()/3*backRightScale),(int)(mdPortrait.getHeight()/3*backRightScale), null);
-						g.drawImage(saPortrait, (int)(110-100+leftShiftX), (int)(70+leftShiftY),(int)(saPortrait.getWidth()/2*leftScale),(int)(saPortrait.getHeight()/2*leftScale), null);
-						g.drawImage(kyPortrait, (int)(110+300+rightShiftX), (int)(70+rightShiftY),(int)(kyPortrait.getWidth()/2*rightScale),(int)(kyPortrait.getHeight()/2*rightScale), null);
-						g.drawImage(maPortrait, (int)(70+centerShiftX), (int)(centerShiftY),(int)(maPortrait.getWidth()*centerScale),(int)(maPortrait.getHeight()*centerScale), null);
+						g.drawImage(hoPortrait, (int)(backLeftPosX+backLeftShiftX), (int)(backLeftPosY+backLeftShiftY),(int)(hoPortrait.getWidth()/3*backLeftScale),(int)(hoPortrait.getHeight()/3*backLeftScale), null);
+						g.drawImage(mdPortrait, (int)(backRightPosX+backRightShiftX), (int)(backRightPosY+backRightShiftY),(int)(mdPortrait.getWidth()/3*backRightScale),(int)(mdPortrait.getHeight()/3*backRightScale), null);
+						g.drawImage(saPortrait, (int)(leftPosX+leftShiftX), (int)(leftPosY+leftShiftY),(int)(saPortrait.getWidth()/2*leftScale),(int)(saPortrait.getHeight()/2*leftScale), null);
+						g.drawImage(kyPortrait, (int)(rightPosX+rightShiftX), (int)(rightPosY+rightShiftY),(int)(kyPortrait.getWidth()/2*rightScale),(int)(kyPortrait.getHeight()/2*rightScale), null);
+						g.drawImage(maPortrait, (int)(centerPosX+centerShiftX), centerPosY+(int)(centerShiftY),(int)(maPortrait.getWidth()*centerScale),(int)(maPortrait.getHeight()*centerScale), null);
 						
-						g.drawImage(maName,270,15,null);
-						g.drawImage(cursorLeft, 220, 16, null);
-						g.drawImage(cursorRight, 420, 16, null);
+						g.drawImage(maName,400,15,null);
+						g.drawImage(cursorLeft, 400-50, 16, null);
+						g.drawImage(cursorRight, 400+150, 16, null);
 					}
 				}
 				else if(cSelected == CHARACTER.KYOUKO){
@@ -294,15 +308,15 @@ public class MenuChar implements GeneralMenu{
 					else if(selectStyle==2){
 						g.drawImage(kyBg,0,0,GameSystem.ABSWIDTH+10,GameSystem.GAME_HEIGHT-30,null);
 						
-						g.drawImage(saPortrait, (int)(110+30+backLeftShiftX), (int)(20+backLeftShiftY),(int)(saPortrait.getWidth()/3*backLeftScale),(int)(saPortrait.getHeight()/3*backLeftScale), null);
-						g.drawImage(hoPortrait, (int)(110+230+backRightShiftX), (int)(20+backRightShiftY),(int)(hoPortrait.getWidth()/3*backRightScale),(int)(hoPortrait.getHeight()/3*backRightScale), null);
-						g.drawImage(maPortrait, (int)(110-100+leftShiftX), (int)(70+leftShiftY),(int)(maPortrait.getWidth()/2*leftScale),(int)(maPortrait.getHeight()/2*leftScale), null);
-						g.drawImage(mdPortrait, (int)(110+300+rightShiftX), (int)(70+rightShiftY),(int)(mdPortrait.getWidth()/2*rightScale),(int)(mdPortrait.getHeight()/2*rightScale), null);
-						g.drawImage(kyPortrait, (int)(70+centerShiftX), (int)(centerShiftY),(int)(kyPortrait.getWidth()*centerScale),(int)(kyPortrait.getHeight()*centerScale), null);
+						g.drawImage(saPortrait, (int)(backLeftPosX+backLeftShiftX), (int)(backLeftPosY+backLeftShiftY),(int)(saPortrait.getWidth()/3*backLeftScale),(int)(saPortrait.getHeight()/3*backLeftScale), null);
+						g.drawImage(hoPortrait, (int)(backRightPosX+backRightShiftX), (int)(backRightPosY+backRightShiftY),(int)(hoPortrait.getWidth()/3*backRightScale),(int)(hoPortrait.getHeight()/3*backRightScale), null);
+						g.drawImage(maPortrait, (int)(leftPosX+leftShiftX), (int)(leftPosY+leftShiftY),(int)(maPortrait.getWidth()/2*leftScale),(int)(maPortrait.getHeight()/2*leftScale), null);
+						g.drawImage(mdPortrait, (int)(rightPosX+rightShiftX), (int)(rightPosY+rightShiftY),(int)(mdPortrait.getWidth()/2*rightScale),(int)(mdPortrait.getHeight()/2*rightScale), null);
+						g.drawImage(kyPortrait, (int)(centerPosX+centerShiftX), centerPosY+(int)(centerShiftY),(int)(kyPortrait.getWidth()*centerScale),(int)(kyPortrait.getHeight()*centerScale), null);
 
-						g.drawImage(kyName,270,15,null);
-						g.drawImage(cursorLeft, 220, 16, null);
-						g.drawImage(cursorRight, 420, 16, null);
+						g.drawImage(kyName,400,15,null);
+						g.drawImage(cursorLeft, 400-50, 16, null);
+						g.drawImage(cursorRight, 400+150, 16, null);
 					}
 				}
 			}
@@ -663,102 +677,104 @@ public class MenuChar implements GeneralMenu{
 			centerScale=leftScale=rightScale=backRightScale=backLeftScale=1;
 		}
 		
+		
 		public void rotateLeft(){
-			if(centerShiftX>-60) centerShiftX-=4*rotationSpeed;
-			else centerShiftX=-60;
+			if(centerShiftX>(leftPosX-centerPosX)) centerShiftX+=(leftPosX-centerPosX)/15.0*rotationSpeed;
+			else centerShiftX=(leftPosX-centerPosX);
 			
-			if(centerShiftY<70) centerShiftY+=4.66*rotationSpeed;
-			else centerShiftY=70;
+			if(centerShiftY<(leftPosY-centerPosY)) centerShiftY+=(leftPosY-centerPosY)/15.0*rotationSpeed;
+			else centerShiftY=(leftPosY-centerPosY);
 			
 			if(centerScale>0.5) centerScale-=0.035*rotationSpeed;
 			else centerScale=0.5;
 			
-			if(rightShiftX>-340) rightShiftX-=22.66666666*rotationSpeed;
-			else rightShiftX=-340;
+			if(rightShiftX>(centerPosX-rightPosX)) rightShiftX+=(centerPosX-rightPosX)/15.0*rotationSpeed;
+			else rightShiftX=(centerPosX-rightPosX);
 			
-			if(rightShiftY>-70) rightShiftY-=4.66*rotationSpeed;
-			else rightShiftY=-70;
+			if(rightShiftY>(centerPosY-rightPosY)) rightShiftY+=(centerPosY-rightPosY)/15.0*rotationSpeed;
+			else rightShiftY=(centerPosY-rightPosY);
 			
 			if(rightScale<2) rightScale+=0.06666666*rotationSpeed;
 			else rightScale=2;
 			
-			if(backRightShiftX<70) backRightShiftX+=4.66666666*rotationSpeed;
-			else backRightShiftX=70;
+			if(backRightShiftX<(rightPosX-backRightPosX)) backRightShiftX+=(rightPosX-backRightPosX)/15.0*rotationSpeed;
+			else backRightShiftX=(rightPosX-backRightPosX);
 			
-			if(backRightShiftY<50) backRightShiftY+=3.33333333*rotationSpeed;
-			else backRightShiftY=50;
+			if(backRightShiftY<(rightPosY-backRightPosY)) backRightShiftY+=(rightPosY-backRightPosY)/15.0*rotationSpeed;
+			else backRightShiftY=(rightPosY-backRightPosY);
 			
 			if(backRightScale<3.0/2) backRightScale+=0.0333333333*rotationSpeed;
 			else backRightScale=3.0/2;
 			
-			if(backLeftShiftX<200) backLeftShiftX+=13.3333333*rotationSpeed;
-			else backLeftShiftX=200;
+			if(backLeftShiftX<(backRightPosX-backLeftPosX)) backLeftShiftX+=(backRightPosX-backLeftPosX)/15.0*rotationSpeed;
+			else backLeftShiftX=(backRightPosX-backLeftPosX);
 			
 			
-			if(leftShiftX<130) leftShiftX+=8.6666666*rotationSpeed;
-			else leftShiftX=130;
+			if(leftShiftX<(backLeftPosX-leftPosX)) leftShiftX+=(backLeftPosX-leftPosX)/15.0*rotationSpeed;
+			else leftShiftX=(backLeftPosX-leftPosX);
 			
-			if(leftShiftY>-50) leftShiftY-=3.33333333*rotationSpeed;
-			else leftShiftY=-50;
+			if(leftShiftY>(backLeftPosY-leftPosY)) leftShiftY+=(backLeftPosY-leftPosY)/15.0*rotationSpeed;
+			else leftShiftY=(backLeftPosY-leftPosY);
 			
 			if(leftScale>2.0/3) leftScale-=0.03333333*rotationSpeed;
 			else leftScale=2.0/3;
 			
-			if(centerShiftX==-60&&centerShiftY==70&&centerScale==0.5&&
-			   rightShiftX==-340&&rightShiftY==-70&&rightScale==2&&
-			   backRightShiftX==70&&backRightShiftY==50&&backRightScale==3.0/2&&
-			   backLeftShiftX==200&&leftShiftX==130&&leftShiftY==-50&&leftScale==2.0/3){
+			if(centerShiftX==(leftPosX-centerPosX)&&centerShiftY==(leftPosY-centerPosY)&&centerScale==0.5&&
+			   rightShiftX==(centerPosX-rightPosX)&&rightShiftY==(centerPosY-rightPosY)&&rightScale==2&&
+			   backRightShiftX==(rightPosX-backRightPosX)&&backRightShiftY==(rightPosY-backRightPosY)&&backRightScale==3.0/2&&
+			   backLeftShiftX==(backRightPosX-backLeftPosX)&&leftShiftX==(backLeftPosX-leftPosX)&&leftShiftY==(backLeftPosY-leftPosY)&&leftScale==2.0/3){
 				effect.startFadeWhiteReversed();
 				isRotating=false;
 				setNextCycle("left");
 				resetRotationVariables();
 			}
 		}
+		
+		
 		public void rotateRight(){
-			if(centerShiftX<290) centerShiftX+=28.6666666*rotationSpeed;
-			else if(centerShiftX>290&&centerShiftX<340) centerShiftX+=8*rotationSpeed;
-			else centerShiftX=340;
+			if(centerShiftX<(rightPosX-centerPosX)) centerShiftX+=(rightPosX-centerPosX)/15.0*rotationSpeed;
+			else centerShiftX=(rightPosX-centerPosX);
 			
-			if(centerShiftY<70) centerShiftY+=4.66*rotationSpeed;
-			else centerShiftY=70;
+			if(centerShiftY<(rightPosY-centerPosY)) centerShiftY+=(rightPosY-centerPosY)/15.0*rotationSpeed;
+			else centerShiftY=(rightPosY-centerPosY);
 			
 			if(centerScale>0.5) centerScale-=0.035*rotationSpeed;
 			else centerScale=0.5;
 			
-			if(rightShiftX>-70) rightShiftX-=4.66*rotationSpeed;
-			else rightShiftX=-70;
+			if(rightShiftX>(backRightPosX-rightPosX)) rightShiftX+=(backRightPosX-rightPosX)/15.0*rotationSpeed;
+			else rightShiftX=(backRightPosX-rightPosX);
 			
-			if(rightShiftY>-50) rightShiftY-=3.3333*rotationSpeed;
-			else rightShiftY=-50;
+			if(rightShiftY>(backRightPosY-rightPosY)) rightShiftY+=(backRightPosY-rightPosY)/15.0*rotationSpeed;
+			else rightShiftY=(backRightPosY-rightPosY);
 			
 			if(rightScale>2.0/3) rightScale-=0.02*rotationSpeed;
 			else rightScale=2.0/3;
 			
-			if(backRightShiftX>-200) backRightShiftX-=13.3333333*rotationSpeed;
-			else backRightShiftX=-200;
+			if(backRightShiftX>(backLeftPosX-backRightPosX)) backRightShiftX+=(backLeftPosX-backRightPosX)/15.0*rotationSpeed;
+			else backRightShiftX=(backLeftPosX-backRightPosX);
 			
-			if(backLeftShiftX>-130) backLeftShiftX-=8.6666666*rotationSpeed;
-			else backLeftShiftX=-130;
+			if(backLeftShiftX>(leftPosX-backLeftPosX)) backLeftShiftX+=(leftPosX-backLeftPosX)/15.0*rotationSpeed;
+			else backLeftShiftX=(leftPosX-backLeftPosX);
 			
-			if(backLeftShiftY<50) backLeftShiftY+=3.33333333*rotationSpeed;
-			else backLeftShiftY=50;
+			if(backLeftShiftY<(leftPosY-backLeftPosY)) backLeftShiftY+=(leftPosY-backLeftPosY)/15.0*rotationSpeed;
+			else backLeftShiftY=(leftPosY-backLeftPosY);
 			
 			if(backLeftScale<3.0/2) backLeftScale+=0.03333333*rotationSpeed;
 			else backLeftScale=3.0/2;
 			
-			if(leftShiftX<60) leftShiftX+=4*rotationSpeed;
-			else leftShiftX=60;
+			if(leftShiftX<(centerPosX-leftPosX)) leftShiftX+=(centerPosX-leftPosX)/15.0*rotationSpeed;
+			else leftShiftX=(centerPosX-leftPosX);
 			
-			if(leftShiftY>-70) leftShiftY-=4.66666666*rotationSpeed;
-			else leftShiftY=-70;
+			if(leftShiftY>(centerPosY-leftPosY)) leftShiftY+=(centerPosY-leftPosY)/15.0*rotationSpeed;
+			else leftShiftY=(centerPosY-leftPosY);
 			
 			if(leftScale<2) leftScale+=0.0666666*rotationSpeed;
 			else leftScale=2;
 			
-			if(centerShiftX==340&&centerShiftY==70&&centerScale==0.5&&
-			   rightShiftX==-70&&rightShiftY==-50&&rightScale==2.0/3&&
-			   backRightShiftX==-200&&backLeftShiftX==-130&&backLeftShiftY==50&&
-			   backLeftScale==3.0/2&&leftShiftX==60&&leftShiftY==-70&&leftScale==2){
+			if(centerShiftX==(rightPosX-centerPosX)&&centerShiftY==(rightPosY-centerPosY)&&centerScale==0.5&&
+			   rightShiftX==(backRightPosX-rightPosX)&&rightShiftY==(backRightPosY-rightPosY)&&rightScale==2.0/3&&
+			   backRightShiftX==(backLeftPosX-backRightPosX)&&backLeftShiftX==(leftPosX-backLeftPosX)&&backLeftShiftY==(leftPosY-backLeftPosY)&&
+			   backLeftScale==3.0/2&&leftShiftX==(centerPosX-leftPosX)&&leftShiftY==(centerPosY-leftPosY)&&leftScale==2){
 				effect.startFadeWhiteReversed();
 				isRotating=false;
 				setNextCycle("right");

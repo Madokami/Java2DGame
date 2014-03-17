@@ -29,6 +29,8 @@ public class GameObject{
 		protected int ssY=1;
 		protected int ssWidth=32;
 		protected int ssHeight=32;
+		protected int imageWidth=ssWidth;
+		protected int imageHeight=ssHeight;
 		protected int frames = 3;
 		
 		protected int targetX,targetY;
@@ -37,12 +39,12 @@ public class GameObject{
 		public boolean atEdge;
 		protected Image standGif;
 		
+		
 		Random rand;
 		
 		// MS is how fast the sprite changes pose
 		public double MS = 0.2;
-		public double velX = 0;
-		public double velY = 0;
+		
 		public Game game;
 		public String direction;
 		public double i=0;
@@ -79,8 +81,8 @@ public class GameObject{
 			lastY=y;
 			nextX=x;
 			nextY=y;
-			this.x=(x-1)*GameSystem.SIZE;
-			this.y=(y-1)*GameSystem.SIZE;
+			this.x=(x-1)*GameSystem.GRID_SIZE;
+			this.y=(y-1)*GameSystem.GRID_SIZE;
 			this.game = game;
 			curX=this.x;
 			curY=this.y;
@@ -118,15 +120,10 @@ public class GameObject{
 		public void setY(double y){
 			this.y=y;
 		}
-		public void setVelX(double velX){
-			this.velX=velX;
-		}
-		public void setVelY(double velY){
-			this.velY=velY;
-		}
+	
 		
 		public void render(Graphics g){
-			g.drawImage(image,(int)x+renderXShift,(int)y+renderYShift,ssWidth,ssHeight,null);
+			g.drawImage(image,(int)x+renderXShift,(int)y+renderYShift,imageWidth,imageHeight,null);
 			
 		}
 		public void renderDamage(Graphics g){
@@ -177,20 +174,16 @@ public class GameObject{
 			if(kickedNum!=-1){
 				Bomb kickedBomb=game.getBombList().get(kickedNum);
 				if(orientation==ORIENTATION.UP){
-					kickedBomb.velX=0;
-					kickedBomb.velY=-1*10;
+					kickedBomb.setVelY(-20);
 				}
 				else if(orientation==ORIENTATION.DOWN){
-					kickedBomb.velX=0;
-					kickedBomb.velY=10;
+					kickedBomb.setVelY(20);
 				}
 				else if(orientation==ORIENTATION.LEFT){
-					kickedBomb.velX=-1*10;
-					kickedBomb.velY=0;
+					kickedBomb.setVelX(-20);
 				}
 				else if(orientation==ORIENTATION.RIGHT){
-					kickedBomb.velX=10;
-					kickedBomb.velY=0;
+					kickedBomb.setVelX(20);
 				}
 			}
 		}

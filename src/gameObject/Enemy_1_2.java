@@ -12,6 +12,8 @@ public class Enemy_1_2 extends Enemy{
 		ss=SpriteData.adelbertMini;
 		ssWidth=48;
 		ssHeight=48;
+		imageWidth=48;
+		imageHeight=48;
 		collisionWidth=32;
 		collisionHeight=32;
 		this.ssX=1;

@@ -23,8 +23,8 @@ public abstract class Projectile extends MovableObject {
 		if(tempEnemy!=-1){
 			applyDamage(damage,0,game.getEnemyList().get(tempEnemy));
 		}
-		x+=velX;
-		y+=velY;
+		x+=getVelX();
+		y+=getVelY();
 	}
 	
 	public void removeIfOutSideScreen(){

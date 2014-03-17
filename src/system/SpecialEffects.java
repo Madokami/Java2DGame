@@ -54,7 +54,7 @@ public class SpecialEffects {
 			return;
 		}
 		//do stuff
-		g.drawImage(white[fadeWhite], 0, 0,800,600,null);
+		g.drawImage(white[fadeWhite], 0, 0,GameSystem.ABSWIDTH+10,GameSystem.ABSHEIGHT+10,null);
 			
 	}
 	public void startFadeWhite(){
@@ -77,7 +77,7 @@ public class SpecialEffects {
 			return;
 		}
 		//do stuff
-		g.drawImage(white[9-fadeWhiteReversed], 0, 0,800,600,null);
+		g.drawImage(white[9-fadeWhiteReversed], 0, 0,GameSystem.ABSWIDTH+10,GameSystem.ABSHEIGHT+10,null);
 			
 	}
 	public void startFadeWhiteReversed() {

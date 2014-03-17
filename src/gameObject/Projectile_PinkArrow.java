@@ -15,19 +15,19 @@ public class Projectile_PinkArrow extends Projectile{
 		this.ssHeight=48;
 		this.MS=0.6;
 		if(o.orientation==ORIENTATION.RIGHT){
-			velX=20;
+			setVelX(40);
 			direction="right";
 		}
 		else if(o.orientation==ORIENTATION.LEFT){
-			velX=-1*20;
+			setVelX(-40);
 			direction="left";
 		}
 		if(o.orientation==ORIENTATION.UP){
-			velY=-1*20;
+			setVelY(-40);
 			direction="up";
 		}
 		if(o.orientation==ORIENTATION.DOWN){
-			velY=20;
+			setVelY(40);
 			direction="down";
 		}
 	}

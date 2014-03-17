@@ -116,7 +116,8 @@ public abstract class Player extends MovableObject{
 	
 		//changes the player's "playerImage" depending on movement orientation
 		levelUpdater.checkIfLevelUp(this);
-		Animate.animate(this);
+		
+		//Animate.animate(this);
 		Animate.animateGem(this);
 	}
 	

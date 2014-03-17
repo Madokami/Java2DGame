@@ -9,6 +9,8 @@ public class Enemy_Boss_1 extends Enemy{
 		ss=SpriteData.gertrud;
 		ssWidth=96;
 		ssHeight=96;
+		imageWidth=96;
+		imageHeight=96;
 		this.collisionWidth=96;
 		collisionHeight=96;
 		this.collisionDamage=40;

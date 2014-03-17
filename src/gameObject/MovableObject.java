@@ -1,8 +1,11 @@
 package gameObject;
 
-import system.GameSystem;
 import game.Game;
-import gameObject.GameObject.ORIENTATION;
+
+import java.awt.Image;
+
+import system.BufferedImageLoader;
+import system.GameSystem;
 
 public abstract class MovableObject extends GameObject{
 	public double xTemp,yTemp;
@@ -14,15 +17,34 @@ public abstract class MovableObject extends GameObject{
 	public String nextMove="null";
 	public int toleranceX = GameSystem.GRID_SIZE/2;
 	public int toleranceY = GameSystem.GRID_SIZE/2;
+	private double velX = 0;
+	private double velY = 0;
 	
+	protected Image moveLeftGif,moveRightGif,moveUpGif,moveDownGif,jumpUpGif,jumpDownGif,jumpLeftGif,jumpRightGif,upAttackGif = null;
 	
 	public int nextXCrude,nextYCrude;
-		
+	protected BufferedImageLoader loader=new BufferedImageLoader();
 	//starting from here is some special variables for active abilities
 	public int chargeSpeed;
 	public int chargeDuration;
 	public int chargeDurationTimer;
+	private boolean charging=false;
 	
+	public enum ANIMATION{
+		MOVELEFT,
+		MOVERIGHT,
+		MOVEUP,
+		MOVEDOWN,
+		STAND,
+		JUMPUP,
+		JUMPDOWN,
+		JUMPLEFT,
+		JUMPRIGHT,
+		
+		UPATTACK,
+	};
+	
+	protected ANIMATION animation = ANIMATION.STAND;
 	
 	public MovableObject(int x, int y, Game game) {
 		super(x, y, game);
@@ -38,93 +60,45 @@ public abstract class MovableObject extends GameObject{
 	public void tick(){
 		//first check if blocked
 		super.tick();
-		
-		if(checkIfBlocked()){
-			//checks the orientation
-			if(orientation==ORIENTATION.UP||orientation==ORIENTATION.DOWN){
-				//sets it so that the y position is at right place
-				//update position so variables catch up to the explicit change
-				y=yTemp;
-				updatePosition();
-				//if the right side is not blocked, and the player is close enough to right, shift him to right;
-				if(!checkIfBlocked(lastX+1,lastY,nextX+1,nextY)){
-					if(xTemp+this.collisionWidth-x<=toleranceX){
-						x=xTemp+collisionWidth;
-					}
-					else{
-						return;
-					}
-				}
-				
-				else if(!checkIfBlocked(lastX-1,lastY,nextX-1,nextY)){
-					if(x-(xTemp-collisionWidth)<=toleranceX){
-						x=xTemp-collisionWidth;
-					}
-					else{
-						return;
-					}
-				}
-				else{
-					return;
-				}
-			}
-			else if(orientation==ORIENTATION.LEFT||orientation==ORIENTATION.RIGHT){
-				x=xTemp;
-				updatePosition();
-				if(!checkIfBlocked(lastX,lastY+1,nextX,nextY+1)){
-					if(yTemp+this.collisionHeight-y<=toleranceY){
-						y=yTemp+collisionHeight;
-					}
-					else{
-						return;
-					}
-				}
-				else if(!checkIfBlocked(lastX,lastY-1,nextX,nextY-1)){
-					if(y-(yTemp-collisionHeight)<=toleranceY){
-						y=yTemp-collisionHeight;
-					}
-					else{
-						return;
-					}
-				}
-				else{
-					return;
-				}
-			}
-			
+		tickTimers();
+		//applySpecialAbilitiesWithinDuration();
+		if(adjustToBlockageAndReturnTrueIfBlocked()) {
+			return;
 		}
-		else{
-			if(checkWallCollision()){
-				this.moveToLastAcceptableLocation();
-			}
-		}
-		
-	
-		
 		if(buttonReleased){
 			if(targetPositionReached()){
 				velX=0;
 				velY=0;
 				moving=false;
+				animation=ANIMATION.STAND;
 				direction="stand";
 			}
 		}
-		
-		if(chargeDurationTimer<chargeDuration) {
-			chargeDurationTimer++;
-			charge();
-		}
-		
-		
+		updatePosition();
 		x+=velX;
 		y+=velY;
 		updatePosition();
 		checkIfAtEdge();
 	}
+	private void tickTimers() {
+		chargeDurationTimer++;
+		
+	}
+	private void applySpecialAbilitiesWithinDuration(){
+		if(chargeDurationTimer<chargeDuration) {
+			charge();
+			charging=true;
+		}
+		else {
+			stopCharge();
+		}
+	}
 	//moveUp shall move 1 grid up only
 	public void moveUp(){
+		
 		moving=true;
 		orientation=ORIENTATION.UP;
+		animation=ANIMATION.MOVEUP;
 		direction="up";
 		setNextXY();
 		setDestination(nextX,nextY);
@@ -132,8 +106,10 @@ public abstract class MovableObject extends GameObject{
 		velX=0;
 	}
 	public void moveDown(){
+		
 		moving=true;
 		orientation=ORIENTATION.DOWN;
+		animation=ANIMATION.MOVEDOWN;
 		direction="down";
 		setNextXY();
 		setDestination(nextX,nextY);
@@ -141,8 +117,10 @@ public abstract class MovableObject extends GameObject{
 		velX=0;
 	}
 	public void moveRight(){
+		
 		moving=true;
 		orientation=ORIENTATION.RIGHT;
+		animation=ANIMATION.MOVERIGHT;
 		direction="right";
 		setNextXY();
 		setDestination(nextX,nextY);
@@ -153,6 +131,7 @@ public abstract class MovableObject extends GameObject{
 		
 		moving=true;
 		orientation=ORIENTATION.LEFT;
+		animation=ANIMATION.MOVELEFT;
 		direction="left";
 		setNextXY();
 		setDestination(nextX,nextY);
@@ -372,29 +351,102 @@ public abstract class MovableObject extends GameObject{
 		chargeDuration=duration;
 		chargeDurationTimer=0;
 	}
+	public void stopCharge(){
+		if(charging){
+			charging=false;
+			refreshMovementSpeed();
+		}
+	}
 	private void charge(){
 		if(orientation==ORIENTATION.LEFT){
-			velX=-chargeSpeed;
-			velY=0;
+			setVelX(-chargeSpeed);
+			animation=ANIMATION.JUMPLEFT;
 		}
 		else if(orientation==ORIENTATION.RIGHT){
-			velX=chargeSpeed;
-			velY=0;
+			setVelX(chargeSpeed);
+			animation=ANIMATION.JUMPRIGHT;
 		}
 		else if(orientation==ORIENTATION.UP){
-			velX=0;
-			velY=-chargeSpeed;
+			setVelY(-chargeSpeed);
+			animation=ANIMATION.JUMPUP;
 		}
 		else if(orientation==ORIENTATION.DOWN){
-			velX=0;
-			velY=chargeSpeed;
+			setVelY(chargeSpeed);
+			animation=ANIMATION.JUMPRIGHT;
 		}
+	}
+	public void setVelX(double value){
+		velX=value/2;
+		velY=0;
+	}
+	public void setVelY(double value){
+		velY=value/2;
+		velX=0;
+	}
+	public double getVelX(){
+		return this.velX;
+	}
+	public double getVelY(){
+		return this.velY;
 	}
 	public void refreshMovementSpeed(){
 		if(orientation==ORIENTATION.RIGHT) moveRight();
 		else if(orientation==ORIENTATION.LEFT) moveLeft();
 		else if(orientation==ORIENTATION.UP) moveUp();
 		else if(orientation==ORIENTATION.DOWN) moveDown();
+	}
+	private boolean adjustToBlockageAndReturnTrueIfBlocked(){
+		if(checkIfBlocked()){
+			//checks the orientation
+			if(orientation==ORIENTATION.UP||orientation==ORIENTATION.DOWN){
+				//sets it so that the y position is at right place
+				//update position so variables catch up to the explicit change
+				y=yTemp;
+				updatePosition();
+				//if the right side is not blocked, and the player is close enough to right, shift him to right;
+				if(!checkIfBlocked(lastX+1,lastY,nextX+1,nextY)){
+					if(xTemp+this.collisionWidth-x<=toleranceX){
+						x=xTemp+collisionWidth;
+						return false;
+					}
+			
+				}
+				
+				if(!checkIfBlocked(lastX-1,lastY,nextX-1,nextY)){
+					if((x+collisionWidth-xTemp)<=toleranceX){
+						x=xTemp-collisionWidth;
+						return false;
+					}
+					
+				}
+			}
+			else if(orientation==ORIENTATION.LEFT||orientation==ORIENTATION.RIGHT){
+				x=xTemp;
+				updatePosition();
+				if(!checkIfBlocked(lastX,lastY+1,nextX,nextY+1)){
+					if(yTemp+this.collisionHeight-y<=toleranceY){
+						y=yTemp+collisionHeight;
+						return false;
+					}
+				
+				}
+				if(!checkIfBlocked(lastX,lastY-1,nextX,nextY-1)){
+					if(y+collisionHeight-yTemp<=toleranceY){
+						y=yTemp-collisionHeight;
+						return false;
+					}
+				
+				}
+			}
+			return true;
+			
+		}
+		else{
+			if(checkWallCollision()){
+				this.moveToLastAcceptableLocation();
+			}
+		}
+		return false;
 	}
 	
 }
