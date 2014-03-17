@@ -38,9 +38,16 @@ public class Physics {
 		return -1;
 	}
 	
-	public static int hitWall(GameObject f,LinkedList<Brick> wi){
-		for(int i=0;i<wi.size();i++){
-			if(f.getBounds(f.collisionWidth-1, f.collisionHeight-1).intersects(wi.get(i).getBounds(31, 31)))
+	public static int hitWall(GameObject f,LinkedList<HitableBrick> linkedList){
+		for(int i=0;i<linkedList.size();i++){
+			if(f.getBounds(f.collisionWidth-1, f.collisionHeight-1).intersects(linkedList.get(i).getBounds(31, 31)))
+				return i;
+		}
+		return -1;
+	}
+	public static int hitPlaceHolder(GameObject f,LinkedList<PlaceHolder> linkedList){
+		for(int i=0;i<linkedList.size();i++){
+			if(f.getBounds(f.collisionWidth-1, f.collisionHeight-1).intersects(linkedList.get(i).getBounds(31, 31)))
 				return i;
 		}
 		return -1;

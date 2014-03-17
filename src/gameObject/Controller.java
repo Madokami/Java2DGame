@@ -18,7 +18,8 @@ public class Controller implements Serializable {
 	private LinkedList<PowerUps> powerupList = new LinkedList<PowerUps>();
 	private LinkedList<Projectile> projectiles = new LinkedList<Projectile>();
 	public LinkedList<Fire> fireList = new LinkedList<Fire>();
-	public LinkedList<Brick> brickList = new LinkedList<Brick>();
+	public LinkedList<HitableBrick> brickList = new LinkedList<HitableBrick>();
+	public LinkedList<PlaceHolder> placeHolderList = new LinkedList<PlaceHolder>();
 	public boolean[][] wallArray;
 	public boolean[][] bombArray;
 	
@@ -53,6 +54,9 @@ public class Controller implements Serializable {
 		for(int i=0;i<brickList.size();i++){
 			brickList.get(i).tick();
 		}
+		for(int i=0;i<placeHolderList.size();i++){
+			placeHolderList.get(i).tick();
+		}
 	}
 	public void render(Graphics g){
 		
@@ -69,6 +73,9 @@ public class Controller implements Serializable {
 		for(int i=0;i<fireList.size();i++){
 			fireList.get(i).render(g);
 		}
+		
+		game.renderStageObjects(g);
+		
 		for(int i=0;i<brickList.size();i++){
 			brickList.get(i).render(g);
 		}
@@ -160,7 +167,7 @@ public class Controller implements Serializable {
 	public void removeFire(Fire fire){
 		fireList.remove(fire);
 	}
-	public void addEntity(Brick o){
+	public void addEntity(HitableBrick o){
 		brickList.add(o);
 		wallArray[o.xGridNearest][o.yGridNearest]=true;
 	}
@@ -168,8 +175,19 @@ public class Controller implements Serializable {
 		wallArray[o.xGridNearest][o.yGridNearest]=false;
 		brickList.remove(o);
 	}
-	public LinkedList<Brick> getBrickList(){
+	public LinkedList<HitableBrick> getBrickList(){
 		return brickList;
+	}
+	public void addEntity(PlaceHolder o){
+		placeHolderList.add(o);
+		wallArray[o.xGridNearest][o.yGridNearest]=true;
+	}
+	public void removeEntity(PlaceHolder o){
+		wallArray[o.xGridNearest][o.yGridNearest]=false;
+		placeHolderList.remove(o);
+	}
+	public LinkedList<PlaceHolder> getPlaceHolderList(){
+		return placeHolderList;
 	}
 	
 	public void createExplosion(int x, int y, int size,int strength){

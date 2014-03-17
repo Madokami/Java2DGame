@@ -3,7 +3,7 @@ package gameObject;
 import system.GameSystem;
 import game.Game;
 
-public class Brick extends GameObject{
+public abstract class Brick extends GameObject{
 
 	public Brick(int x, int y, Game game) {
 		super(x, y, game);

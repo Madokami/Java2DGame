@@ -6,6 +6,8 @@ import gameObject.Enemy;
 import gameObject.Enemy_1_1;
 import gameObject.Enemy_1_2;
 import gameObject.Enemy_Boss_1;
+import gameObject.HitableBrick;
+import gameObject.PlaceHolder;
 import gameObject.Player_Homura;
 import gameObject.Player_Kyouko;
 import gameObject.Player_Madoka;
@@ -64,7 +66,7 @@ public class LevelLoader {
 		//adding bricks
 		for(int i=2;i<GameSystem.GRIDW-2;i++){
 			for(int j=2;j<8;j++){
-			game.getController().addEntity(new Brick(i,j,game));
+			game.getController().addEntity(new HitableBrick(i,j,game));
 			}
 		}
 	}
@@ -84,7 +86,7 @@ public class LevelLoader {
 				{2,1,2,2,2,2,2,2,2,2},
 				{2,0,0,0,0,0,0,0,0,2},
 				{2,0,0,0,0,0,0,0,0,2},
-				{2,0,0,0,0,0,0,0,0,2},
+				{2,3,3,3,3,0,0,0,0,2},
 				{2,2,0,0,0,0,0,2},
 				{2,0}
 		};
@@ -114,6 +116,7 @@ public class LevelLoader {
 		game.setBombList(game.getController().getBList());
 		game.setEnemyList(game.getController().getEList());
 		game.setBrickList(game.getController().getBrickList());
+		game.setPlaceHolderList(game.getController().getPlaceHolderList());	
 		game.setPowerUpList(game.getController().getPList());
 		game.setFireList(game.getController().fireList);
 		game.setProjectileList(game.getController().getProjectileList());
@@ -172,7 +175,10 @@ public class LevelLoader {
 					addEnemy(new Enemy_Boss_1(j+1,i+1,game));
 				}
 				else if(mapData[i][j]==2){
-					addBrick(new Brick(j+1,i+1,game));
+					addBrick(new HitableBrick(j+1,i+1,game));
+				}
+				else if(mapData[i][j]==3){
+					addPlaceHolder(new PlaceHolder(j+1,i+1,game));
 				}
 			}
 		}
@@ -181,7 +187,10 @@ public class LevelLoader {
 		game.getController().addEntity(e);
 		game.setEnemyCount(game.getEnemyCount() + 1);
 	}
-	private void addBrick(Brick b){
+	private void addBrick(HitableBrick b){
+		game.getController().addEntity(b);
+	}
+	private void addPlaceHolder(PlaceHolder b){
 		game.getController().addEntity(b);
 	}
 }

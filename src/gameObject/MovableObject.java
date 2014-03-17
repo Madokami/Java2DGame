@@ -61,7 +61,7 @@ public abstract class MovableObject extends GameObject{
 		//first check if blocked
 		super.tick();
 		tickTimers();
-		//applySpecialAbilitiesWithinDuration();
+		applySpecialAbilitiesWithinDuration();
 		if(adjustToBlockageAndReturnTrueIfBlocked()) {
 			return;
 		}
@@ -309,6 +309,9 @@ public abstract class MovableObject extends GameObject{
 	
 	public boolean checkWallCollision(){
 		if(Physics.hitWall(this, game.getBrickList())!=-1){
+			return true;
+		}
+		if(Physics.hitPlaceHolder(this, game.getPlaceHolderList())!=-1){
 			return true;
 		}
 		return false;

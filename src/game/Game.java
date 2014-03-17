@@ -5,29 +5,28 @@ import gameObject.Brick;
 import gameObject.Controller;
 import gameObject.Enemy;
 import gameObject.Fire;
+import gameObject.GameObject.ORIENTATION;
+import gameObject.HitableBrick;
+import gameObject.PlaceHolder;
 import gameObject.Player;
 import gameObject.PowerUps;
 import gameObject.Projectile;
-import gameObject.GameObject.ORIENTATION;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.net.URLDecoder;
 import java.util.LinkedList;
 
+import menu.Menu;
 import system.BufferedImageLoader;
 import system.GameData;
 import system.GameSystem;
-import system.GameTimer;
 import system.GameSystem.STATE;
-import menu.Menu;
+import system.GameTimer;
 
 public class Game {
 	public GameTimer timer;
@@ -43,7 +42,8 @@ public class Game {
 	private boolean playerIsAlive = true;
 	private LinkedList<Bomb> bombList;
 	private LinkedList<Enemy> enemyList;
-	private LinkedList<Brick> brickList;
+	private LinkedList<HitableBrick> brickList;
+	private LinkedList<PlaceHolder> placeHolderList;
 	private LinkedList<Fire> fireList;
 	private LinkedList<PowerUps> powerUpList;
 	private LinkedList<Projectile> projectileList;
@@ -61,6 +61,7 @@ public class Game {
 	private int shift = 428;
 	
 	private PlayerData playerData;
+	private StageRenderer stageRenderer = new StageRenderer();
 	
 	
 	//handles ticking problems with respect to bomb explosion sound.
@@ -388,6 +389,34 @@ public class Game {
 	          i.printStackTrace();
 	      }
 	}
+	
+	public void renderStageObjects(Graphics g){
+		if(curLevel==1){
+			stageRenderer.render1(g);
+		}
+		else if(curLevel==2){
+			stageRenderer.render2(g);
+		}
+		else if(curLevel==3){
+			stageRenderer.render3(g);
+		}
+		else if(curLevel==4){
+			stageRenderer.render4(g);
+		}
+		else if(curLevel==5){
+			stageRenderer.render5(g);
+		}
+		else if(curLevel==6){
+			stageRenderer.render6(g);
+		}
+		else if(curLevel==7){
+			stageRenderer.render7(g);
+		}
+		else if(curLevel==8){
+			stageRenderer.render8(g);
+		}
+		
+	}
 
 	//getters and setters
 
@@ -471,12 +500,20 @@ public class Game {
 		this.enemyList = eList;
 	}
 
-	public LinkedList<Brick> getBrickList() {
+	public LinkedList<HitableBrick> getBrickList() {
 		return brickList;
 	}
 
-	public void setBrickList(LinkedList<Brick> brickList) {
+	public void setBrickList(LinkedList<HitableBrick> brickList) {
 		this.brickList = brickList;
+	}
+	
+	public LinkedList<PlaceHolder> getPlaceHolderList() {
+		return placeHolderList;
+	}
+
+	public void setPlaceHolderList(LinkedList<PlaceHolder> list) {
+		this.placeHolderList = list;
 	}
 
 	public LinkedList<Fire> getFireList() {
