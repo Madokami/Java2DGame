@@ -13,6 +13,11 @@ public class Player_Mami extends Player{
 		ss=SpriteData.char3;
 		image=ss.grabImage(ssX, ssY, ssWidth, ssHeight);
 		
+		animationParameters.setWalkGif(loader.loadGif("/image/spriteSheet/actors/player/mami/run.gif"));
+		animationParameters.setStandGif(loader.loadGif("/image/spriteSheet/actors/player/mami/stand.gif"));
+		animationParameters.setDamagedGif(loader.loadGif("/image/spriteSheet/actors/player/mami/damaged.gif"));
+		animationParameters.setDeathGif(loader.loadGif("/image/spriteSheet/actors/player/mami/dead.gif"));
+		
 		soulGemSprite=SpriteData.gem_mami;
 		soulGemImage=soulGemSprite.grabImage(1, 1, soulGemWidth, soulGemHeight);
 		

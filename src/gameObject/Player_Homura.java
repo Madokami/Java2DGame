@@ -18,6 +18,11 @@ public class Player_Homura extends Player{
 		this.moveLeftGif=loader.loadGif("/image/spriteSheet/actors/player/homura/run.gif");
 		this.standGif=loader.loadGif("/image/spriteSheet/actors/player/homura/stand.gif");
 		damaged = loader.loadGif("/image/spriteSheet/actors/player/homura/dead.gif");
+		
+		animationParameters.setWalkGif(loader.loadGif("/image/spriteSheet/actors/player/homura/run.gif"));
+		animationParameters.setStandGif(loader.loadGif("/image/spriteSheet/actors/player/homura/stand.gif"));
+		animationParameters.setDamagedGif(loader.loadGif("/image/spriteSheet/actors/player/homura/damaged.gif"));
+		animationParameters.setDeathGif(loader.loadGif("/image/spriteSheet/actors/player/homura/dead.gif"));
 		//this.moveRightGif=loader.loadGif("/image/spriteSheet/actors/player/homura/run.gif");
 		pVoice=new HoVoice();
 		hp=100;
@@ -68,5 +73,6 @@ public class Player_Homura extends Player{
 	public void updatePlayerData(){
 		pData.upDatePlayerData(this);
 	}
+	
 
 }

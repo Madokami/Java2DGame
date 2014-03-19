@@ -14,6 +14,11 @@ public class Player_Kyouko extends Player{
 		moveUpGif=moveRightGif;
 		moveDownGif=moveLeftGif;
 		
+		
+		animationParameters.setWalkGif(loader.loadGif("/image/spriteSheet/actors/player/kyouko/run.gif"));
+		animationParameters.setStandGif(loader.loadGif("/image/spriteSheet/actors/player/kyouko/stand.gif"));
+		animationParameters.setDamagedGif(loader.loadGif("/image/spriteSheet/actors/player/kyouko/damaged.gif"));
+		animationParameters.setDeathGif(loader.loadGif("/image/spriteSheet/actors/player/homura/dead.gif"));
 		//moveUpGif=loader.loadGif("/image/spriteSheet/actors/player/kyouko/ky_jump.gif");
 		//moveDownGif=loader.loadGif("/image/spriteSheet/actors/player/kyouko/ky_jump.gif");
 		
@@ -41,17 +46,6 @@ public class Player_Kyouko extends Player{
 	}
 	public void tick(){
 		super.tick();
-		upAttackCounter++;
-		if(upAttackCounter<8){
-			upAttacking=true;
-			this.animation=ANIMATION.UPATTACK;
-		}
-		else{
-			if(upAttacking){
-				this.animation=ANIMATION.STAND;
-				upAttacking=false;
-			}
-		}
 		Animate.animateWithGif(this);
 		
 	}

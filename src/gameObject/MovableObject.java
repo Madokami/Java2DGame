@@ -10,7 +10,7 @@ import system.GameSystem;
 public abstract class MovableObject extends GameObject{
 	public double xTemp,yTemp;
 	public int spd=4;
-	public int damage;
+	//public int damage;
 	public boolean nextLocationSet;
 	public boolean moving=false;
 	public boolean buttonReleased;
@@ -24,11 +24,21 @@ public abstract class MovableObject extends GameObject{
 	
 	public int nextXCrude,nextYCrude;
 	protected BufferedImageLoader loader=new BufferedImageLoader();
+	protected AnimationParameters animationParameters = new AnimationParameters();
+	
 	//starting from here is some special variables for active abilities
+	private boolean charging=false;
 	public int chargeSpeed;
 	public int chargeDuration;
 	public int chargeDurationTimer;
-	private boolean charging=false;
+	
+	public boolean damaged;
+	public int damagedDuration;
+	public int damagedDurationTimer;
+	
+	
+	
+	protected Event damage= new Event();
 	
 	public enum ANIMATION{
 		MOVELEFT,
@@ -40,11 +50,17 @@ public abstract class MovableObject extends GameObject{
 		JUMPDOWN,
 		JUMPLEFT,
 		JUMPRIGHT,
-		
+		DYING,
+		DAMAGED,
 		UPATTACK,
+	};
+	public enum FACING{
+		LEFT,
+		RIGHT
 	};
 	
 	protected ANIMATION animation = ANIMATION.STAND;
+	protected FACING facing = FACING.RIGHT;
 	
 	public MovableObject(int x, int y, Game game) {
 		super(x, y, game);
@@ -63,6 +79,7 @@ public abstract class MovableObject extends GameObject{
 		tickTimers();
 		applySpecialAbilitiesWithinDuration();
 		if(adjustToBlockageAndReturnTrueIfBlocked()) {
+			animation=ANIMATION.STAND;
 			return;
 		}
 		if(buttonReleased){
@@ -74,7 +91,13 @@ public abstract class MovableObject extends GameObject{
 				direction="stand";
 			}
 		}
-		updatePosition();
+		//updatePosition();
+		if(damaged){
+			animation=ANIMATION.DAMAGED;
+			setVelX(0);
+			setVelY(0);
+		}
+		
 		x+=velX;
 		y+=velY;
 		updatePosition();
@@ -82,9 +105,15 @@ public abstract class MovableObject extends GameObject{
 	}
 	private void tickTimers() {
 		chargeDurationTimer++;
+		damagedDurationTimer++;
+		//damage.tick();
 		
 	}
 	private void applySpecialAbilitiesWithinDuration(){
+		if(damagedDurationTimer>damagedDuration){
+			stopDamaged();
+		}
+		
 		if(chargeDurationTimer<chargeDuration) {
 			charge();
 			charging=true;
@@ -95,7 +124,7 @@ public abstract class MovableObject extends GameObject{
 	}
 	//moveUp shall move 1 grid up only
 	public void moveUp(){
-		
+		if(damaged||game.getPlayer().dying) return;
 		moving=true;
 		orientation=ORIENTATION.UP;
 		animation=ANIMATION.MOVEUP;
@@ -106,7 +135,7 @@ public abstract class MovableObject extends GameObject{
 		velX=0;
 	}
 	public void moveDown(){
-		
+		if(damaged||game.getPlayer().dying) return;
 		moving=true;
 		orientation=ORIENTATION.DOWN;
 		animation=ANIMATION.MOVEDOWN;
@@ -117,10 +146,11 @@ public abstract class MovableObject extends GameObject{
 		velX=0;
 	}
 	public void moveRight(){
-		
+		if(damaged||game.getPlayer().dying) return;
 		moving=true;
 		orientation=ORIENTATION.RIGHT;
 		animation=ANIMATION.MOVERIGHT;
+		facing=FACING.RIGHT;
 		direction="right";
 		setNextXY();
 		setDestination(nextX,nextY);
@@ -128,10 +158,11 @@ public abstract class MovableObject extends GameObject{
 		velY=0;
 	}
 	public void moveLeft(){
-		
+		if(damaged||game.getPlayer().dying) return;
 		moving=true;
 		orientation=ORIENTATION.LEFT;
 		animation=ANIMATION.MOVELEFT;
+		facing=FACING.LEFT;
 		direction="left";
 		setNextXY();
 		setDestination(nextX,nextY);
@@ -378,6 +409,19 @@ public abstract class MovableObject extends GameObject{
 			animation=ANIMATION.JUMPRIGHT;
 		}
 	}
+	private void startDamaged(int duration){
+		damaged=true;
+		damagedDuration=duration;
+		damagedDurationTimer=0;
+	}
+	
+	private void stopDamaged(){
+		if(!damaged) return;
+		damaged=false;
+		animation=ANIMATION.STAND;
+	}
+	
+	
 	public void setVelX(double value){
 		velX=value/2;
 		velY=0;
@@ -450,6 +494,10 @@ public abstract class MovableObject extends GameObject{
 			}
 		}
 		return false;
+	}
+	public void takeDamage(int damage){
+		super.takeDamage(damage);
+		this.startDamaged(8);
 	}
 	
 }

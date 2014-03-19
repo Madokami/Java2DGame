@@ -14,6 +14,11 @@ public class Player_Madoka extends Player{
 		ssX=7;
 		ssY=1;
 		ss=SpriteData.char1;
+		animationParameters.setWalkGif(loader.loadGif("/image/spriteSheet/actors/player/madoka/run.gif"));
+		animationParameters.setStandGif(loader.loadGif("/image/spriteSheet/actors/player/madoka/stand.gif"));
+		animationParameters.setDamagedGif(loader.loadGif("/image/spriteSheet/actors/player/madoka/damaged.gif"));
+		animationParameters.setDeathGif(loader.loadGif("/image/spriteSheet/actors/player/madoka/dead.gif"));
+		
 		//standGif=loader.loadGif("/image/spriteSheet/mdStand3.gif");
 		//ssWidth=38;
 		//ssHeight=50;

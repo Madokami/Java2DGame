@@ -4,6 +4,7 @@ package gameObject;
 import game.Game;
 import game.PlayerData;
 import gameObject.GameObject.ORIENTATION;
+import gameObject.MovableObject.ANIMATION;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -56,6 +57,11 @@ public abstract class Player extends MovableObject{
 	public boolean damageMediumPlayed,damageHeavyPlayed,soulGemDarkSoundPlayed;
 	
 	protected PlayerVoice pVoice;
+	
+	/////
+	public boolean dying;
+	public int dyingDuration;
+	public int dyingDurationTimer;
 
 	public Player(int x, int y, Game game) {
 		super(x, y, game);
@@ -92,10 +98,18 @@ public abstract class Player extends MovableObject{
 	
 		playPlayerHpMissingVoices();
 		searchForPowerups();
+		dyingDurationTimer++;
+		if(dyingDurationTimer>dyingDuration){
+			stopDying();
+		}
+		if(dying){
+			animation=ANIMATION.DYING;
+			setVelX(0);
+			setVelY(0);
+		}
 		if(hp<=0){
-			pVoice.playDeathSound();
-			game.getController().removePlayer(this);
-			game.setPlayerIsAlive(false);
+			startDying(20);
+			
 		}
 		if(soul>0){
 			if(hp<maxHp){
@@ -119,6 +133,7 @@ public abstract class Player extends MovableObject{
 		
 		//Animate.animate(this);
 		Animate.animateGem(this);
+		Animate.animateWithGif(this);
 	}
 	
 	public void render(Graphics g){
@@ -233,6 +248,18 @@ public abstract class Player extends MovableObject{
 
 	public void increaseSpeed(int i) {
 		if(spd<25) spd++;
+	}
+	public void stopDying(){
+		if(!dying) return;
+		game.getController().removePlayer(this);
+		game.setPlayerIsAlive(false);
+	}
+	public void startDying(int duration){
+		if(dying) return;
+		pVoice.playDeathSound();
+		dying=true;
+		dyingDuration=duration;
+		dyingDurationTimer=0;
 	}
 	
 	

@@ -12,6 +12,11 @@ public class Player_Sayaka extends Player{
 		status = SpriteData.saStatus;
 		setStatusImages();
 		
+		animationParameters.setWalkGif(loader.loadGif("/image/spriteSheet/actors/player/sayaka/run.gif"));
+		animationParameters.setStandGif(loader.loadGif("/image/spriteSheet/actors/player/sayaka/stand.gif"));
+		animationParameters.setDamagedGif(loader.loadGif("/image/spriteSheet/actors/player/sayaka/damaged.gif"));
+		animationParameters.setDeathGif(loader.loadGif("/image/spriteSheet/actors/player/sayaka/dead.gif"));
+		
 		ssX=1;
 		ssY=5;
 		ss=SpriteData.char3;

@@ -1,9 +1,12 @@
 package gameObject;
 
 import gameObject.MovableObject.ANIMATION;
+import gameObject.MovableObject.FACING;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+
+import system.GameSystem;
 
 public class Animate {
 	public static void animate(GameObject o){
@@ -59,22 +62,82 @@ public class Animate {
 		
 	}
 	public static void animateWithGif(MovableObject o){
-		if(o.animation==ANIMATION.MOVELEFT) o.image=o.moveLeftGif;
-		else if(o.animation==ANIMATION.MOVERIGHT) o.image=o.moveRightGif;
-		else if(o.animation==ANIMATION.MOVEUP) {
-			if(o.getVelX()>0){
-				o.image=o.moveRightGif;
+		if(o.animation==ANIMATION.MOVELEFT) {
+			o.image=o.animationParameters.getWalkGif().getImage();
+			o.imageWidth=-o.animationParameters.getWalkGif().getWidth();
+			o.imageHeight=o.animationParameters.getWalkGif().getHeight();
+			o.renderXShift=o.animationParameters.getWalkGif().getX()+o.animationParameters.getWalkGif().getWidth();
+			o.renderYShift=o.animationParameters.getWalkGif().getY();
+		}
+		else if(o.animation==ANIMATION.MOVERIGHT) {
+			o.image=o.animationParameters.getWalkGif().getImage();
+			o.imageWidth=o.animationParameters.getWalkGif().getWidth();
+			o.imageHeight=o.animationParameters.getWalkGif().getHeight();
+			o.renderXShift=o.animationParameters.getWalkGif().getX();
+			o.renderYShift=o.animationParameters.getWalkGif().getY();
+		}
+		else if(o.animation==ANIMATION.MOVEUP||o.animation==ANIMATION.MOVEDOWN){
+			if(o.facing==FACING.RIGHT){
+				o.image=o.animationParameters.getWalkGif().getImage();
+				o.imageWidth=o.animationParameters.getWalkGif().getWidth();
+				o.imageHeight=o.animationParameters.getWalkGif().getHeight();
+				o.renderXShift=o.animationParameters.getWalkGif().getX();
+				o.renderYShift=o.animationParameters.getWalkGif().getY();
 			}
-			else if(o.getVelX()<0){
-				o.image=o.moveLeftGif;
+			else{
+				o.image=o.animationParameters.getWalkGif().getImage();
+				o.imageWidth=-o.animationParameters.getWalkGif().getWidth();
+				o.imageHeight=o.animationParameters.getWalkGif().getHeight();
+				o.renderXShift=o.animationParameters.getWalkGif().getX()+o.animationParameters.getWalkGif().getWidth();
+				o.renderYShift=o.animationParameters.getWalkGif().getY();
 			}
 		}
-		else if(o.animation==ANIMATION.MOVEDOWN) {
-			if(o.getVelX()>0){
-				o.image=o.moveRightGif;
+		else if(o.animation==ANIMATION.STAND) {
+			if(o.facing==FACING.RIGHT){
+				o.image=o.animationParameters.getStandGif().getImage();
+				o.imageWidth=o.animationParameters.getStandGif().getWidth();
+				o.imageHeight=o.animationParameters.getStandGif().getHeight();
+				o.renderXShift=o.animationParameters.getStandGif().getX();
+				o.renderYShift=o.animationParameters.getStandGif().getY();
 			}
-			else if(o.getVelX()<0){
-				o.image=o.moveLeftGif;
+			else{
+				o.image=o.animationParameters.getStandGif().getImage();
+				o.imageWidth=-o.animationParameters.getStandGif().getWidth();
+				o.imageHeight=o.animationParameters.getStandGif().getHeight();
+				o.renderXShift=o.animationParameters.getStandGif().getX()+o.animationParameters.getStandGif().getWidth();
+				o.renderYShift=o.animationParameters.getStandGif().getY();
+			}
+		}
+		else if(o.animation==ANIMATION.DAMAGED){
+			if(o.facing==FACING.RIGHT){
+				o.image=o.animationParameters.getDamagedGif().getImage();
+				o.imageWidth=o.animationParameters.getDamagedGif().getWidth();
+				o.imageHeight=o.animationParameters.getDamagedGif().getHeight();
+				o.renderXShift=o.animationParameters.getDamagedGif().getX();
+				o.renderYShift=o.animationParameters.getDamagedGif().getY();
+			}
+			else{
+				o.image=o.animationParameters.getDamagedGif().getImage();
+				o.imageWidth=-o.animationParameters.getDamagedGif().getWidth();
+				o.imageHeight=o.animationParameters.getDamagedGif().getHeight();
+				o.renderXShift=o.animationParameters.getDamagedGif().getX()+o.animationParameters.getDamagedGif().getWidth();
+				o.renderYShift=o.animationParameters.getDamagedGif().getY();
+			}
+		}
+		else if(o.animation==ANIMATION.DYING){
+			if(o.facing==FACING.RIGHT){
+				o.image=o.animationParameters.getDeathGif().getImage();
+				o.imageWidth=o.animationParameters.getDeathGif().getWidth();
+				o.imageHeight=o.animationParameters.getDeathGif().getHeight();
+				o.renderXShift=o.animationParameters.getDeathGif().getX();
+				o.renderYShift=o.animationParameters.getDeathGif().getY();
+			}
+			else{
+				o.image=o.animationParameters.getDeathGif().getImage();
+				o.imageWidth=-o.animationParameters.getDeathGif().getWidth();
+				o.imageHeight=o.animationParameters.getDeathGif().getHeight();
+				o.renderXShift=o.animationParameters.getDeathGif().getX()+o.animationParameters.getDeathGif().getWidth();
+				o.renderYShift=o.animationParameters.getDeathGif().getY();
 			}
 		}
 		else if(o.animation==ANIMATION.JUMPRIGHT) o.image=o.jumpRightGif;
@@ -83,6 +146,7 @@ public class Animate {
 		else if(o.animation==ANIMATION.JUMPDOWN) o.image=o.jumpDownGif;
 		else if(o.animation==ANIMATION.UPATTACK) o.image=o.upAttackGif;
 	}
+	/*
 	public static void animateWithGif(Player_Kyouko o){
 		if(o.animation==ANIMATION.MOVELEFT) {
 			o.image=o.moveLeftGif;
@@ -105,62 +169,8 @@ public class Animate {
 		else if(o.animation==ANIMATION.JUMPDOWN) o.image=o.jumpDownGif;
 		else if(o.animation==ANIMATION.UPATTACK) o.image=o.upAttackGif;
 	}
-	public static void animateWithGif(Player_Homura o){
-		if(o.animation==ANIMATION.MOVELEFT) {
-			o.image=o.moveLeftGif;
-			o.imageWidth=120;
-			o.imageHeight=60;
-			o.renderXShift=-40;
-			o.renderYShift=-20;
-		}
-		else if(o.animation==ANIMATION.MOVERIGHT) {
-			o.image=o.moveRightGif;
-			o.imageWidth=120;
-			o.imageHeight=60;
-			o.renderXShift=-40;
-			o.renderYShift=-20;
-		}
-		else if(o.animation==ANIMATION.STAND) {
-			o.image=o.standGif;
-			o.imageWidth=46;
-			o.imageHeight=86;
-			o.renderXShift=0;
-			o.renderYShift=35;
-		}
-		else if(o.animation==ANIMATION.JUMPRIGHT) o.image=o.jumpRightGif;
-		else if(o.animation==ANIMATION.JUMPLEFT) o.image=o.jumpLeftGif;
-		else if(o.animation==ANIMATION.JUMPUP) o.image=o.jumpUpGif;
-		else if(o.animation==ANIMATION.JUMPDOWN) o.image=o.jumpDownGif;
-		else if(o.animation==ANIMATION.UPATTACK) o.image=o.upAttackGif;
-	}
 	
-	public static void animateWithGif(Player o, AnimationParameters param){
-		if(o.animation==ANIMATION.MOVELEFT) {
-			o.image=o.moveLeftGif;
-			o.imageWidth=120;
-			o.imageHeight=60;
-			o.renderXShift=-40;
-			o.renderYShift=-20;
-		}
-		else if(o.animation==ANIMATION.MOVERIGHT) {
-			o.image=o.moveRightGif;
-			o.imageWidth=120;
-			o.imageHeight=60;
-			o.renderXShift=-40;
-			o.renderYShift=-20;
-		}
-		else if(o.animation==ANIMATION.STAND) {
-			o.image=o.standGif;
-			o.imageWidth=46;
-			o.imageHeight=86;
-			o.renderXShift=0;
-			o.renderYShift=35;
-		}
-		else if(o.animation==ANIMATION.JUMPRIGHT) o.image=o.jumpRightGif;
-		else if(o.animation==ANIMATION.JUMPLEFT) o.image=o.jumpLeftGif;
-		else if(o.animation==ANIMATION.JUMPUP) o.image=o.jumpUpGif;
-		else if(o.animation==ANIMATION.JUMPDOWN) o.image=o.jumpDownGif;
-		else if(o.animation==ANIMATION.UPATTACK) o.image=o.upAttackGif;
-	}
+	*/
+
 	
 }
