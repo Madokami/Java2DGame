@@ -9,7 +9,6 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
-import system.AttributeHandler;
 import system.BufferedImageLoader;
 import system.GameSystem;
 import system.SpecialEffects;
@@ -31,11 +30,8 @@ public class MenuChar implements GeneralMenu{
 		private boolean shiftingDown;
 		private BufferedImageLoader loader;
 		
-		private int height = 350;
-		private int width = 115;
-		
-		private static int statsX=280;
-		private static int statsY=140;
+		public static int statsX;
+		public static int statsY;
 		public static int statsShift=28;
 		
 		private SpecialEffects effect;
@@ -117,11 +113,11 @@ public class MenuChar implements GeneralMenu{
 			maName=loader.loadImage("/image/maName.png");
 			mdName=loader.loadImage("/image/mdName.png");
 			
-			mdStats=loader.loadImage("/image/madoka_Stats.png");
-			hoStats=loader.loadImage("/image/homura_Stats.png");
-			saStats=loader.loadImage("/image/sayaka_Stats.png");
-			maStats=loader.loadImage("/image/mami_Stats.png");
-			kyStats=loader.loadImage("/image/kyouko_Stats.png");
+			mdStats=loader.loadImage("/image/portraits/md_Stats.png");
+			hoStats=loader.loadImage("/image/portraits/ho_Stats.png");
+			saStats=loader.loadImage("/image/portraits/sa_Stats.png");
+			maStats=loader.loadImage("/image/portraits/ma_Stats.png");
+			kyStats=loader.loadImage("/image/portraits/ky_Stats.png");
 			
 			mdPortrait=loader.loadImage("/image/portraits/md.png");
 			maPortrait=loader.loadImage("/image/portraits/ma.png");
@@ -133,13 +129,16 @@ public class MenuChar implements GeneralMenu{
 			bg2=loader.loadImage("/image/portraits/bg.png");
 			
 			
-			statsSelectionCombinedOff=loader.loadImage("/image/statusSelectionCombinedOff.png");
-			statsSelectionHpOn=loader.loadImage("/image/statsSelectionHpOn.png");
-			statsSelectionMpOn=loader.loadImage("/image/statsSelectionMpOn.png");
-			statsSelectionSoulOn=loader.loadImage("/image/statsSelectionSoulOn.png");
-			statsSelectionSpdOn=loader.loadImage("/image/statsSelectionSpeedOn.png");
-			statsSelectionDamageOn=loader.loadImage("/image/statsSelectionDamageOn.png");
-			statsSelectionRangeOn=loader.loadImage("/image/statsSelectionRangeOn.png");
+			statsSelectionCombinedOff=loader.loadImage("/image/portraits/statusSelectionCombinedOff.png");
+			statsSelectionHpOn=loader.loadImage("/image/portraits/statsSelectionHpOn.png");
+			statsSelectionMpOn=loader.loadImage("/image/portraits/statsSelectionMpOn.png");
+			statsSelectionSoulOn=loader.loadImage("/image/portraits/statsSelectionSoulOn.png");
+			statsSelectionSpdOn=loader.loadImage("/image/portraits/statsSelectionSpeedOn.png");
+			statsSelectionDamageOn=loader.loadImage("/image/portraits/statsSelectionDamageOn.png");
+			statsSelectionRangeOn=loader.loadImage("/image/portraits/statsSelectionRangeOn.png");
+			
+			this.statsX=GameSystem.ABSWIDTH/2+this.statsSelectionCombinedOff.getHeight()/5;
+			this.statsY=GameSystem.ABSHEIGHT/2-this.statsSelectionCombinedOff.getHeight()/2;
 			
 			
 			charSelectBg = loader.loadImage("/image/bg.jpg");
@@ -190,7 +189,7 @@ public class MenuChar implements GeneralMenu{
 			}
 			else if(isDisplayStatus()){
 				if(cSelected == CHARACTER.MADOKA){
-					g.drawImage(mdStats, 0,0,null);
+					g.drawImage(mdStats, 0,0,GameSystem.ABSWIDTH+10,GameSystem.ABSHEIGHT+10,null);
 				}
 				else if(cSelected == CHARACTER.HOMURA){
 					g.drawImage(hoStats, 0,0,null);

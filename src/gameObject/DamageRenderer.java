@@ -15,7 +15,7 @@ public class DamageRenderer {
 	private int randX[],randY[];
 	private int positionX[],positionY[];
 	private Random rand;
-	private int randRange=20;
+	private int randRange=40;
 	
 	private int x;
 	private int y;
@@ -55,7 +55,7 @@ public class DamageRenderer {
 		for(int i=0;i<counter.length;i++){
 			if(counter[i]<renderDuration){
 				for(int j=0;j<damageArray[i].length;j++){
-					g.drawImage(damageArray[i][j], x+randX[i]+j*24,  y+randY[i], null);
+					g.drawImage(damageArray[i][j], x+randX[i]-randRange/2+j*24,  y+randY[i]-damageArray[i][j].getHeight()-randRange/2, null);
 				}
 			}
 		}

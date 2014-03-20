@@ -11,13 +11,8 @@ public class Player_Madoka extends Player{
 		bombLength = 3;
 		bombStrength= 20;
 		hp=100;
-		ssX=7;
-		ssY=1;
-		ss=SpriteData.char1;
-		animationParameters.setWalkGif(loader.loadGif("/image/spriteSheet/actors/player/madoka/run.gif"));
-		animationParameters.setStandGif(loader.loadGif("/image/spriteSheet/actors/player/madoka/stand.gif"));
-		animationParameters.setDamagedGif(loader.loadGif("/image/spriteSheet/actors/player/madoka/damaged.gif"));
-		animationParameters.setDeathGif(loader.loadGif("/image/spriteSheet/actors/player/madoka/dead.gif"));
+	
+		
 		
 		//standGif=loader.loadGif("/image/spriteSheet/mdStand3.gif");
 		//ssWidth=38;
@@ -34,7 +29,6 @@ public class Player_Madoka extends Player{
 		frames=8;
 		*/
 		
-		image=ss.grabImage(ssX, ssY, ssWidth, ssHeight);
 		
 		soulGemSprite=SpriteData.gem_madoka;
 		soulGemImage=soulGemSprite.grabImage(1, 1, soulGemWidth, soulGemHeight);
@@ -49,6 +43,15 @@ public class Player_Madoka extends Player{
 		maxMp=mp;
 		maxSoul=soul;
 		// TODO Auto-generated constructor stub
+		
+		run=new ImageSequence("/image/spriteSheet/actors/player/madoka/run",8);
+		stand=new ImageSequence("/image/spriteSheet/actors/player/madoka/stand",8);
+		stand.scale(1.25);
+		stand.setY(stand.getY()-10);
+		damage=new ImageSequence("/image/spriteSheet/actors/player/madoka/damage",4);
+		dead=new ImageSequence("/image/spriteSheet/actors/player/madoka/dead",11);
+		sequence.startSequence(stand);
+		
 	}
 	
 	public void useUltimate(){

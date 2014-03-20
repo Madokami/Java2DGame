@@ -14,27 +14,18 @@ public class Player_Homura extends Player{
 		
 		super(x, y, game);
 		
-		this.moveRightGif=loader.loadGif("/image/spriteSheet/actors/player/homura/run.gif");
-		this.moveLeftGif=loader.loadGif("/image/spriteSheet/actors/player/homura/run.gif");
-		this.standGif=loader.loadGif("/image/spriteSheet/actors/player/homura/stand.gif");
-		damaged = loader.loadGif("/image/spriteSheet/actors/player/homura/dead.gif");
 		
-		animationParameters.setWalkGif(loader.loadGif("/image/spriteSheet/actors/player/homura/run.gif"));
-		animationParameters.setStandGif(loader.loadGif("/image/spriteSheet/actors/player/homura/stand.gif"));
-		animationParameters.setDamagedGif(loader.loadGif("/image/spriteSheet/actors/player/homura/damaged.gif"));
-		animationParameters.setDeathGif(loader.loadGif("/image/spriteSheet/actors/player/homura/dead.gif"));
 		//this.moveRightGif=loader.loadGif("/image/spriteSheet/actors/player/homura/run.gif");
+		run=new ImageSequence("/image/spriteSheet/actors/player/homura/run",8);
+		stand=new ImageSequence("/image/spriteSheet/actors/player/homura/stand",8);
+		damage=new ImageSequence("/image/spriteSheet/actors/player/homura/damage",4);		
+		dead=new ImageSequence("/image/spriteSheet/actors/player/homura/dead",14);
+		sequence.startSequence(stand);
+		
 		pVoice=new HoVoice();
 		hp=100;
 		bombStrength = 20;
 		bombLength = 3;
-		ssX=1;
-		ssY=1;
-		ss=SpriteData.char2;
-		ssStand=SpriteData.hoStand;
-		this.renderYShift=0;
-		image=ss.grabImage(ssX, ssY, ssWidth, ssHeight);
-		image=damaged;
 		
 		soulGemSprite=SpriteData.gem_homura;
 		soulGemImage=soulGemSprite.grabImage(1, 1, soulGemWidth, soulGemHeight);
@@ -50,10 +41,7 @@ public class Player_Homura extends Player{
 		maxSoul=soul;
 		// TODO Auto-generated constructor stub
 	}
-	public void tick(){
-		super.tick();
-		Animate.animateWithGif(this);
-	}
+	
 	public void render(Graphics g){
 		super.render(g);
 	}

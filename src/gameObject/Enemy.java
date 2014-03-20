@@ -33,7 +33,7 @@ public class Enemy extends MovableObject{
 	public void tick(){
 		super.tick();
 		
-		if(Physics.collide(game.getPlayer(), this)) applyDamage(collisionDamage,10,game.getPlayer());
+		if(Physics.collide(game.getPlayer(), this)) applyDamage(collisionDamage,30,game.getPlayer());
 		counter++;
 		if(counter>10){
 			counter=0;
@@ -107,23 +107,23 @@ public class Enemy extends MovableObject{
 		else if(s.equals("stop")) moveRandomly();
 	}
 	public void chargeAtPlayer(int speed,int duration){
-		String direction=ai.isValidStraightLine(game.getWallArray(), game.getPlayer().xGridNearest, game.getPlayer().yGridNearest, xGridNearest, yGridNearest);
-		if(direction.equals("stop")){
+		String dir=ai.isValidStraightLine(game.getWallArray(), game.getPlayer().xGridNearest, game.getPlayer().yGridNearest, xGridNearest, yGridNearest);
+		if(dir.equals("stop")){
 			return;
 		}
-		else if(direction.equals("right")){
+		else if(dir.equals("right")){
 			moveRight();
 			startCharge(speed,duration);
 		}
-		else if(direction.equals("left")){
+		else if(dir.equals("left")){
 			moveLeft();
 			startCharge(speed,duration);
 		}
-		else if(direction.equals("up")){
+		else if(dir.equals("up")){
 			moveUp();
 			startCharge(speed,duration);
 		}
-		else if(direction.equals("down")){
+		else if(dir.equals("down")){
 			moveDown();
 			startCharge(speed,duration);
 		}

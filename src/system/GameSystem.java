@@ -23,6 +23,7 @@ import java.io.ObjectOutputStream;
 import javax.swing.JFrame;
 
 import story.Story;
+import menu.AttributeHandler;
 import menu.Menu;
 
 public class GameSystem extends Canvas implements Runnable{
@@ -39,7 +40,7 @@ public class GameSystem extends Canvas implements Runnable{
 	public static final int GRIDW=GAME_WIDTH/GRID_SIZE;
 	public static final int GRIDH=GAME_HEIGHT/GRID_SIZE;
 	public static final String TITLE="Temp Name";
-	
+	public static BufferedImageLoader loader = new BufferedImageLoader();
 	
 	private JFrame frame;
 	private boolean running= false;

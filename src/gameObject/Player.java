@@ -58,7 +58,6 @@ public abstract class Player extends MovableObject{
 	
 	protected PlayerVoice pVoice;
 	
-	/////
 	public boolean dying;
 	public int dyingDuration;
 	public int dyingDurationTimer;
@@ -108,7 +107,7 @@ public abstract class Player extends MovableObject{
 			setVelY(0);
 		}
 		if(hp<=0){
-			startDying(20);
+			startDying(160);
 			
 		}
 		if(soul>0){
@@ -133,7 +132,7 @@ public abstract class Player extends MovableObject{
 		
 		//Animate.animate(this);
 		Animate.animateGem(this);
-		Animate.animateWithGif(this);
+		//Animate.animateWithGif(this);
 	}
 	
 	public void render(Graphics g){
@@ -256,7 +255,12 @@ public abstract class Player extends MovableObject{
 	}
 	public void startDying(int duration){
 		if(dying) return;
+		if(animation!=ANIMATION.DYING) {
+			animation=ANIMATION.DYING;
+			if(dead!=null) sequence.startOneTimeSequence(dead);
+		}
 		pVoice.playDeathSound();
+		GameSystem.turnOffBgm();
 		dying=true;
 		dyingDuration=duration;
 		dyingDurationTimer=0;

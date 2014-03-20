@@ -140,12 +140,9 @@ public class Animate {
 				o.renderYShift=o.animationParameters.getDeathGif().getY();
 			}
 		}
-		else if(o.animation==ANIMATION.JUMPRIGHT) o.image=o.jumpRightGif;
-		else if(o.animation==ANIMATION.JUMPLEFT) o.image=o.jumpLeftGif;
-		else if(o.animation==ANIMATION.JUMPUP) o.image=o.jumpUpGif;
-		else if(o.animation==ANIMATION.JUMPDOWN) o.image=o.jumpDownGif;
-		else if(o.animation==ANIMATION.UPATTACK) o.image=o.upAttackGif;
+
 	}
+
 	/*
 	public static void animateWithGif(Player_Kyouko o){
 		if(o.animation==ANIMATION.MOVELEFT) {

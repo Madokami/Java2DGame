@@ -8,14 +8,13 @@ public class Enemy_1_1 extends Enemy{
 	private int chargeCounter=0;
 	public Enemy_1_1(int x, int y, Game game) {
 		super(x, y, game);
-		moveRightGif=loader.loadGif("/image/spriteSheet/actors/enemy/enemy_1_1/Enemy_1_1_walkRight.gif");
-		moveLeftGif=loader.loadGif("/image/spriteSheet/actors/enemy/enemy_1_1/Enemy_1_1_walkLeft.gif");
-		moveUpGif=moveRightGif;
-		moveDownGif=moveLeftGif;
-		jumpRightGif=loader.loadGif("/image/spriteSheet/actors/enemy/enemy_1_1/Enemy_1_1_jumpRight.gif");
-		jumpLeftGif=jumpRightGif;
-		jumpDownGif=jumpRightGif;
-		jumpUpGif=jumpRightGif;
+		
+		run=new ImageSequence("/image/spriteSheet/actors/player/homura/run",8);
+		stand=new ImageSequence("/image/spriteSheet/actors/player/homura/stand",8);
+		damage=new ImageSequence("/image/spriteSheet/actors/player/homura/damage",4);		
+		dead=new ImageSequence("/image/spriteSheet/actors/player/homura/dead",14);
+		sequence.startSequence(stand);
+		
 		ss=SpriteData.mrPringles;
 		imageWidth=56;
 		imageHeight=56;
@@ -34,7 +33,6 @@ public class Enemy_1_1 extends Enemy{
 			chargeCounter=0;
 		}
 		chargeCounter++;
-		Animate.animateWithGif(this);
 	}
 	
 	

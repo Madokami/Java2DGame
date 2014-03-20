@@ -20,11 +20,16 @@ public abstract class MovableObject extends GameObject{
 	private double velX = 0;
 	private double velY = 0;
 	
-	protected Image moveLeftGif,moveRightGif,moveUpGif,moveDownGif,jumpUpGif,jumpDownGif,jumpLeftGif,jumpRightGif,upAttackGif = null;
+	/////
+	public ImageSequence run,stand,damage,dead;
+	
+	/////
 	
 	public int nextXCrude,nextYCrude;
 	protected BufferedImageLoader loader=new BufferedImageLoader();
 	protected AnimationParameters animationParameters = new AnimationParameters();
+	
+	protected Animation sequence;
 	
 	//starting from here is some special variables for active abilities
 	private boolean charging=false;
@@ -37,8 +42,6 @@ public abstract class MovableObject extends GameObject{
 	public int damagedDurationTimer;
 	
 	
-	
-	protected Event damage= new Event();
 	
 	public enum ANIMATION{
 		MOVELEFT,
@@ -72,14 +75,23 @@ public abstract class MovableObject extends GameObject{
 		finishingMove=false;
 		moving=false;
 		nextLocationSet=false;
+		sequence=new Animation(this);
 	}
 	public void tick(){
 		//first check if blocked
 		super.tick();
 		tickTimers();
 		applySpecialAbilitiesWithinDuration();
+		if(sequence!=null){
+			sequence.tick();
+		}
 		if(adjustToBlockageAndReturnTrueIfBlocked()) {
-			animation=ANIMATION.STAND;
+			if(animation!=ANIMATION.DYING&&animation!=ANIMATION.DAMAGED) {
+				if(animation!=ANIMATION.STAND) {
+					animation=ANIMATION.STAND;
+					if(stand!=null) sequence.startSequence(stand);
+				}
+			}
 			return;
 		}
 		if(buttonReleased){
@@ -87,13 +99,23 @@ public abstract class MovableObject extends GameObject{
 				velX=0;
 				velY=0;
 				moving=false;
-				animation=ANIMATION.STAND;
+				if(animation!=ANIMATION.DYING&&animation!=ANIMATION.DAMAGED) {
+					if(animation!=ANIMATION.STAND) {
+						animation=ANIMATION.STAND;
+						if(stand!=null) sequence.startSequence(stand);
+					}
+				}
 				direction="stand";
 			}
 		}
 		//updatePosition();
 		if(damaged){
-			animation=ANIMATION.DAMAGED;
+			if(animation!=ANIMATION.DYING) {
+				if(animation!=ANIMATION.DAMAGED) {
+					animation=ANIMATION.DAMAGED;
+					if(damage!=null) sequence.startSequence(damage,stand);
+				}
+			}
 			setVelX(0);
 			setVelY(0);
 		}
@@ -102,6 +124,8 @@ public abstract class MovableObject extends GameObject{
 		y+=velY;
 		updatePosition();
 		checkIfAtEdge();
+		
+		
 	}
 	private void tickTimers() {
 		chargeDurationTimer++;
@@ -127,7 +151,10 @@ public abstract class MovableObject extends GameObject{
 		if(damaged||game.getPlayer().dying) return;
 		moving=true;
 		orientation=ORIENTATION.UP;
-		animation=ANIMATION.MOVEUP;
+		if(animation!=ANIMATION.MOVEUP) {
+			animation=ANIMATION.MOVEUP;
+			if(run!=null) sequence.startSequence(run);
+		}
 		direction="up";
 		setNextXY();
 		setDestination(nextX,nextY);
@@ -138,7 +165,10 @@ public abstract class MovableObject extends GameObject{
 		if(damaged||game.getPlayer().dying) return;
 		moving=true;
 		orientation=ORIENTATION.DOWN;
-		animation=ANIMATION.MOVEDOWN;
+		if(animation!=ANIMATION.MOVEDOWN) {
+			animation=ANIMATION.MOVEDOWN;
+			if(run!=null) sequence.startSequence(run);
+		}
 		direction="down";
 		setNextXY();
 		setDestination(nextX,nextY);
@@ -149,7 +179,10 @@ public abstract class MovableObject extends GameObject{
 		if(damaged||game.getPlayer().dying) return;
 		moving=true;
 		orientation=ORIENTATION.RIGHT;
-		animation=ANIMATION.MOVERIGHT;
+		if(animation!=ANIMATION.MOVERIGHT) {
+			animation=ANIMATION.MOVERIGHT;
+			if(run!=null) sequence.startSequence(run);
+		}
 		facing=FACING.RIGHT;
 		direction="right";
 		setNextXY();
@@ -161,7 +194,10 @@ public abstract class MovableObject extends GameObject{
 		if(damaged||game.getPlayer().dying) return;
 		moving=true;
 		orientation=ORIENTATION.LEFT;
-		animation=ANIMATION.MOVELEFT;
+		if(animation!=ANIMATION.MOVELEFT) {
+			animation=ANIMATION.MOVELEFT;
+			if(run!=null) sequence.startSequence(run);
+		}
 		facing=FACING.LEFT;
 		direction="left";
 		setNextXY();

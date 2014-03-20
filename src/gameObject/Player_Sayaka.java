@@ -12,15 +12,11 @@ public class Player_Sayaka extends Player{
 		status = SpriteData.saStatus;
 		setStatusImages();
 		
-		animationParameters.setWalkGif(loader.loadGif("/image/spriteSheet/actors/player/sayaka/run.gif"));
-		animationParameters.setStandGif(loader.loadGif("/image/spriteSheet/actors/player/sayaka/stand.gif"));
-		animationParameters.setDamagedGif(loader.loadGif("/image/spriteSheet/actors/player/sayaka/damaged.gif"));
-		animationParameters.setDeathGif(loader.loadGif("/image/spriteSheet/actors/player/sayaka/dead.gif"));
-		
-		ssX=1;
-		ssY=5;
-		ss=SpriteData.char3;
-		image=ss.grabImage(ssX, ssY, ssWidth, ssHeight);	
+		run=new ImageSequence("/image/spriteSheet/actors/player/sayaka/run",8);
+		stand=new ImageSequence("/image/spriteSheet/actors/player/sayaka/stand",5);
+		damage=new ImageSequence("/image/spriteSheet/actors/player/sayaka/damage",4);		
+		dead=new ImageSequence("/image/spriteSheet/actors/player/sayaka/dead",9);
+		sequence.startSequence(stand);
 		
 		soulGemSprite=SpriteData.gem_sayaka;
 		soulGemImage=soulGemSprite.grabImage(1, 1, soulGemWidth, soulGemHeight);

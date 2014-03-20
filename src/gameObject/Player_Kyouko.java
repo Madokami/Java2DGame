@@ -8,17 +8,15 @@ public class Player_Kyouko extends Player{
 	private boolean upAttacking;
 	public Player_Kyouko(int x, int y, Game game) {
 		super(x, y, game);
-		upAttackGif=loader.loadGif("/image/spriteSheet/actors/player/kyouko/ky_up_attack.gif");
-		moveRightGif=loader.loadGif("/image/spriteSheet/actors/player/kyouko/ky_walkRight2.gif");
-		moveLeftGif=loader.loadGif("/image/spriteSheet/actors/player/kyouko/ky_walkLeft.gif");
-		moveUpGif=moveRightGif;
-		moveDownGif=moveLeftGif;
-		
-		
-		animationParameters.setWalkGif(loader.loadGif("/image/spriteSheet/actors/player/kyouko/run.gif"));
-		animationParameters.setStandGif(loader.loadGif("/image/spriteSheet/actors/player/kyouko/stand.gif"));
-		animationParameters.setDamagedGif(loader.loadGif("/image/spriteSheet/actors/player/kyouko/damaged.gif"));
-		animationParameters.setDeathGif(loader.loadGif("/image/spriteSheet/actors/player/homura/dead.gif"));
+
+		run=new ImageSequence("/image/spriteSheet/actors/player/kyouko/run",8);
+		stand=new ImageSequence("/image/spriteSheet/actors/player/kyouko/stand",8);
+		damage=new ImageSequence("/image/spriteSheet/actors/player/kyouko/damage",4);		
+		dead=new ImageSequence("/image/spriteSheet/actors/player/kyouko/dead",7);
+		dead.scale(1.3);
+		dead.setX(dead.getX()+15);
+		dead.setY(dead.getY()-10);
+		sequence.startSequence(stand);
 		//moveUpGif=loader.loadGif("/image/spriteSheet/actors/player/kyouko/ky_jump.gif");
 		//moveDownGif=loader.loadGif("/image/spriteSheet/actors/player/kyouko/ky_jump.gif");
 		
@@ -44,11 +42,7 @@ public class Player_Kyouko extends Player{
 		maxMp=mp;
 		maxSoul=soul;
 	}
-	public void tick(){
-		super.tick();
-		Animate.animateWithGif(this);
-		
-	}
+	
 	public void useUltimate(){
 		upAttackCounter=0;
 	}

@@ -9,7 +9,7 @@ public class MdVoice implements PlayerVoice{
 		rand=new Random();
 	}
 	public void playDeathSound(){
-		int x = rand.nextInt(2);
+		int x = rand.nextInt(3);
 		String url = "/sound/mdDeath";
 		url=url.concat(Integer.toString(x)).concat(".wav");
 		GameSystem.musicPlayer.playVoice(url);
