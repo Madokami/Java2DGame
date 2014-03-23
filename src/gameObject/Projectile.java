@@ -1,7 +1,10 @@
 package gameObject;
 
-import system.GameSystem;
 import game.Game;
+
+import java.util.LinkedList;
+
+import system.GameSystem;
 
 public abstract class Projectile extends MovableObject {
 	
@@ -19,9 +22,9 @@ public abstract class Projectile extends MovableObject {
 		if(tempWall!=-1){
 			applyDamage(damage,0,game.getBrickList().get(tempWall));
 		}
-		int tempEnemy=Physics.collision(this, game.getEnemyList());
-		if(tempEnemy!=-1){
-			applyDamage(damage,0,game.getEnemyList().get(tempEnemy));
+		LinkedList<Enemy> enemies=Physics.collision(this, game.getEnemyList());
+		for(int i=0;i<enemies.size();i++){
+			applyDamage(damage,10,enemies.get(i));
 		}
 		x+=getVelX();
 		y+=getVelY();

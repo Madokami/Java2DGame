@@ -127,11 +127,13 @@ public class Controller implements Serializable {
 	public void addEntity(Bomb o){
 		bombList.add(o);
 		bombArray[o.xGridNearest][o.yGridNearest]=true;
+		
 	}
 	
 	public void removeEntity(Bomb o){
 		bombList.remove(o);
-		bombArray[o.xGridNearest][o.yGridNearest]=false;
+		bombArray[o.xStarting][o.yStarting]=false;
+		
 	}
 	public boolean[][] getBombArray(){
 		return this.bombArray;

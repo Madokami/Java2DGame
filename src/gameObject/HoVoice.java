@@ -16,11 +16,13 @@ public class HoVoice implements PlayerVoice{
 		GameSystem.musicPlayer.playVoice(url);
 	}
 	public void playUltimateSound(){
-		int x = rand.nextInt(3);
+		/*int x = rand.nextInt(3);
 		String url = "/sound/hoUlt";
 		url=url.concat(Integer.toString(x)).concat(".wav");
 		System.out.println(url);
 		GameSystem.musicPlayer.playVoice(url);
+		*/
+		GameSystem.playVoice("/sound/hoUlt.wav");
 	}
 	public void playLevelUpSound(){
 		GameSystem.musicPlayer.playVoice("/sound/hoLevel0.wav");

@@ -55,7 +55,10 @@ public class Player_Madoka extends Player{
 	}
 	
 	public void useUltimate(){
-		game.getController().addEntity(new Projectile_PinkArrow(xGridNearest,yGridNearest,game,this));
+		if(this.mp>50){
+			game.getController().addEntity(new Projectile_PinkArrow(xGridNearest,yGridNearest,game,this));
+			mp-=50;
+		}
 	}
 	public void useAbility1(){
 		

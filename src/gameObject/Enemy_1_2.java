@@ -9,28 +9,15 @@ public class Enemy_1_2 extends Enemy{
 	public int time=1;
 	public Enemy_1_2(int x, int y, Game game) {
 		super(x, y, game);
-		ss=SpriteData.adelbertMini;
-		ssWidth=48;
-		ssHeight=48;
-		imageWidth=48;
-		imageHeight=48;
-		collisionWidth=32;
-		collisionHeight=32;
-		this.ssX=1;
-		ssY=1;
-		frames=9;
-		renderXShift=-8;
-		renderYShift=-8;
+		
+		run=new ImageSequence("/image/spriteSheet/actors/enemy/enemy_1_2/run",8);
+		stand=new ImageSequence("/image/spriteSheet/actors/enemy/enemy_1_2/stand",8);	
+		sequence.startSequence(stand);
 		
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void tick(){
-		super.tick();
-		
-		Animate.animate(this);
-		
-	}
+	
 	
 	public void setTime(){
 		time=rand.nextInt(100);

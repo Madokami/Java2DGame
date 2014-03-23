@@ -85,6 +85,8 @@ public abstract class Player extends MovableObject{
 		pData = game.getPlayerData();
 		levelUpdater = new LevelUp();
 		// TODO Auto-generated constructor stub
+		collisionWidth=56;
+		collisionHeight=56;
 	}
 
 

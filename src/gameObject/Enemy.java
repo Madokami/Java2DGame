@@ -32,17 +32,21 @@ public class Enemy extends MovableObject{
 	}
 	public void tick(){
 		super.tick();
-		
+		/*
+		if(Physics.overlapWithOtherEnemies(this, game.getEnemyList())){
+			this.moveToLastAcceptableLocation();
+		}
+		*/
 		if(Physics.collide(game.getPlayer(), this)) applyDamage(collisionDamage,30,game.getPlayer());
 		counter++;
 		if(counter>10){
 			counter=0;
-			//if(rand.nextInt(10)>4){
+			if(rand.nextInt(10)<8){
 			chasePlayer();
-			//}
-			//else{
-			//	moveRandomly();
-			//}
+			}
+			else{
+				moveRandomly();
+			}
 		}
 		int bombKicked=Physics.onTopOfBomb(this, game.getBombList());
 		if(bombKicked!=-1){
@@ -100,10 +104,18 @@ public class Enemy extends MovableObject{
 	public void chasePlayer(){
 		String s;
 		s=ai.makeStep(game.getWallArray(), game.getPlayer().xGridNearest, game.getPlayer().yGridNearest, lastX, lastY);
-		if(s.equals("up")) moveUp();
-		else if(s.equals("down")) moveDown();
-		else if(s.equals("left")) moveLeft();
-		else if(s.equals("right")) moveRight();
+		if(s.equals("up")) {
+			if(!Physics.blockedByEnemy(this, game.getEnemyList(), lastX, lastY-1)) moveUp();
+		}
+		else if(s.equals("down")) {
+			if(!Physics.blockedByEnemy(this, game.getEnemyList(), lastX, lastY+1)) moveDown();
+		}
+		else if(s.equals("left")) {
+			if(!Physics.blockedByEnemy(this, game.getEnemyList(), lastX-1, lastY)) moveLeft();
+		}
+		else if(s.equals("right")) {
+			if(!Physics.blockedByEnemy(this, game.getEnemyList(), lastX+1, lastY-1)) moveRight();
+		}
 		else if(s.equals("stop")) moveRandomly();
 	}
 	public void chargeAtPlayer(int speed,int duration){

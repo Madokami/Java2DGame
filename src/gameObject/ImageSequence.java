@@ -16,7 +16,7 @@ public class ImageSequence {
 		this.frames=frames;
 		images=new BufferedImage[frames];
 		for(int i=0;i<frames;i++){
-			images[i]=GameSystem.loader.loadImage(path.concat(Integer.toString(i)).concat(".png"));
+			images[i]=GameSystem.loader.loadImage(path.concat(" (").concat(Integer.toString(i+1)).concat(")").concat(".png"));
 		}
 		setDefaultValues();
 	}

@@ -8,7 +8,7 @@ public class Animation {
 	private int frames;
 	private ImageSequence currentSequence,nextSequence;
 	private MovableObject owner;
-	private boolean goToNext,oneTimeSequence;
+	private boolean goToNext,oneTimeSequence,sequencePlaying;
 	
 	public Animation(MovableObject o){
 		this.owner=o;
@@ -38,13 +38,18 @@ public class Animation {
 			if(counter>=frames){
 				if(oneTimeSequence) counter=frames-1;
 				if(goToNext) {
-					if(nextSequence!=null) startSequence(nextSequence);
+					if(nextSequence!=null) {
+						sequencePlaying=false;
+						owner.animation=ANIMATION.STAND;
+						startSequence(nextSequence);
+					}
 				}
 				
 			}
 		}
 	}
 	public void startSequence(ImageSequence sequence){
+		if(sequencePlaying) return;
 		goToNext=false;
 		oneTimeSequence=false;
 		currentSequence=sequence;
@@ -53,7 +58,8 @@ public class Animation {
 			frames=currentSequence.getFrames();
 		}
 	}
-	public void startSequence(ImageSequence sequence, ImageSequence nextSequence){
+	public void startSequence(ImageSequence sequence, ImageSequence nextSequence ){
+		sequencePlaying=true;
 		goToNext=true;
 		oneTimeSequence=false;
 		currentSequence=sequence;

@@ -20,6 +20,8 @@ public class Player_Homura extends Player{
 		stand=new ImageSequence("/image/spriteSheet/actors/player/homura/stand",8);
 		damage=new ImageSequence("/image/spriteSheet/actors/player/homura/damage",4);		
 		dead=new ImageSequence("/image/spriteSheet/actors/player/homura/dead",14);
+		ulty=new ImageSequence("/image/spriteSheet/actors/player/homura/ulty",7);
+		ulty.setAnimationSpeed(0.3);
 		sequence.startSequence(stand);
 		
 		pVoice=new HoVoice();
@@ -52,9 +54,10 @@ public class Player_Homura extends Player{
 		else{
 			mp=mp-50;
 			pVoice.playUltimateSound();
-			game.event1.startEvent(2000, "timeStopCutIn");
+			sequence.startSequence(ulty, stand);
+			//game.event1.startEvent(2000, "timeStopCutIn");
 			game.event2.startEvent(5000, "timeStop");
-			GameSystem.musicPlayer.playSwoosh();
+			//GameSystem.musicPlayer.playSwoosh();
 		}
 	}
 	

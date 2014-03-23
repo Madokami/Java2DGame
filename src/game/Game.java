@@ -158,6 +158,9 @@ public class Game {
 			}
 			if(timeStop){
 				player.tick();
+				for(int i=0;i<this.bombList.size();i++){
+					bombList.get(i).tick();
+				}
 				return;
 			}
 			controller.tick();
@@ -701,6 +704,7 @@ public class Game {
 	public static void setcChosen(CHARACTER cChosen) {
 		Game.cChosen = cChosen;
 	}
+	
 
 	
 }

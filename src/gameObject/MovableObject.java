@@ -10,6 +10,7 @@ import system.GameSystem;
 public abstract class MovableObject extends GameObject{
 	public double xTemp,yTemp;
 	public int spd=4;
+	public boolean[][] map = game.getWallArray();
 	//public int damage;
 	public boolean nextLocationSet;
 	public boolean moving=false;
@@ -21,7 +22,7 @@ public abstract class MovableObject extends GameObject{
 	private double velY = 0;
 	
 	/////
-	public ImageSequence run,stand,damage,dead;
+	public ImageSequence run,stand,damage,dead,ulty;
 	
 	/////
 	
@@ -108,7 +109,6 @@ public abstract class MovableObject extends GameObject{
 				direction="stand";
 			}
 		}
-		//updatePosition();
 		if(damaged){
 			if(animation!=ANIMATION.DYING) {
 				if(animation!=ANIMATION.DAMAGED) {
@@ -148,7 +148,7 @@ public abstract class MovableObject extends GameObject{
 	}
 	//moveUp shall move 1 grid up only
 	public void moveUp(){
-		if(damaged||game.getPlayer().dying) return;
+		if(animation==ANIMATION.DAMAGED||game.getPlayer().dying) return;
 		moving=true;
 		orientation=ORIENTATION.UP;
 		if(animation!=ANIMATION.MOVEUP) {
@@ -162,7 +162,7 @@ public abstract class MovableObject extends GameObject{
 		velX=0;
 	}
 	public void moveDown(){
-		if(damaged||game.getPlayer().dying) return;
+		if(animation==ANIMATION.DAMAGED||game.getPlayer().dying) return;
 		moving=true;
 		orientation=ORIENTATION.DOWN;
 		if(animation!=ANIMATION.MOVEDOWN) {
@@ -176,7 +176,7 @@ public abstract class MovableObject extends GameObject{
 		velX=0;
 	}
 	public void moveRight(){
-		if(damaged||game.getPlayer().dying) return;
+		if(animation==ANIMATION.DAMAGED||game.getPlayer().dying) return;
 		moving=true;
 		orientation=ORIENTATION.RIGHT;
 		if(animation!=ANIMATION.MOVERIGHT) {
@@ -191,7 +191,7 @@ public abstract class MovableObject extends GameObject{
 		velY=0;
 	}
 	public void moveLeft(){
-		if(damaged||game.getPlayer().dying) return;
+		if(animation==ANIMATION.DAMAGED||game.getPlayer().dying) return;
 		moving=true;
 		orientation=ORIENTATION.LEFT;
 		if(animation!=ANIMATION.MOVELEFT) {
@@ -218,21 +218,21 @@ public abstract class MovableObject extends GameObject{
 	public boolean targetPositionReached(){
 		
 		if(orientation==ORIENTATION.UP&&targetY>=lastY){
+
 			return true;
 		}
 		else if(orientation==ORIENTATION.DOWN&&targetY<=lastY){
 			return true;
 		}
 		else if(orientation==ORIENTATION.LEFT&&targetX>=lastX){
+
 			return true;
 		}
 		else if(orientation==ORIENTATION.RIGHT&&targetX<=lastX){
+
 			return true;
 		}
 		
-		else if(targetX==lastX&&targetY==lastY){
-			return true;
-		}
 		return false;
 	}
 	public void updatePosition(){
@@ -346,6 +346,9 @@ public abstract class MovableObject extends GameObject{
 			if(game.getController().wallArray[lastX][lastY]||game.getController().wallArray[nextX][nextY]){
 				return true;
 			}	
+			if(game.getController().bombArray[lastX][lastY]||game.getController().bombArray[nextX][nextY]){
+				return true;
+			}	
 		}catch(IndexOutOfBoundsException x){
 			
 		
@@ -379,6 +382,18 @@ public abstract class MovableObject extends GameObject{
 			return true;
 		}
 		if(Physics.hitPlaceHolder(this, game.getPlaceHolderList())!=-1){
+			return true;
+		}
+		return false;
+	}
+	public boolean checkBombCollision(){
+		int tempNum=Physics.hitBomb(this, game.getBombList());
+		if(tempNum!=-1){
+			for(int i=0;i<game.getBombList().get(tempNum).initiallyOnBomb.size();i++){
+				if(game.getBombList().get(tempNum).initiallyOnBomb.get(i)==this){
+					return false;
+				}
+			}
 			return true;
 		}
 		return false;
@@ -478,8 +493,14 @@ public abstract class MovableObject extends GameObject{
 		else if(orientation==ORIENTATION.UP) moveUp();
 		else if(orientation==ORIENTATION.DOWN) moveDown();
 	}
+	public void refreshMapPostion(){
+		
+	}
 	private boolean adjustToBlockageAndReturnTrueIfBlocked(){
 		if(checkIfBlocked()){
+			if(this.checkBombCollision()){
+				this.moveToLastAcceptableLocation();
+			}
 			//checks the orientation
 			if(orientation==ORIENTATION.UP||orientation==ORIENTATION.DOWN){
 				//sets it so that the y position is at right place
@@ -526,6 +547,9 @@ public abstract class MovableObject extends GameObject{
 		}
 		else{
 			if(checkWallCollision()){
+				this.moveToLastAcceptableLocation();
+			}
+			if(this.checkBombCollision()){
 				this.moveToLastAcceptableLocation();
 			}
 		}
