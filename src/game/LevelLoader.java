@@ -1,5 +1,5 @@
 package game;
-faofijewoifjaowiejp
+
 import gameObject.Brick;
 import gameObject.Controller;
 import gameObject.Enemy;
