@@ -85,6 +85,7 @@ public class Ai
 	}
 	private void search(int a, int n)
 	{
+		if (n==0) return;
 		int k=0;
 		int x;
 		int y;
